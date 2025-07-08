@@ -1,0 +1,20 @@
+{
+  "category": {
+    "electronics": "الإلكترونيات",
+    "instrumentation": "الأجهزة الدقيقة",
+    "control_system": "نظام التحكم",
+    "industrial_connectors": "الموصلات الصناعية",
+    "telecommunication": "الاتصالات",
+    "industrial_power": "الطاقة الصناعية",
+    "sensors": "المستشعرات",
+    "ai": "الذكاء الاصطناعي"
+  },
+  "tool": {
+    "power_calc": "حاسبة الطاقة",
+    "unit_converter": "محول الوحدات",
+    "circuit_diagram": "مخطط الدائرة",
+    "resistance_calc": "حاسبة المقاومة",
+    "bms_analysis": "تحليل BMS",
+    "voltage_converter": "محول الجهد"
+  }
+}

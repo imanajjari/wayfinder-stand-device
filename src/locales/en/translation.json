@@ -1,0 +1,20 @@
+{
+  "category": {
+    "electronics": "Electronics",
+    "instrumentation": "Instrumentation",
+    "control_system": "Control System",
+    "industrial_connectors": "Industrial Connectors",
+    "telecommunication": "Telecommunication",
+    "industrial_power": "Industrial Power",
+    "sensors": "Sensors",
+    "ai": "Artificial Intelligence"
+  },
+  "tool": {
+    "power_calc": "Power Calculator",
+    "unit_converter": "Unit Converter",
+    "circuit_diagram": "Circuit Diagram",
+    "resistance_calc": "Resistance Calculator",
+    "bms_analysis": "BMS Analysis",
+    "voltage_converter": "Voltage Converter"
+  }
+}

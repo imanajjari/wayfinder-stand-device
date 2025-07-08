@@ -1,0 +1,20 @@
+{
+  "category": {
+    "electronics": "الکترونیک",
+    "instrumentation": "ابزار دقیق",
+    "control_system": "سیستم کنترل",
+    "industrial_connectors": "اتصالات صنعتی",
+    "telecommunication": "مخابرات",
+    "industrial_power": "برق صنعتی",
+    "sensors": "سنسورها",
+    "ai": "هوش مصنوعی"
+  },
+  "tool": {
+    "power_calc": "محاسبه‌گر برق",
+    "unit_converter": "تبدیل واحد",
+    "circuit_diagram": "نقشه مدار",
+    "resistance_calc": "محاسبه مقاومت",
+    "bms_analysis": "تحلیل BMS",
+    "voltage_converter": "مبدل ولتاژ"
+  }
+}

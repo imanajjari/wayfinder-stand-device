@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+/* :root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+} */
+/* فونت وزیر - معمولی */
+@font-face {
+  font-family: 'Vazir';
+  src: url('/fonts/vazir/Vazir.woff2') format('woff2'),
+       url('/fonts/vazir/Vazir.woff') format('woff'),
+       url('/fonts/vazir/Vazir.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* فونت وزیر - بولد */
+@font-face {
+  font-family: 'Vazir';
+  src: url('/fonts/vazir/Vazir-Bold.woff2') format('woff2'),
+       url('/fonts/vazir/Vazir-Bold.woff') format('woff'),
+       url('/fonts/vazir/Vazir-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* فونت وزیر - لایت */
+@font-face {
+  font-family: 'Vazir';
+  src: url('/fonts/vazir/Vazir-Light.woff2') format('woff2'),
+       url('/fonts/vazir/Vazir-Light.woff') format('woff'),
+       url('/fonts/vazir/Vazir-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* فونت وزیر - مدیوم */
+@font-face {
+  font-family: 'Vazir';
+  src: url('/fonts/vazir/Vazir-Medium.woff2') format('woff2'),
+       url('/fonts/vazir/Vazir-Medium.woff') format('woff'),
+       url('/fonts/vazir/Vazir-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* فونت وزیر - تین */
+@font-face {
+  font-family: 'Vazir';
+  src: url('/fonts/vazir/Vazir-Thin.woff2') format('woff2'),
+       url('/fonts/vazir/Vazir-Thin.woff') format('woff'),
+       url('/fonts/vazir/Vazir-Thin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* تعریف breakpointها بر اساس ارتفاع viewport */
+@custom-variant short (@media (min-height: 50rem));     /* تا ~800px */
+@custom-variant mediumh (@media (min-height: 75rem));  /* 800–1200px */
+@custom-variant tall (@media (min-height: 112.5rem));  /* 1200–1800px */
+@custom-variant xhtall (@media (min-height: 112.5rem)); /* ≥1800px (مانیتور 43″ عمودی) */
+
+body {
+  font-family: 'Vazir', sans-serif;
+  margin: 0;
+}
+
+
+/* مخفی‌سازی نوار اسکرول به شکل حرفه‌ای */
+.scrollbar-hidden::-webkit-scrollbar {
+  height: 6px;
+  background-color: transparent;
+}
+
+.scrollbar-hidden::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-hidden::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0);
+  border-radius: 6px;
+  transition: background-color 1s ease-in-out;
+}
+
+.scrollbar-hidden.scrolling::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.text-dynamic {
+  color: var(--text-color);
+}
