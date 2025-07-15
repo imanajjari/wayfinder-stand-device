@@ -21,7 +21,7 @@ import { MdElectricalServices,
 import { getAllCategories , getAllAmenities} from '../../services/categoryService';
 import { useEffect, useState } from 'react';
 
-export default function StickyPanels({ onShowResult }) {
+export default function StickyPanels({ onShowResult , setIsResultOpen}) {
 
   const [categories, setCategories] = useState([]);
   const [amenities, setAmenities] = useState([]);
@@ -64,11 +64,15 @@ export default function StickyPanels({ onShowResult }) {
   
   return (
     <div className="bg-black/40 backdrop-blur-md border border-gray-500 text-white  py-4 z-[999] space-y-6 rounded-2xl">
-      <SearchPanel />
+      <SearchPanel 
+        onShowResult={onShowResult}
+        setIsResultOpen={setIsResultOpen}
+      />
       <CategoriesPanel
         categories={categories}
         maxVisible={20}
         onShowResult={onShowResult}
+        setIsResultOpen={setIsResultOpen}
       />
       
       <AmenityPanel

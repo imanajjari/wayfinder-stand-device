@@ -49,6 +49,7 @@ export default function BottomNav() {
       {/* کامپوننت یکپارچه پنل‌ها */}
       <StickyPanels
   onShowResult={showResult}
+  setIsResultOpen={setIsResultOpen}
 />
 <AdBanner content="🔥 جشنواره تابستانه! با 40٪ تخفیف در همه خدمات" />
       </div>

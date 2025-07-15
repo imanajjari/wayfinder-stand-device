@@ -14,9 +14,21 @@ import GLBModel from "./GLBModel";
 
 export default function Path3D() {
   const [activeFloor, setActiveFloor] = useState("g");
+  const [isPortrait, setIsPortrait] = useState(true); 
   const floors = ["f3", "f2", "f1", "g", "p1", "p2"];
   const { path, loading } = usePath();
   const { colors } = useTheme();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsPortrait(window.innerHeight > window.innerWidth);
+    };
+  
+    handleResize(); // در بارگذاری اول بررسی شود
+    window.addEventListener("resize", handleResize);
+  
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleFloorSelect = (floor) => {
     setActiveFloor(floor);
@@ -53,7 +65,7 @@ export default function Path3D() {
           <GLBModel
             url="/models/iranmall4.glb"
             scale={1}
-            position={[0, 0, 0]}
+            position={isPortrait ? [0, 0, 0] : [0, 10, 0]}
             rotation={[0, 0, 0]}
           />
 

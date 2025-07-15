@@ -13,3 +13,9 @@ export const searchDestinationsByCategory = async (categoryName) => {
   const response = await api.get(`/api/search?category=${categoryName}`);
   return response.data; // چون بک‌اند مستقیم array برمی‌گردونه
 };
+
+// جستجوی فروشگاه‌ها بر اساس نام دسته‌بندی
+export const searchDestinationsByName = async (destinationName) => {
+  const response = await api.get(`/api/search?query=${destinationName}`);
+  return response.data; // چون بک‌اند مستقیم array برمی‌گردونه
+};

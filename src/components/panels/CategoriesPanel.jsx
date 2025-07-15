@@ -5,7 +5,7 @@ import { usePath } from '../../contexts/PathContext';
 import { getFileUrl } from '../../services/fileService';
 import { searchDestinationsByCategory } from '../../services/destinationService';
 
-export default function CategoriesPanel({ categories = [], maxVisible = 20, onShowResult }) {
+export default function CategoriesPanel({ categories = [], maxVisible = 20, onShowResult ,setIsResultOpen }) {
   const [modalOpen, setModalOpen] = useState(false);
   const containerRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -63,14 +63,14 @@ export default function CategoriesPanel({ categories = [], maxVisible = 20, onSh
             key={index}
             className="flex items-start gap-4 bg-neutral-800 p-4 rounded-xl border border-gray-600"
             onClick={() => {
-              // استفاده از fetchPath داخل Context
-              const start = { x: 58, y: 185, z: 1 }; // جایگزین کن با موقعیت فعلی واقعی کاربر
+              const start = { x: 58, y: 185, z: 1 };
               const end = {
                 x: shop.entrance.x,
                 y: shop.entrance.y,
-                z: 1, // در صورت نیاز به تغییر طبقه
+                z: 1,
               };
-              fetchPath(start, end); // از context گرفته شده
+              fetchPath(start, end);
+              setIsResultOpen(false)// این خط اضافه شود
             }}
           >
             <div className="w-20 h-20 rounded-xl bg-neutral-600 flex items-center justify-center text-white text-lg font-bold">
@@ -90,6 +90,7 @@ export default function CategoriesPanel({ categories = [], maxVisible = 20, onSh
       console.error(`❌ خطا در دریافت فروشگاه‌های دسته ${cat.name}:`, err);
     }
   };
+  
 
 
 
