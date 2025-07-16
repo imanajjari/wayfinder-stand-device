@@ -51,7 +51,7 @@ export default function StickyPanels({ onShowResult , setIsResultOpen}) {
   }, []);
   
 
-  console.log("amenities :",amenities);
+
 
   const Amenity = [
     { key: 'tool.power_calc', icon: <MdElectricBolt /> },

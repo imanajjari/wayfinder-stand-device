@@ -19,51 +19,56 @@ export default function Path3D() {
   const [currentModelFile, setCurrentModelFile] = useState("/models/iranmall4.glb");
   const { floors, hasFloors, getFloorByName } = useFloors();
   
-  const { path } = usePath();
+  const { path, fetchPath, updateCurrentFloorNumber, refreshLastDestination } = usePath();
   const { colors } = useTheme();
+
+  
+
 
   useEffect(() => {
     const handleResize = () => {
       setIsPortrait(window.innerHeight > window.innerWidth);
     };
-  
-    handleResize(); // در بارگذاری اول بررسی شود
+    handleResize();
     window.addEventListener("resize", handleResize);
-  
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // تنظیم فایل مدل پیش‌فرض در ابتدای بارگذاری
   useEffect(() => {
-    console.log("Path3D: hasFloors:", hasFloors, "floors:", floors);
     if (hasFloors && floors.length > 0) {
-      // اگر floors موجود باشد، طبقه اول را به عنوان پیش‌فرض انتخاب کن
       const firstFloor = floors[0];
-      console.log("Path3D: Setting first floor as default:", firstFloor);
-      if (firstFloor && firstFloor.file) {
+      if (firstFloor?.file) {
         setCurrentModelFile(`/models/${firstFloor.file}`);
         setActiveFloor(firstFloor);
+        updateCurrentFloorNumber(firstFloor.number);
       }
     }
   }, [hasFloors, floors]);
 
-  const handleFloorSelect = (floor) => {
-    console.log("Path3D: Floor selected:", floor);
-    setActiveFloor(floor);
-    
-    // اگر floor یک object باشد، فایل مربوط به آن را دریافت کن
-    if (typeof floor === 'object' && floor.file) {
-      console.log("Path3D: Setting model file from object:", floor.file);
-      setCurrentModelFile(`/models/${floor.file}`);
-    } else if (typeof floor === 'string') {
-      // اگر floor یک string باشد، سعی کن floor object مربوط به آن را پیدا کنی
-      const floorData = getFloorByName(floor);
-      console.log("Path3D: Found floor data for string:", floorData);
-      if (floorData && floorData.file) {
-        setCurrentModelFile(`/models/${floorData.file}`);
-      }
-    }
-  };
+const handleFloorSelect = (floor) => {
+  const floorData = typeof floor === 'object' ? floor : getFloorByName(floor);
+
+  if (floorData?.file) {
+    console.log('====================================');
+    console.log(' floorData floorData floorData: ',floorData.number);
+    console.log('====================================');
+    setCurrentModelFile(`/models/${floorData.file}`);
+    setActiveFloor(floorData);
+    updateCurrentFloorNumber(floorData.number ?? 0);
+    refreshLastDestination({ currentFloorNumber: floorData.number });
+  }
+};
+  
+const BASE_OFFSET = 10;
+const verticalOffset = isPortrait ? 0 : BASE_OFFSET;
+
+// تبدیل path به آرایه سه‌تایی و اضافه کردن offset
+const adjustedPathPoints = path?.path?.map(p => ({
+  x: p.x,
+  y: p.y + verticalOffset,
+  z: p.z
+}));
+
 
   return (
     <div
@@ -87,46 +92,42 @@ export default function Path3D() {
         <pointLight position={[0, 10, 0]} intensity={0.5} />
 
         <Bounds fit clip observe margin={1.2}>
-          {/* <STLModel
-            url="/models/iranmall3.stl"
-            scale={1}
-            color={colors.modelColor}
-          /> */}
-          <GLBModel
-            url={currentModelFile}
-            scale={1}
-            position={isPortrait ? [0, 0, 0] : [0, 10, 0]}
-            rotation={[0, 0, 0]}
-          />
+        <GLBModel
+          url={currentModelFile}
+          scale={1}
+          position={[0, verticalOffset, 0]}
+          rotation={[0, 0, 0]}
+        />
 
-          {path?.path?.length > 0 && (
-            <>
-              <DottedStraightPath
-                points={path.path}
-                spacing={1}
-                size={0.1}
-                animate={true}
-              />
+{path && (
+  <>
+    {path.type === 'path' && path.path?.length > 0 && (
+      <>
+      {console.log("path.path :",path.path)}
+      {console.log("path?.path?.map(p => [p.x, p.y + verticalOffset, p.z]) :",path?.path?.map(p => [p.x, p.y + verticalOffset, p.z]))}
 
-              {/* <GLBModel
-                    url="/models/start_marker.glb"
-                    scale={20}
-                    position={Object.values(path.path[0])}
-                  />
-                  <GLBModel
-                    url="/models/end_flag.glb"
-                    scale={2}
-                    position={Object.values(path.path[path.path.length - 1])}
-                  /> */}
+        <DottedStraightPath
+          points={adjustedPathPoints}
+          spacing={1}
+          size={0.1}
+          animate={true}
+        />
+        {/* <Point position={path.path[0]} color={colors.pointStart} />
+        <Point
+          position={path.path[path.path.length - 1]}
+          color={colors.pointEnd}
+        /> */}
+      </>
+    )}
 
-                  
-              {/* <Point position={path.path[0]} color={colors.pointStart} />
-                  <Point
-                    position={path.path[path.path.length - 1]}
-                    color={colors.pointEnd}
-                  /> */}
-            </>
-          )}
+    {path.type === 'floor-change' && (
+      <>
+
+      </>
+    )}
+  </>
+)}
+
         </Bounds>
         {/*
         <GpsTracker isDev={true} color="blue" />
@@ -146,7 +147,7 @@ export default function Path3D() {
 
       <BottomNav />
       <FloorSelectorColumn
-        floors={[]}
+        floors={floors}
         onSelect={handleFloorSelect}
         activeFloor={activeFloor}
       />

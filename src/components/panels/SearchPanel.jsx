@@ -8,7 +8,7 @@ import { getFileUrl } from '../../services/fileService';
 
 export default function SearchPanel({ setIsResultOpen, onShowResult }) {
   const { changeLanguage, language } = useLanguage();
-  const { fetchPath } = usePath();
+  const { fetchPath, updateDestination } = usePath();
   
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
@@ -32,12 +32,12 @@ export default function SearchPanel({ setIsResultOpen, onShowResult }) {
               className="flex items-start gap-4 bg-neutral-800 p-4 rounded-xl border border-gray-600"
               onClick={() => {
                 // const start = { x: 58, y: 185, z: 1 }; // جایگزین کن با مختصات واقعی
-                const end = {
+                updateDestination({
                   x: shop.entrance.x,
                   y: shop.entrance.y,
-                  z: 1
-                };
-                fetchPath(null, end);
+                  z: 1,
+                  floorNumber: shop.floorNumber,
+                });
                 setIsResultOpen(false);
               }}
             >

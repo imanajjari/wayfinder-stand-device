@@ -8,10 +8,10 @@ export default function FloorSelectorColumn({ floors = [], onSelect, activeFloor
   // استفاده از floors پاس شده یا floors از localStorage
   const displayFloors = floors.length > 0 ? floors : savedFloors;
 
-  console.log("FloorSelectorColumn: floors prop:", floors);
-  console.log("FloorSelectorColumn: savedFloors:", savedFloors);
-  console.log("FloorSelectorColumn: displayFloors:", displayFloors);
-  console.log("FloorSelectorColumn: activeFloor:", activeFloor);
+  // console.log("FloorSelectorColumn: floors prop:", floors);
+  // console.log("FloorSelectorColumn: savedFloors:", savedFloors);
+  // console.log("FloorSelectorColumn: displayFloors:", displayFloors);
+  // console.log("FloorSelectorColumn: activeFloor:", activeFloor);
 
   if (loading) {
     return (
@@ -42,7 +42,7 @@ export default function FloorSelectorColumn({ floors = [], onSelect, activeFloor
           (typeof activeFloor === 'string' && typeof floor === 'object' && activeFloor === floor.name) ||
           (typeof activeFloor === 'string' && typeof floor === 'string' && activeFloor === floor);
         
-        console.log(`FloorSelectorColumn: Floor ${index} - name: ${floorName}, isActive: ${isActive}`);
+
         
         return (
           <button

@@ -12,7 +12,7 @@ export default function CategoriesPanel({ categories = [], maxVisible = 20, onSh
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
-  const { fetchPath } = usePath();
+  const { fetchPath, updateDestination } = usePath();
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
@@ -59,19 +59,22 @@ export default function CategoriesPanel({ categories = [], maxVisible = 20, onSh
   
       onShowResult(
         results.map((shop, index) => (
+          
           <div
             key={index}
             className="flex items-start gap-4 bg-neutral-800 p-4 rounded-xl border border-gray-600"
-            onClick={() => {
-              // const start = { x: 58, y: 185, z: 1 };
-              const end = {
-                x: shop.entrance.x,
-                y: shop.entrance.y,
-                z: 1,
-              };
-              fetchPath(null, end);
-              setIsResultOpen(false)// این خط اضافه شود
-            }}
+onClick={() => {
+
+  //console.log('shop : ',shop); 
+  updateDestination({
+    x: shop.entrance.x,
+    y: shop.entrance.y,
+    z: 1,
+    floorNumber: shop.floorNumber,
+  });
+  setIsResultOpen(false);
+}}
+            
           >
             {shop.icon ?
               <img
