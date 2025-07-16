@@ -12,6 +12,7 @@ import { usePath } from "../../contexts/PathContext";
 import GpsTracker from "../Gps/GpsTracker";
 import GLBModel from "./GLBModel";
 import { useFloors } from "../../hooks/useFloors";
+import { getMyStand } from "../../services/floorService";
 
 export default function Path3D() {
   const [activeFloor, setActiveFloor] = useState("g");
@@ -21,7 +22,7 @@ export default function Path3D() {
 
   const { floors, hasFloors, getFloorByName } = useFloors();
   
-  const { path, fetchPath, updateCurrentFloorNumber, refreshLastDestination } = usePath();
+  const { path, updateCurrentFloorNumber, refreshLastDestination } = usePath();
   const { colors } = useTheme();
 
   
@@ -39,16 +40,27 @@ export default function Path3D() {
   return () => window.removeEventListener("resize", handleResize);
 }, []);
 
-  useEffect(() => {
-    if (hasFloors && floors.length > 0) {
-      const firstFloor = floors[0];
-      if (firstFloor?.file) {
-        setCurrentModelFile(`/models/${firstFloor.file}`);
-        setActiveFloor(firstFloor);
-        updateCurrentFloorNumber(firstFloor.number);
-      }
+useEffect(() => {
+  if (hasFloors && floors.length > 0) {
+    const myStand = getMyStand();
+    let initialFloor = null;
+
+    if (myStand) {
+      initialFloor = floors.find(f => f.number === myStand.floorNumber);
     }
-  }, [hasFloors, floors]);
+
+    // اگر استند نبود یا طبقه‌اش یافت نشد، برو سراغ اولین طبقه
+    if (!initialFloor) {
+      initialFloor = floors[0];
+    }
+
+    if (initialFloor?.file) {
+      setCurrentModelFile(`/models/${initialFloor.file}`);
+      setActiveFloor(initialFloor);
+      updateCurrentFloorNumber(initialFloor.number);
+    }
+  }
+}, [hasFloors, floors]);
 
 const handleFloorSelect = (floor) => {
   const floorData = typeof floor === 'object' ? floor : getFloorByName(floor);
