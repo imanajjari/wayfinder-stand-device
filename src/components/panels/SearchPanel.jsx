@@ -4,6 +4,7 @@ import useLanguage from '../../hooks/useLanguage';
 import LocationButton from '../buttons/LocationButton';
 import { searchDestinationsByName } from '../../services/destinationService';
 import { usePath } from '../../contexts/PathContext';
+import { getFileUrl } from '../../services/fileService';
 
 export default function SearchPanel({ setIsResultOpen, onShowResult }) {
   const { changeLanguage, language } = useLanguage();
@@ -30,19 +31,27 @@ export default function SearchPanel({ setIsResultOpen, onShowResult }) {
               key={index}
               className="flex items-start gap-4 bg-neutral-800 p-4 rounded-xl border border-gray-600"
               onClick={() => {
-                const start = { x: 58, y: 185, z: 1 }; // جایگزین کن با مختصات واقعی
+                // const start = { x: 58, y: 185, z: 1 }; // جایگزین کن با مختصات واقعی
                 const end = {
                   x: shop.entrance.x,
                   y: shop.entrance.y,
                   z: 1
                 };
-                fetchPath(start, end);
+                fetchPath(null, end);
                 setIsResultOpen(false);
               }}
             >
-              <div className="w-20 h-20 rounded-xl bg-neutral-600 flex items-center justify-center text-white text-lg font-bold">
-                {shop.shortName[0]}
-              </div>
+               {shop.icon ?
+              <img
+              src={getFileUrl(shop.icon)}
+              alt={shop.name}
+              className="w-20 h-20 rounded-xl bg-neutral-600 flex items-center justify-center text-white text-lg font-bold"
+            />
+            :
+            <div className="w-20 h-20 rounded-xl bg-neutral-600 flex items-center justify-center text-white text-lg font-bold">
+              {shop.shortName[0]}
+            </div>
+            }
               <div className="space-y-1">
                 <h3 className="text-lg font-semibold">{shop.fullName}</h3>
                 <p className="text-sm text-gray-300">{shop.description}</p>

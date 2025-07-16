@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { postSetting } from '../../services/settingService';
+import { saveFloors, saveMyStand, saveStandData } from '../../services/floorService';
 
 export default function SettingPage() {
   const navigate = useNavigate();
   const [id, setId] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState(null);
@@ -13,10 +15,22 @@ export default function SettingPage() {
     e.preventDefault();
     setError(null);
     setMessage('');
-
+  
     try {
-      const response = await postSetting({ id, password });
+      const response = await postSetting({ id, email, password });
       if (response.message === 'Stand is valid') {
+        if (response.floors && response.floors.length > 0) {
+          saveFloors(response.floors);
+        }
+  
+        saveStandData(response);
+  
+        // ذخیره استند متعلق به کاربر
+        const myStand = response.stands.find(stand => stand.isMe);
+        if (myStand) {
+          saveMyStand(myStand);
+        }
+  
         setMessage('✅ داده‌ها با موفقیت تنظیم شدند، درحال بازگشت...');
         setTimeout(() => {
           navigate('/');
@@ -29,6 +43,7 @@ export default function SettingPage() {
       setError('❌ خطا در ارسال تنظیمات');
     }
   };
+  
 
   return (
     <div className="p-4 max-w-md mx-auto space-y-4">
@@ -41,6 +56,16 @@ export default function SettingPage() {
             type="text"
             value={id}
             onChange={(e) => setId(e.target.value)}
+            className="w-full border p-2 rounded"
+            required
+          />
+        </div>
+        <div>
+          <label className="block">Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full border p-2 rounded"
             required
           />

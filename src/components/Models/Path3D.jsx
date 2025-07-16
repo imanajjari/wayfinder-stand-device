@@ -11,12 +11,15 @@ import TopNav from "../layout/TopNav";
 import { usePath } from "../../contexts/PathContext";
 import GpsTracker from "../Gps/GpsTracker";
 import GLBModel from "./GLBModel";
+import { useFloors } from "../../hooks/useFloors";
 
 export default function Path3D() {
   const [activeFloor, setActiveFloor] = useState("g");
   const [isPortrait, setIsPortrait] = useState(true); 
-  const floors = ["f3", "f2", "f1", "g", "p1", "p2"];
-  const { path, loading } = usePath();
+  const [currentModelFile, setCurrentModelFile] = useState("/models/iranmall4.glb");
+  const { floors, hasFloors, getFloorByName } = useFloors();
+  
+  const { path } = usePath();
   const { colors } = useTheme();
 
   useEffect(() => {
@@ -30,9 +33,36 @@ export default function Path3D() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // تنظیم فایل مدل پیش‌فرض در ابتدای بارگذاری
+  useEffect(() => {
+    console.log("Path3D: hasFloors:", hasFloors, "floors:", floors);
+    if (hasFloors && floors.length > 0) {
+      // اگر floors موجود باشد، طبقه اول را به عنوان پیش‌فرض انتخاب کن
+      const firstFloor = floors[0];
+      console.log("Path3D: Setting first floor as default:", firstFloor);
+      if (firstFloor && firstFloor.file) {
+        setCurrentModelFile(`/models/${firstFloor.file}`);
+        setActiveFloor(firstFloor);
+      }
+    }
+  }, [hasFloors, floors]);
+
   const handleFloorSelect = (floor) => {
+    console.log("Path3D: Floor selected:", floor);
     setActiveFloor(floor);
-    console.log("Floor selected:", floor);
+    
+    // اگر floor یک object باشد، فایل مربوط به آن را دریافت کن
+    if (typeof floor === 'object' && floor.file) {
+      console.log("Path3D: Setting model file from object:", floor.file);
+      setCurrentModelFile(`/models/${floor.file}`);
+    } else if (typeof floor === 'string') {
+      // اگر floor یک string باشد، سعی کن floor object مربوط به آن را پیدا کنی
+      const floorData = getFloorByName(floor);
+      console.log("Path3D: Found floor data for string:", floorData);
+      if (floorData && floorData.file) {
+        setCurrentModelFile(`/models/${floorData.file}`);
+      }
+    }
   };
 
   return (
@@ -63,7 +93,7 @@ export default function Path3D() {
             color={colors.modelColor}
           /> */}
           <GLBModel
-            url="/models/iranmall4.glb"
+            url={currentModelFile}
             scale={1}
             position={isPortrait ? [0, 0, 0] : [0, 10, 0]}
             rotation={[0, 0, 0]}
@@ -116,7 +146,7 @@ export default function Path3D() {
 
       <BottomNav />
       <FloorSelectorColumn
-        floors={floors}
+        floors={[]}
         onSelect={handleFloorSelect}
         activeFloor={activeFloor}
       />

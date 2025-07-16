@@ -63,19 +63,27 @@ export default function CategoriesPanel({ categories = [], maxVisible = 20, onSh
             key={index}
             className="flex items-start gap-4 bg-neutral-800 p-4 rounded-xl border border-gray-600"
             onClick={() => {
-              const start = { x: 58, y: 185, z: 1 };
+              // const start = { x: 58, y: 185, z: 1 };
               const end = {
                 x: shop.entrance.x,
                 y: shop.entrance.y,
                 z: 1,
               };
-              fetchPath(start, end);
+              fetchPath(null, end);
               setIsResultOpen(false)// این خط اضافه شود
             }}
           >
+            {shop.icon ?
+              <img
+              src={getFileUrl(shop.icon)}
+              alt={shop.name}
+              className="w-20 h-20 rounded-xl bg-neutral-600 flex items-center justify-center text-white text-lg font-bold"
+            />
+            :
             <div className="w-20 h-20 rounded-xl bg-neutral-600 flex items-center justify-center text-white text-lg font-bold">
               {shop.shortName[0]}
             </div>
+            }
             <div className="space-y-1">
               <h3 className="text-lg font-semibold">{shop.fullName}</h3>
               <p className="text-sm text-gray-300">{shop.description}</p>
@@ -192,7 +200,6 @@ function renderStars(rating) {
   const fullStars = Math.floor(rating);
   const halfStar = rating % 1 >= 0.5;
   const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
-
   return (
     <div className="flex text-yellow-400 text-sm">
       {'★'.repeat(fullStars)}
