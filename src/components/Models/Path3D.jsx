@@ -59,6 +59,8 @@ const handleFloorSelect = (floor) => {
   }
 };
   
+const minZoomDistance = isPortrait ? 40 : 30;
+const maxZoomDistance = isPortrait ? 60 : 50;
 const BASE_OFFSET = 10;
 const verticalOffset = isPortrait ? 0 : BASE_OFFSET;
 
@@ -112,11 +114,17 @@ const adjustedPathPoints = path?.path?.map(p => ({
           size={0.1}
           animate={true}
         />
-        {/* <Point position={path.path[0]} color={colors.pointStart} />
-        <Point
-          position={path.path[path.path.length - 1]}
-          color={colors.pointEnd}
-        /> */}
+        <Point position={{
+  "x":adjustedPathPoints[0].x,
+  "y":adjustedPathPoints[0].y,
+  "z":adjustedPathPoints[0].z
+}} color={colors.pointStart} />
+
+<Point position={{
+  "x":adjustedPathPoints[adjustedPathPoints.length - 1].x,
+  "y":adjustedPathPoints[adjustedPathPoints.length - 1].y,
+  "z":adjustedPathPoints[adjustedPathPoints.length - 1].z
+}} color={colors.pointEnd} />
       </>
     )}
 
@@ -136,8 +144,8 @@ const adjustedPathPoints = path?.path?.map(p => ({
         <OrbitControls
           target={[13, 13.7, 0]}
           enablePan={false}
-          minDistance={2}
-          maxDistance={100}
+          minDistance={minZoomDistance}
+          maxDistance={maxZoomDistance}
           minPolarAngle={Math.PI / 4}
           maxPolarAngle={Math.PI / 1.1}
           minAzimuthAngle={-Math.PI / 3}
