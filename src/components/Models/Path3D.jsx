@@ -17,6 +17,8 @@ export default function Path3D() {
   const [activeFloor, setActiveFloor] = useState("g");
   const [isPortrait, setIsPortrait] = useState(true); 
   const [currentModelFile, setCurrentModelFile] = useState("/models/iranmall4.glb");
+  const [verticalOffset, setVerticalOffset] = useState(0);
+
   const { floors, hasFloors, getFloorByName } = useFloors();
   
   const { path, fetchPath, updateCurrentFloorNumber, refreshLastDestination } = usePath();
@@ -26,13 +28,16 @@ export default function Path3D() {
 
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsPortrait(window.innerHeight > window.innerWidth);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const handleResize = () => {
+    const portrait = window.innerHeight > window.innerWidth;
+    setIsPortrait(portrait);
+    setVerticalOffset(portrait ? 0 : BASE_OFFSET);
+  };
+
+  handleResize();
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
 
   useEffect(() => {
     if (hasFloors && floors.length > 0) {
@@ -62,7 +67,6 @@ const handleFloorSelect = (floor) => {
 const minZoomDistance = isPortrait ? 40 : 30;
 const maxZoomDistance = isPortrait ? 60 : 50;
 const BASE_OFFSET = 10;
-const verticalOffset = isPortrait ? 0 : BASE_OFFSET;
 
 // تبدیل path به آرایه سه‌تایی و اضافه کردن offset
 const adjustedPathPoints = path?.path?.map(p => ({
@@ -105,9 +109,6 @@ const adjustedPathPoints = path?.path?.map(p => ({
   <>
     {path.type === 'path' && path.path?.length > 0 && (
       <>
-      {console.log("path.path :",path.path)}
-      {console.log("path?.path?.map(p => [p.x, p.y + verticalOffset, p.z]) :",path?.path?.map(p => [p.x, p.y + verticalOffset, p.z]))}
-
         <DottedStraightPath
           points={adjustedPathPoints}
           spacing={1}
