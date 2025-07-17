@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { postSetting } from '../../services/settingService';
-import { saveFloors, saveMyStand, saveStandData } from '../../services/floorService';
+import { saveFloors, saveMyStand, saveStandData, saveDestinations} from '../../services/floorService';
+import { getAllDestinations } from '../../services/destinationService';
+
 
 export default function SettingPage() {
   const navigate = useNavigate();
@@ -11,38 +13,52 @@ export default function SettingPage() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState(null);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-    setMessage('');
-  
-    try {
-      const response = await postSetting({ id, email, password });
-      if (response.message === 'Stand is valid') {
-        if (response.floors && response.floors.length > 0) {
-          saveFloors(response.floors);
-        }
-  
-        saveStandData(response);
-  
-        // ذخیره استند متعلق به کاربر
-        const myStand = response.stands.find(stand => stand.isMe);
-        if (myStand) {
-          saveMyStand(myStand);
-        }
-  
-        setMessage('✅ داده‌ها با موفقیت تنظیم شدند، درحال بازگشت...');
-        setTimeout(() => {
-          navigate('/');
-        }, 2000);
-      } else {
-        setError('⚠️ اطلاعات معتبر نیستند');
+
+// تابع ذخیره مقاصد
+const fetchAndSaveDestinations = async () => {
+  try {
+    const response = await getAllDestinations();
+    saveDestinations(response);
+    console.log('مقاصد با موفقیت ذخیره شد.');
+  } catch (error) {
+    console.error('خطا در دریافت یا ذخیره مقاصد:', error);
+  }
+};
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError(null);
+  setMessage('');
+
+  try {
+    const response = await postSetting({ id, email, password });
+    if (response.message === 'Stand is valid') {
+      if (response.floors && response.floors.length > 0) {
+        saveFloors(response.floors);
       }
-    } catch (err) {
-      console.error(err);
-      setError('❌ خطا در ارسال تنظیمات');
+
+      saveStandData(response);
+
+      const myStand = response.stands.find(stand => stand.isMe);
+      if (myStand) {
+        saveMyStand(myStand);
+      }
+
+      // دریافت و ذخیره مقاصد
+      await fetchAndSaveDestinations();
+
+      setMessage('✅ داده‌ها با موفقیت تنظیم شدند، درحال بازگشت...');
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
+    } else {
+      setError('⚠️ اطلاعات معتبر نیستند');
     }
-  };
+  } catch (err) {
+    console.error(err);
+    setError('❌ خطا در ارسال تنظیمات');
+  }
+};
   
 
   return (

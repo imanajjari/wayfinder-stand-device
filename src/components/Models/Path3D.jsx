@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo  } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Bounds } from "@react-three/drei";
 import useTheme from "../../hooks/useTheme";
@@ -13,19 +13,39 @@ import GpsTracker from "../Gps/GpsTracker";
 import GLBModel from "./GLBModel";
 import { useFloors } from "../../hooks/useFloors";
 import { getMyStand } from "../../services/floorService";
+import PositionedText from "./PositionedText";
+import { getDestinations } from "../../services/floorService";
+import DestinationsLabels from "./DestinationsLabels";
+import LabeledPoint from "./LabeledPoint";
 
 export default function Path3D() {
   const [activeFloor, setActiveFloor] = useState("g");
   const [isPortrait, setIsPortrait] = useState(true); 
   const [currentModelFile, setCurrentModelFile] = useState("/models/iranmall4.glb");
   const [verticalOffset, setVerticalOffset] = useState(0);
+  const [floorDestinations, setFloorDestinations] = useState([]);
 
   const { floors, hasFloors, getFloorByName } = useFloors();
   
-  const { path, updateCurrentFloorNumber, refreshLastDestination } = usePath();
+  const { path, updateCurrentFloorNumber, refreshLastDestination,lastDestination   } = usePath();
   const { colors } = useTheme();
 
   
+
+  const currentFloorNumber = activeFloor?.number ?? 0;
+  const destinationFloorNumber = lastDestination?.floorNumber ?? null;
+  
+  const labelText = useMemo(() => {
+    if (!destinationFloorNumber) return "نقطه پایان";
+  
+    if (destinationFloorNumber > currentFloorNumber) {
+      return "پله برقی  - برو طبقه بالا ";
+    } else if (destinationFloorNumber < currentFloorNumber) {
+      return "پله برقی - برو طبقه پایین ";
+    } else {
+      return "نقطه پایان";
+    }
+  }, [destinationFloorNumber, currentFloorNumber]);
 
 
   useEffect(() => {
@@ -58,21 +78,33 @@ useEffect(() => {
       setCurrentModelFile(`/models/${initialFloor.file}`);
       setActiveFloor(initialFloor);
       updateCurrentFloorNumber(initialFloor.number);
+      fetchFloorDestinations(initialFloor.number); 
     }
   }
+  console.log('====================================');
+  console.log('lastDestination :',lastDestination);
+  console.log('====================================');
 }, [hasFloors, floors]);
+
+
+const fetchFloorDestinations = (floorNumber) => {
+  const allDestinations = getDestinations();
+  const destinationsForFloor = allDestinations.filter(dest => dest.floorNumber === floorNumber);
+  console.log('📍 مقاصد طبقه', floorNumber, ':', destinationsForFloor);
+  setFloorDestinations(destinationsForFloor);
+};
+
 
 const handleFloorSelect = (floor) => {
   const floorData = typeof floor === 'object' ? floor : getFloorByName(floor);
 
   if (floorData?.file) {
-    console.log('====================================');
-    console.log(' floorData floorData floorData: ',floorData.number);
-    console.log('====================================');
+    fetchFloorDestinations(floorData.number ?? 0);
     setCurrentModelFile(`/models/${floorData.file}`);
     setActiveFloor(floorData);
     updateCurrentFloorNumber(floorData.number ?? 0);
     refreshLastDestination({ currentFloorNumber: floorData.number });
+
   }
 };
   
@@ -87,6 +119,13 @@ const adjustedPathPoints = path?.path?.map(p => ({
   z: p.z
 }));
 
+const lastPoint = adjustedPathPoints?.length > 0
+  ? [
+      adjustedPathPoints[adjustedPathPoints.length - 1].x,
+      adjustedPathPoints[adjustedPathPoints.length - 1].y,
+      adjustedPathPoints[adjustedPathPoints.length - 1].z
+    ]
+  : null;
 
   return (
     <div
@@ -116,7 +155,19 @@ const adjustedPathPoints = path?.path?.map(p => ({
           position={[0, verticalOffset, 0]}
           rotation={[0, 0, 0]}
         />
-
+        <DestinationsLabels
+  destinations={floorDestinations}
+  z={2}
+  verticalOffset={verticalOffset}
+  hiddenPositions={lastPoint ? [lastPoint] : []}
+  fadeStartDistance={maxZoomDistance-15}
+  maxVisibleDistance={maxZoomDistance}
+/>
+  {/* <PositionedText
+    position={[0, 20 ,4]}
+    text="Start Point"
+    color="yellow"
+  /> */}
 {path && (
   <>
     {path.type === 'path' && path.path?.length > 0 && (
@@ -127,7 +178,53 @@ const adjustedPathPoints = path?.path?.map(p => ({
           size={0.1}
           animate={true}
         />
-        <Point position={{
+{adjustedPathPoints.length > 1 ?
+<>
+<LabeledPoint
+  position={{
+    x: adjustedPathPoints[0].x,
+    y: adjustedPathPoints[0].y,
+    z: adjustedPathPoints[0].z
+  }}
+  label="نقطه شروع"
+  pointColor={colors.pointStart}
+  textColor={colors.pointStart}
+  textHeightOffset={1}
+  fadeStartDistance={maxZoomDistance-10}
+  maxVisibleDistance={maxZoomDistance-10}
+/>
+
+<LabeledPoint
+  position={{
+    x: adjustedPathPoints[adjustedPathPoints.length - 1].x,
+    y: adjustedPathPoints[adjustedPathPoints.length - 1].y,
+    z: adjustedPathPoints[adjustedPathPoints.length - 1].z
+  }}
+  label="نقطه پایان"
+  pointColor={colors.pointEnd}
+  textColor="red"
+  textHeightOffset={1}
+  fadeStartDistance={maxZoomDistance-10}
+  maxVisibleDistance={maxZoomDistance-10}
+/>
+</>
+:
+<LabeledPoint
+  position={{
+    x: adjustedPathPoints[adjustedPathPoints.length - 1].x,
+    y: adjustedPathPoints[adjustedPathPoints.length - 1].y,
+    z: adjustedPathPoints[adjustedPathPoints.length - 1].z
+  }}
+  label={labelText}
+  pointColor={colors.pointEnd}
+  textColor="red"
+  textHeightOffset={0}
+  fadeStartDistance={maxZoomDistance-10}
+  maxVisibleDistance={maxZoomDistance-10}
+/>
+}
+
+        {/* <Point position={{
   "x":adjustedPathPoints[0].x,
   "y":adjustedPathPoints[0].y,
   "z":adjustedPathPoints[0].z
@@ -137,7 +234,7 @@ const adjustedPathPoints = path?.path?.map(p => ({
   "x":adjustedPathPoints[adjustedPathPoints.length - 1].x,
   "y":adjustedPathPoints[adjustedPathPoints.length - 1].y,
   "z":adjustedPathPoints[adjustedPathPoints.length - 1].z
-}} color={colors.pointEnd} />
+}} color={colors.pointEnd} /> */}
       </>
     )}
 

@@ -150,7 +150,8 @@ export function PathProvider({ children }) {
   currentFloorNumber,
   currentStand,
   getCurrentStandPosition,
-  updateDestination
+  updateDestination,
+  lastDestination  
 }}>
   {children}
 </PathContext.Provider>
