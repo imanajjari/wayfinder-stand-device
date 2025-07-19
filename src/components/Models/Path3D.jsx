@@ -163,11 +163,6 @@ const lastPoint = adjustedPathPoints?.length > 0
   fadeStartDistance={maxZoomDistance-15}
   maxVisibleDistance={maxZoomDistance}
 />
-  {/* <PositionedText
-    position={[0, 20 ,4]}
-    text="Start Point"
-    color="yellow"
-  /> */}
 {path && (
   <>
     {path.type === 'path' && path.path?.length > 0 && (
@@ -223,18 +218,6 @@ const lastPoint = adjustedPathPoints?.length > 0
   maxVisibleDistance={maxZoomDistance-10}
 />
 }
-
-        {/* <Point position={{
-  "x":adjustedPathPoints[0].x,
-  "y":adjustedPathPoints[0].y,
-  "z":adjustedPathPoints[0].z
-}} color={colors.pointStart} />
-
-<Point position={{
-  "x":adjustedPathPoints[adjustedPathPoints.length - 1].x,
-  "y":adjustedPathPoints[adjustedPathPoints.length - 1].y,
-  "z":adjustedPathPoints[adjustedPathPoints.length - 1].z
-}} color={colors.pointEnd} /> */}
       </>
     )}
 

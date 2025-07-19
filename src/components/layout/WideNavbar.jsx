@@ -1,21 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { getMyStand } from '../../services/floorService';
+import { getCompanyData } from '../../services/companyService';
+import { getFileUrl } from '../../services/fileService';
 
 export default function WideNavbar() {
   const [time, setTime] = useState(new Date());
   const [myPosition, setMyPosition] = useState("");
-
+  const [company, setCompany] = useState(null);
+  
   useEffect(() => {
+    // ساعت
     const interval = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
+  
+    // دریافت استند من
     const myStand = getMyStand();
     if (myStand?.info) {
       setMyPosition(myStand.info);
     }
+  
+    // دریافت اطلاعات کمپانی
+    const companyData = getCompanyData();
+    if (companyData) {
+      setCompany(companyData);
+    }
+  
+    // پاکسازی تایمر
+    return () => clearInterval(interval);
   }, []);
+  
 
   const formatTime = (date) => {
     return date.toLocaleTimeString('en-GB', {
@@ -39,13 +51,25 @@ export default function WideNavbar() {
 
         {/* وسط: لوگو و اطلاعات (در مرکز واقعی) */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center text-center">
-          <img  src="/images/shiva-logo.png" alt="logo" className="w-24 md:w-40 text-gray-700 flex items-center justify-center text-2xl font-bold shadow-md mb-2" />
+        {company?.logoBase64 ? (
+              <img
+                src={company.logoBase64}
+                alt="company logo"
+                className="w-24 md:w-40 text-gray-700 flex items-center justify-center text-2xl font-bold shadow-md mb-2"
+              />
+            ) : company?.icon ? (
+              <img
+                src={getFileUrl(company.icon)}
+                alt="company logo"
+                className="w-24 md:w-40 text-gray-700 flex items-center justify-center text-2xl font-bold shadow-md mb-2"
+              />
+            ) : null}
 
           <div className="text-sm text-gray-200">
-            قدرت، <span className="text-blue-300">دقت</span>، <span className="text-blue-300">اطمینان</span> در دستان شما
+          {company?.info || 'قدرت، دقت، اطمینان در دستان شما'}
           </div>
           <div className="text-lg font-extrabold text-white mt-1">
-            شرکت فنی مهندسی شتاب‌ساز
+          {company?.fullName || 'شرکت فنی مهندسی شتاب‌ساز'}
           </div>
         </div>
 
