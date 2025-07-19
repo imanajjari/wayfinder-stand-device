@@ -189,7 +189,7 @@ const lastPoint = adjustedPathPoints?.length > 0
   textColor={colors.pointStart}
   textHeightOffset={1}
   fadeStartDistance={maxZoomDistance-10}
-  maxVisibleDistance={maxZoomDistance-10}
+  maxVisibleDistance={maxZoomDistance}
 />
 
 <LabeledPoint
@@ -203,7 +203,7 @@ const lastPoint = adjustedPathPoints?.length > 0
   textColor="red"
   textHeightOffset={1}
   fadeStartDistance={maxZoomDistance-10}
-  maxVisibleDistance={maxZoomDistance-10}
+  maxVisibleDistance={maxZoomDistance}
 />
 </>
 :
