@@ -22,6 +22,6 @@ export const searchDestinationsByName = async (destinationName) => {
 
 // جستجوی فروشگاه‌ها بر اساس نام دسته‌بندی
 export const getAllDestinations = async () => {
-  const response = await api.get(`/api/search?query=l`);
+  const response = await api.get(`/api/search?query=ALL`);
   return response.data; // چون بک‌اند مستقیم array برمی‌گردونه
 };

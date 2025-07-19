@@ -17,6 +17,7 @@ import PositionedText from "./PositionedText";
 import { getDestinations } from "../../services/floorService";
 import DestinationsLabels from "./DestinationsLabels";
 import LabeledPoint from "./LabeledPoint";
+import useCheckStandAndCompany from "../../hooks/useCheckStandAndCompany";
 
 export default function Path3D() {
   const [activeFloor, setActiveFloor] = useState("g");
@@ -30,7 +31,7 @@ export default function Path3D() {
   const { path, updateCurrentFloorNumber, refreshLastDestination,lastDestination   } = usePath();
   const { colors } = useTheme();
 
-  
+  useCheckStandAndCompany();
 
   const currentFloorNumber = activeFloor?.number ?? 0;
   const destinationFloorNumber = lastDestination?.floorNumber ?? null;
@@ -239,7 +240,7 @@ const lastPoint = adjustedPathPoints?.length > 0
           enablePan={false}
           minDistance={minZoomDistance}
           maxDistance={maxZoomDistance}
-          minPolarAngle={Math.PI / 4}
+          minPolarAngle={Math.PI / 2}
           maxPolarAngle={Math.PI / 1.1}
           minAzimuthAngle={-Math.PI / 3}
           maxAzimuthAngle={Math.PI / 3}
