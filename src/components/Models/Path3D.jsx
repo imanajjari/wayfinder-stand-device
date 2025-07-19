@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo  } from "react";
+import React, { useEffect, useState, useMemo  ,useRef} from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Bounds } from "@react-three/drei";
 import useTheme from "../../hooks/useTheme";
@@ -18,7 +18,8 @@ import { getDestinations } from "../../services/floorService";
 import DestinationsLabels from "./DestinationsLabels";
 import LabeledPoint from "./LabeledPoint";
 import useCheckStandAndCompany from "../../hooks/useCheckStandAndCompany";
-
+import * as THREE from 'three';
+import PanLimiter from "../controls/PanLimiter";
 export default function Path3D() {
   const [activeFloor, setActiveFloor] = useState("g");
   const [isPortrait, setIsPortrait] = useState(true); 
@@ -30,6 +31,7 @@ export default function Path3D() {
   
   const { path, updateCurrentFloorNumber, refreshLastDestination,lastDestination   } = usePath();
   const { colors } = useTheme();
+  const controlsRef = useRef();
 
   useCheckStandAndCompany();
 
@@ -235,16 +237,30 @@ const lastPoint = adjustedPathPoints?.length > 0
         <GpsTracker isDev={true} color="blue" />
         */}
 
-        <OrbitControls
-          target={[13, 13.7, 0]}
-          enablePan={false}
-          minDistance={minZoomDistance}
-          maxDistance={maxZoomDistance}
-          minPolarAngle={Math.PI / 2}
-          maxPolarAngle={Math.PI / 1.1}
-          minAzimuthAngle={-Math.PI / 3}
-          maxAzimuthAngle={Math.PI / 3}
-        />
+<OrbitControls
+ref={controlsRef}
+  target={[13, 13.7, 0]}
+  enablePan={true}
+  enableRotate={true}
+  enableZoom={true}
+  mouseButtons={{
+    LEFT: THREE.MOUSE.PAN,
+    RIGHT: THREE.MOUSE.ROTATE,
+    MIDDLE: THREE.MOUSE.DOLLY
+  }}
+  touches={{
+    ONE: THREE.TOUCH.PAN,    // تک انگشت = جابجایی
+    TWO: THREE.TOUCH.DOLLY_ROTATE    // دو انگشت = چرخش
+  }}
+  minDistance={minZoomDistance}
+  maxDistance={maxZoomDistance}
+  minPolarAngle={Math.PI / 2}
+  maxPolarAngle={Math.PI / 1.1}
+  minAzimuthAngle={-Math.PI / 3}
+  maxAzimuthAngle={Math.PI / 3}
+/>
+
+<PanLimiter controls={controlsRef} isPortrait={isPortrait} />
       </Canvas>
 
       <BottomNav />
