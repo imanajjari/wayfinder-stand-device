@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function ReloadPage() {
   const navigate = useNavigate();
+  const canGoBack = window.history.length > 1;
 
   const handleConfirm = () => {
     localStorage.clear();
@@ -10,7 +11,7 @@ export default function ReloadPage() {
   };
 
   const handleCancel = () => {
-    navigate(-1); // برگرد به صفحه قبلی، یا می‌تونی '/' بزاری
+    navigate(-1);
   };
 
   return (
@@ -20,22 +21,25 @@ export default function ReloadPage() {
           آیا از پاک کردن حافظه اطمینان دارید؟
         </h2>
         <p className="text-gray-600 text-sm md:text-base">
-          با انجام این کار، تمام اطلاعات ذخیره‌شده در حافظه حذف می‌شود و به صفحه اصلی بازمی‌گردید.
+          با انجام این کار، تمام اطلاعات ذخیره‌شده در حافظه حذف می‌شود و به صفحه ورود یا تنظیمات بازمی‌گردید.
         </p>
 
-        <div className="flex justify-center gap-4 mt-6">
+        <div className={`flex justify-center gap-4 mt-6 ${canGoBack ? '' : 'justify-center'}`}>
           <button
             onClick={handleConfirm}
             className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg transition"
           >
             بله، پاک کن
           </button>
-          <button
-            onClick={handleCancel}
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4 py-2 rounded-lg transition"
-          >
-            خیر، بازگشت
-          </button>
+
+          {canGoBack && (
+            <button
+              onClick={handleCancel}
+              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4 py-2 rounded-lg transition"
+            >
+              خیر، بازگشت
+            </button>
+          )}
         </div>
       </div>
     </div>
