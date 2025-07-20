@@ -148,7 +148,7 @@ const lastPoint = adjustedPathPoints?.length > 0
         <directionalLight position={[-10, 0, 10]} intensity={1.2} castShadow />
         <pointLight position={[0, 10, 0]} intensity={0.5} />
 
-        <Bounds fit clip observe margin={1.2}>
+        <Bounds fit clip observe={false} margin={1.2}>
         <GLBModel
           url={currentModelFile}
           scale={1}
