@@ -84,16 +84,13 @@ useEffect(() => {
       fetchFloorDestinations(initialFloor.number); 
     }
   }
-  console.log('====================================');
-  console.log('lastDestination :',lastDestination);
-  console.log('====================================');
 }, [hasFloors, floors]);
 
 
 const fetchFloorDestinations = (floorNumber) => {
   const allDestinations = getDestinations();
   const destinationsForFloor = allDestinations.filter(dest => dest.floorNumber === floorNumber);
-  console.log('📍 مقاصد طبقه', floorNumber, ':', destinationsForFloor);
+
   setFloorDestinations(destinationsForFloor);
 };
 

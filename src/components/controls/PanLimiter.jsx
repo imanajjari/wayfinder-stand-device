@@ -18,8 +18,8 @@ export default function PanLimiter({ controls, isPortrait }) {
       controls.current.target.x = THREE.MathUtils.clamp(controls.current.target.x, limit.minX, limit.maxX);
       controls.current.target.y = THREE.MathUtils.clamp(controls.current.target.y, limit.minY, limit.maxY);
 
-      camera.position.x = THREE.MathUtils.clamp(camera.position.x, limit.minX, limit.maxX);
-      camera.position.y = THREE.MathUtils.clamp(camera.position.y, limit.minY, limit.maxY);
+    //   camera.position.x = THREE.MathUtils.clamp(camera.position.x, limit.minX, limit.maxX);
+    //   camera.position.y = THREE.MathUtils.clamp(camera.position.y, limit.minY, limit.maxY);
     };
 
     controls.current.addEventListener('change', clampPositionAndTarget);
