@@ -18,7 +18,7 @@ export default function LocationButton() {
       if (hasActiveCustomer.current) {
         refreshPage();
       }
-    }, 60 * 1000); // 1 دقیقه بی‌حرکتی
+    }, 30 * 1000); // 1 دقیقه بی‌حرکتی
   };
 
   const onUserInteraction = () => {
@@ -30,7 +30,7 @@ export default function LocationButton() {
   };
 
   useEffect(() => {
-    const events = ['click', 'touchstart', 'mousemove', 'keydown'];
+    const events = ['click', 'touchstart', 'keydown'];
 
     events.forEach(event =>
       window.addEventListener(event, onUserInteraction)
