@@ -1,4 +1,4 @@
-import { fetchImageAsBase64, getFileUrl  } from './fileService';
+import { fetchImageAsBase64, getFileUrl, getFileUrlWithoutCompanyId  } from './fileService';
 
 /**
  * ذخیره اطلاعات کمپانی در localStorage
@@ -49,7 +49,7 @@ export const clearCompanyData = () => {
 export const saveCompanyWithLogo = async (companyData) => {
   try {
     if (companyData.icon) {
-      const imageUrl = getFileUrl(companyData.icon);
+      const imageUrl = getFileUrlWithoutCompanyId(companyData.icon,companyData.id);
       try {
         const base64Logo = await fetchImageAsBase64(imageUrl);
         companyData.logoBase64 = base64Logo;

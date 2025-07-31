@@ -42,6 +42,9 @@ export default function SettingPage() {
         saveStandData(response);
 
         if (response.user) {
+          console.log('====================================');
+          console.log('response.user :',response.user[0]);
+          console.log('====================================');
           await saveCompanyWithLogo(response.user[0]);
         }
 

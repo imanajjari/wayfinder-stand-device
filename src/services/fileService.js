@@ -16,7 +16,10 @@ export const getFileUrl = (fileName) => {
   return `http://45.159.150.16:3000/api/file/${company.id}/${fileName}`;
 };
 
-
+// 📌 گرفتن URL مستقیم عکس برای <img src=...>
+export const getFileUrlWithoutCompanyId = (fileName,id) => {
+  return `http://45.159.150.16:3000/api/file/${id}/${fileName}`;
+};
 
 export const fetchImageAsBase64 = async (url) => {
   const response = await fetch(url);

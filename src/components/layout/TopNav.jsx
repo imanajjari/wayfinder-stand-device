@@ -10,7 +10,7 @@ export default function TopNav() {
   useEffect(() => {
     const loadAd = async () => {
       try {
-        const adsResponse = await fetchAds();
+        const adsResponse = await fetchAds(1);
         if (adsResponse.data?.length > 0) {
           setAd(adsResponse.data[0]); // اولین تبلیغ
         }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MdElectricalServices,
    MdBuild,
    MdPrecisionManufacturing,
@@ -17,13 +17,31 @@ import { MdElectricalServices,
 import StickyPanels from '../common/StickyPanels';
 import AdBanner from '../common/Ads/AdBanner';
 import PanelModal from '../Modal/PanelModal';
+import { fetchAds } from '../../services/adsService';
 
 
 export default function BottomNav() {
   const [visiblePanel, setVisiblePanel] = useState(null);
   const [isResultOpen, setIsResultOpen] = useState(false);
   const [resultContent, setResultContent] = useState(null);
+  const [ad, setAd] = useState(null);
   
+    useEffect(() => {
+      const loadAd = async () => {
+        try {
+          const adsResponse = await fetchAds(2);
+
+          if (adsResponse.data?.length > 0) {
+            setAd(adsResponse.data[0].data); // اولین تبلیغ
+          }
+        } catch (err) {
+          console.error('خطا در دریافت تبلیغات', err);
+        }
+      };
+  
+      loadAd();
+    }, []);
+
   const showResult = (content) => {
     setResultContent(content);
     setIsResultOpen(true);
@@ -51,7 +69,7 @@ export default function BottomNav() {
   onShowResult={showResult}
   setIsResultOpen={setIsResultOpen}
 />
-<AdBanner content="🔥 جشنواره تابستانه! با 40٪ تخفیف در همه خدمات" />
+<AdBanner content={ad} />
       </div>
     </>
   );
