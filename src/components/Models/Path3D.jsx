@@ -33,7 +33,7 @@ export default function Path3D() {
   const { colors } = useTheme();
   const controlsRef = useRef();
 
-  useCheckStandAndCompany();
+  // useCheckStandAndCompany();
 
   const currentFloorNumber = activeFloor?.number ?? 0;
   const destinationFloorNumber = lastDestination?.floorNumber ?? null;
@@ -89,7 +89,7 @@ useEffect(() => {
 
 const fetchFloorDestinations = (floorNumber) => {
   const allDestinations = getDestinations();
-  const destinationsForFloor = allDestinations.filter(dest => dest.floorNumber === floorNumber);
+  const destinationsForFloor = allDestinations.filter(dest => dest.floorNum === floorNumber);
 
   setFloorDestinations(destinationsForFloor);
 };
@@ -214,8 +214,8 @@ const lastPoint = adjustedPathPoints?.length > 0
   pointColor={colors.pointEnd}
   textColor="red"
   textHeightOffset={0}
-  fadeStartDistance={maxZoomDistance-10}
-  maxVisibleDistance={maxZoomDistance-10}
+  fadeStartDistance={maxZoomDistance}
+  maxVisibleDistance={maxZoomDistance}
 />
 }
       </>

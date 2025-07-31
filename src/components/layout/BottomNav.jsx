@@ -34,7 +34,7 @@ export default function BottomNav() {
 
   return (
     <>
-<div className=' fixed bottom-[10px] left-[10px] right-[10px] flex flex-col'>
+<div className=' fixed bottom-[10px] left-[10px] right-[10px] flex flex-col z-50'>
 
 {/* نتایج جست و حو  */}
 

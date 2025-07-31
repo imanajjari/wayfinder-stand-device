@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from 'react';
 import { findOnePath } from '../services/pathService';
 import { getStandData } from '../services/floorService';
+import { findFloorOfDestination } from '../lib/floorUtils';
 
 const PathContext = createContext();
 
@@ -37,16 +38,34 @@ export function PathProvider({ children }) {
       await fetchPath(null, destination);
     } else {
       const currentStand = getCurrentStandPosition();
-                if (currentStand) {
-                  navigateToDestination({
-                    ...currentStand,
-                    floorNumber: currentFloorNumber
-                  },currentFloorNumber);
-                }
-      markFloorChange(destination, startFloor, endFloor);
+            console.log('====================================');
+      console.log("currentStand :",currentStand);
+      console.log('====================================');
+      setPath({
+        "message": "Path posted",
+        "id": 18,
+        "path": [
+            {
+                "x": currentStand.x/100,
+                "y": currentStand.y/100,
+                "z": currentStand.z
+            }
+        ],
+        "type": "path"
+    })
+      // const currentStand = getCurrentStandPosition();
+      // console.log('====================================');
+      // console.log("currentStand :",currentStand);
+      // console.log('====================================');
+      //           if (currentStand) {
+      //             navigateToDestination({
+      //               ...currentStand,
+      //               floorNumber: currentFloorNumber
+      //             },currentFloorNumber);
+      //           }
+      // markFloorChange(destination, startFloor, endFloor);
     }
   };
-  
 
   // تابع برای رفرش مسیر قبلی
   const refreshLastDestination = async ({ currentFloorNumber }) => {
@@ -64,24 +83,27 @@ export function PathProvider({ children }) {
     }
   };
   
-  
-
   const getCurrentStandPosition = () => {
     const standData = getStandData();
-    const standOnFloor = standData?.stands.find(s => s.floorNumber === currentFloorNumber);
+    console.log('====================================');
+    console.log('standData :',standData);
+    console.log('currentFloorNumber :',currentFloorNumber);
+
+    console.log('====================================');
+    const standOnFloor = standData?.stands.find(s => s.floorNum === currentFloorNumber);
     
     if (standOnFloor) {
       return {
         x: standOnFloor.entrance.x,
         y: standOnFloor.entrance.y,
         z: 1,
-        floorNumber: standOnFloor.floorNumber
+        floorNumber: standOnFloor.floorNum,
+        floorId:findFloorOfDestination(standOnFloor).floorId
       };
     }
     
     return null;
   };
-  
 
   const markFloorChange = (end, startFloor, endFloor) => {
     console.log('📢 markFloorChange', { startFloor, endFloor, end });
@@ -92,14 +114,13 @@ export function PathProvider({ children }) {
       path: []   // 👈 اضافه شد
     });
   };
-  
 
   const fetchPath = async (start, end, mapId = 'iranmall') => {
     setLoading(true);
     try {
       if (!start) {
         const standData = getStandData();
-        const standOnCurrentFloor = standData?.stands.find(s => s.floorNumber === currentFloorNumber);
+        const standOnCurrentFloor = standData?.stands.find(s => s.floorNum === currentFloorNumber);
 
         if (standOnCurrentFloor) {
           start = {
@@ -111,17 +132,32 @@ export function PathProvider({ children }) {
           start = { x: 58, y: 185, z: 1 };
         }
       }
+      
 
-      const fixedStart = { ...start, z: start.z ?? 1 };
-      const fixedEnd = { ...end, z: end.z ?? 1 };
-
+      const fixedStart = {
+        x: start.x,
+        y: start.y,
+        z: start.z ?? 1
+      };
+      
+      const fixedEnd = {
+        x: end.x,
+        y: end.y,
+        z: end.z ?? 1
+      };
+      
+      // گرفتن فقط floorId عددی:
+      const floorId = typeof end.floorId === 'object' ? end.floorId : end.floorId;
+console.log('====================================');
+console.log('fixedStart:',fixedStart);
+console.log('====================================');
       const res = await findOnePath({
         start: fixedStart,
         end: fixedEnd,
-        skipPoints: 100,
+        skip: 100,
         mapId,
+        floorId 
       });
-
       const calibratedPath = res.path.map(([x, y]) => ({
         x: x / 100,
         y: y / 100,
@@ -129,7 +165,6 @@ export function PathProvider({ children }) {
       }));
 
       setPath({ ...res, path: calibratedPath, type: 'path' });
-
     } catch (err) {
       console.error('خطا در دریافت مسیر:', err);
       setPath(null);

@@ -5,6 +5,7 @@ import LocationButton from '../buttons/LocationButton';
 import { searchDestinationsByName } from '../../services/destinationService';
 import { usePath } from '../../contexts/PathContext';
 import { getFileUrl } from '../../services/fileService';
+import { findFloorOfDestination } from '../../lib/floorUtils';
 
 export default function SearchPanel({ setIsResultOpen, onShowResult }) {
   const { changeLanguage, language } = useLanguage();
@@ -21,23 +22,22 @@ export default function SearchPanel({ setIsResultOpen, onShowResult }) {
 
     try {
       const results = await searchDestinationsByName(query);
-      
-      if (results.length === 0) {
+      if (results.data.length === 0) {
         onShowResult(<p className="text-center text-gray-300">نتیجه‌ای یافت نشد.</p>);
       } else {
         onShowResult(
-          results.map((shop, index) => (
+          results.data.map((shop, index) => (
             <div
               key={index}
-              className="flex items-start gap-4 bg-neutral-800 p-4 rounded-xl border border-gray-600"
+              className="flex items-start gap-4 bg-neutral-800 p-4 rounded-xl border border-gray-600 cursor-pointer"
               onClick={() => {
-                // const start = { x: 58, y: 185, z: 1 }; // جایگزین کن با مختصات واقعی
-                updateDestination({
-                  x: shop.entrance.x,
-                  y: shop.entrance.y,
-                  z: 1,
-                  floorNumber: shop.floorNumber,
-                });
+                  updateDestination({
+                    x: shop.entrance.x,
+                    y: shop.entrance.y,
+                    z: 1,
+                    floorNumber: shop.floorNum,
+                    floorId:findFloorOfDestination(shop).floorId
+                  });
                 setIsResultOpen(false);
               }}
             >
@@ -56,7 +56,7 @@ export default function SearchPanel({ setIsResultOpen, onShowResult }) {
                 <h3 className="text-lg font-semibold">{shop.fullName}</h3>
                 <p className="text-sm text-gray-300">{shop.description}</p>
                 <p className="text-sm text-gray-400">
-                  طبقه {shop.floorNumber} - ساختمان {shop.buildingNumber}
+                  طبقه {shop.floorNum} - ساختمان {shop.buildingNumber}
                 </p>
               </div>
             </div>

@@ -1,5 +1,6 @@
 import api from '../api/api';
-
+import { getCompanyData } from './companyService';
+import { appendCompanyIdToUrl } from './urlBuilder';
 // 📌 آپلود فایل (عکس دسته‌بندی مثلاً)
 export const uploadFile = async (formData) => {
   return api.post('/api/file', formData, {
@@ -7,9 +8,12 @@ export const uploadFile = async (formData) => {
   });
 };
 
+
+
 // 📌 گرفتن URL مستقیم عکس برای <img src=...>
 export const getFileUrl = (fileName) => {
-  return `http://45.159.150.16:3000/api/file/${fileName}`;
+  const company = getCompanyData();
+  return `http://45.159.150.16:3000/api/file/${company.id}/${fileName}`;
 };
 
 

@@ -42,7 +42,7 @@ export default function SettingPage() {
         saveStandData(response);
 
         if (response.user) {
-          await saveCompanyWithLogo(response.user);
+          await saveCompanyWithLogo(response.user[0]);
         }
 
         const myStand = response.stands?.find(stand => stand.isMe);

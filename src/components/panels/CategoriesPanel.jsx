@@ -4,6 +4,7 @@ import PanelModal from '../Modal/PanelModal';
 import { usePath } from '../../contexts/PathContext';
 import { getFileUrl } from '../../services/fileService';
 import { searchDestinationsByCategory } from '../../services/destinationService';
+import { findFloorOfDestination } from '../../lib/floorUtils';
 
 export default function CategoriesPanel({ categories = [], maxVisible = 20, onShowResult ,setIsResultOpen }) {
   const [modalOpen, setModalOpen] = useState(false);
@@ -58,22 +59,23 @@ export default function CategoriesPanel({ categories = [], maxVisible = 20, onSh
       const results = await searchDestinationsByCategory(cat.name);
   
       onShowResult(
-        results.map((shop, index) => (
+        results.data.map((shop, index) => (
           
           <div
             key={index}
-            className="flex items-start gap-4 bg-neutral-800 p-4 rounded-xl border border-gray-600"
+            className="flex items-start gap-4 bg-neutral-800 p-4 rounded-xl border border-gray-600 cursor-pointer"
 onClick={() => {
 
-  //console.log('shop : ',shop); 
   updateDestination({
     x: shop.entrance.x,
     y: shop.entrance.y,
     z: 1,
-    floorNumber: shop.floorNumber,
+    floorNumber: shop.floorNum,
+    floorId:findFloorOfDestination(shop).floorId
   });
   setIsResultOpen(false);
-}}
+}
+}
             
           >
             {shop.icon ?
@@ -91,7 +93,7 @@ onClick={() => {
               <h3 className="text-lg font-semibold">{shop.fullName}</h3>
               <p className="text-sm text-gray-300">{shop.description}</p>
               <p className="text-sm text-gray-400">
-                طبقه {shop.floorNumber} - ساختمان {shop.buildingNumber}
+                طبقه {shop.floorNum} - ساختمان {shop.buildingNumber}
               </p>
             </div>
           </div>
@@ -132,7 +134,7 @@ onClick={() => {
       src={getFileUrl(cat.icon)}
       alt={cat.name}
       className="w-5 md:w-8 rounded-full object-cover"
-    />
+    />   
     <p className="text-base lg:text-lg">{cat.name}</p>
   </button>
 ))}
@@ -160,7 +162,7 @@ onClick={() => {
         try {
           const results = await searchDestinationsByCategory(cat.name);
           onShowResult(
-            results.map((shop, shopIndex) => (
+            results.data.map((shop, shopIndex) => (
               <div
                 key={shopIndex}
                 className="flex items-start gap-4 bg-neutral-800 p-4 rounded-xl border border-gray-600"
@@ -173,7 +175,7 @@ onClick={() => {
                   <h3 className="text-lg font-semibold">{shop.fullName}</h3>
                   <p className="text-sm text-gray-300">{shop.description}</p>
                   <p className="text-sm text-gray-400">
-                    طبقه {shop.floorNumber} - ساختمان {shop.buildingNumber}
+                    طبقه {shop.floorNum} - ساختمان {shop.buildingNumber}
                   </p>
                 </div>
               </div>

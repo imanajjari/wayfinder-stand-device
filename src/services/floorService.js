@@ -120,7 +120,7 @@ export const getDestinations = () => {
   try {
     const savedDestinations = localStorage.getItem('destinations');
     if (savedDestinations) {
-      return JSON.parse(savedDestinations);
+      return JSON.parse(savedDestinations).data;
     }
     return [];
   } catch (error) {

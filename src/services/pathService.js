@@ -17,20 +17,15 @@ export const findManyPaths = async ({ start, ends, skipPoints = 0, mapId }) => {
 };
 
 // 📍 مسیر بین یک مبدا و یک مقصد
-export const findOnePath = async ({ start, end, skipPoints = 0, mapId }) => {
+export const findOnePath = async ({ start, end, skip = 0, mapId, floorId }) => {
   try {
-    console.log('====================================');
-    console.log("omad");
-    console.log('====================================');
     const response = await api.post('api/path', {
       start,
       end,
-      skipPoints,
+      skip,
       mapId,
+      floorId
     });
-    console.log('====================================');
-    console.log("response",response);
-    console.log('====================================');
     console.error('چیزی که دریافت کرده :', response);
     return response.data;
   } catch (error) {

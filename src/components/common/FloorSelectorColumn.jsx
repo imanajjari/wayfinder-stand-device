@@ -32,7 +32,7 @@ export default function FloorSelectorColumn({ floors = [], onSelect, activeFloor
   };
 
   return (
-    <div className="fixed right-4 top-1/2 -translate-y-1/2 bg-black/40 backdrop-blur-md border border-gray-300 rounded-4xl shadow-md p-4 flex flex-col items-center z-50">
+    <div className="fixed right-4 top-1/2 -translate-y-1/2 bg-black/40 backdrop-blur-md border border-gray-300 rounded-4xl shadow-md p-4 flex flex-col items-center ">
       <FaArrowUp
         className="text-gray-300 mb-2 cursor-pointer hover:text-white"
         onClick={goToNextFloor}

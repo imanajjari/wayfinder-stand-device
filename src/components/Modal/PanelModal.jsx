@@ -19,7 +19,7 @@ export default function PanelModal({ isOpen, onClose, title, children }) {
   if (!shouldRender) return null;
 
   return (
-    <div className="z-[999] flex items-end justify-center">
+    <div className=" flex items-end justify-center">
       {/* Backdrop */}
       <div 
         className={` transition-opacity duration-300 ${
