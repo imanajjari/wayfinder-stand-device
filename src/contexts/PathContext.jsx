@@ -148,9 +148,6 @@ export function PathProvider({ children }) {
       
       // گرفتن فقط floorId عددی:
       const floorId = typeof end.floorId === 'object' ? end.floorId : end.floorId;
-console.log('====================================');
-console.log('fixedStart:',fixedStart);
-console.log('====================================');
       const res = await findOnePath({
         start: fixedStart,
         end: fixedEnd,

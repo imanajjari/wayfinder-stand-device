@@ -4,13 +4,13 @@ import useLanguage from '../../hooks/useLanguage';
 import LocationButton from '../buttons/LocationButton';
 import { searchDestinationsByName } from '../../services/destinationService';
 import { usePath } from '../../contexts/PathContext';
-import { getFileUrl } from '../../services/fileService';
 import { findFloorOfDestination } from '../../lib/floorUtils';
+import DestinationCard from '../cards/DestinationCard';
 
 export default function SearchPanel({ setIsResultOpen, onShowResult }) {
   const { changeLanguage, language } = useLanguage();
-  const { fetchPath, updateDestination } = usePath();
-  
+  const { updateDestination } = usePath();
+
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -22,44 +22,26 @@ export default function SearchPanel({ setIsResultOpen, onShowResult }) {
 
     try {
       const results = await searchDestinationsByName(query);
+
       if (results.data.length === 0) {
         onShowResult(<p className="text-center text-gray-300">نتیجه‌ای یافت نشد.</p>);
       } else {
         onShowResult(
           results.data.map((shop, index) => (
-            <div
+            <DestinationCard
               key={index}
-              className="flex items-start gap-4 bg-neutral-800 p-4 rounded-xl border border-gray-600 cursor-pointer"
+              shop={shop}
               onClick={() => {
-                  updateDestination({
-                    x: shop.entrance.x,
-                    y: shop.entrance.y,
-                    z: 1,
-                    floorNumber: shop.floorNum,
-                    floorId:findFloorOfDestination(shop).floorId
-                  });
+                updateDestination({
+                  x: shop.entrance.x,
+                  y: shop.entrance.y,
+                  z: 1,
+                  floorNumber: shop.floorNum,
+                  floorId: findFloorOfDestination(shop).floorId,
+                });
                 setIsResultOpen(false);
               }}
-            >
-               {shop.icon ?
-              <img
-              src={getFileUrl(shop.icon)}
-              alt={shop.name}
-              className="w-20 h-20 rounded-xl bg-neutral-600 flex items-center justify-center text-white text-lg font-bold"
             />
-            :
-            <div className="w-20 h-20 rounded-xl bg-neutral-600 flex items-center justify-center text-white text-lg font-bold">
-              {shop.shortName[0]}
-            </div>
-            }
-              <div className="space-y-1">
-                <h3 className="text-lg font-semibold">{shop.fullName}</h3>
-                <p className="text-sm text-gray-300">{shop.description}</p>
-                <p className="text-sm text-gray-400">
-                  طبقه {shop.floorNum} - ساختمان {shop.buildingNumber}
-                </p>
-              </div>
-            </div>
           ))
         );
       }
@@ -73,7 +55,6 @@ export default function SearchPanel({ setIsResultOpen, onShowResult }) {
     }
   };
 
-
   const buttons = [
     { code: 'fa', label: 'فارسی' },
     { code: 'en', label: 'EN' },
@@ -81,7 +62,7 @@ export default function SearchPanel({ setIsResultOpen, onShowResult }) {
   ];
 
   return (
-    <div className=" md:flex justify-between flex-col md:flex-row gap-4 px-10 ">
+    <div className="md:flex justify-between flex-col md:flex-row gap-4 px-10">
       {/* جستجو */}
       <div className="flex items-center gap-2 w-full md:w-1/2">
         <input
