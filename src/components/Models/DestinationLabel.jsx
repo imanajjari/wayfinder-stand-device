@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import PositionedText from "./PositionedText";
+import { usePath } from "../../contexts/PathContext";
+import { findFloorOfDestination } from "../../lib/floorUtils";
 
 export default function DestinationLabel({
   dest,
@@ -10,7 +12,7 @@ export default function DestinationLabel({
 }) {
   const { camera } = useThree();
   const [opacity, setOpacity] = useState(1);
-
+  const { updateDestination } = usePath();
   useFrame(() => {
     const distance = camera.position.distanceTo({
       x: position[0],
@@ -38,6 +40,15 @@ export default function DestinationLabel({
       text={dest.shortName}
       color="white"
       opacity={opacity}
+      onClick={() => {
+        updateDestination({
+          x: dest.entrance.x,
+          y: dest.entrance.y,
+          z: 1,
+          floorNumber: dest.floorNum,
+          floorId: findFloorOfDestination(dest).floorId,
+        });
+      }}
     />
   );
 }
