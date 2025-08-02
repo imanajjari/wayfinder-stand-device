@@ -26,12 +26,13 @@ export default function DestinationsLabels({ destinations, z = 2, verticalOffset
         }
 
         return (
-            <DestinationLabel
-            dest={dest}
-            position={position}
-            maxVisibleDistance={maxVisibleDistance}
-            fadeStartDistance={fadeStartDistance}
-          />
+          <DestinationLabel
+          key={dest.id}
+          dest={dest}
+          position={position}
+          maxVisibleDistance={maxVisibleDistance}
+          fadeStartDistance={fadeStartDistance}
+        />
         );
       })}
     </>
