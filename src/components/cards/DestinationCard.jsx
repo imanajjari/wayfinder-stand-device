@@ -1,7 +1,6 @@
 // components/cards/DestinationCard.jsx
 import { usePath } from "../../contexts/PathContext";
 import { getFileUrl } from "../../services/fileService";
-import { getMyStand } from "../../services/floorService";
 
 export default function DestinationCard({ shop, onClick, myStand }) {
     const { currentFloorNumber   } = usePath();

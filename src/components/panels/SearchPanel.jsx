@@ -6,11 +6,12 @@ import { searchDestinationsByName } from '../../services/destinationService';
 import { usePath } from '../../contexts/PathContext';
 import { findFloorOfDestination } from '../../lib/floorUtils';
 import DestinationCard from '../cards/DestinationCard';
+import { getMyStand } from '../../services/floorService';
 
 export default function SearchPanel({ setIsResultOpen, onShowResult }) {
   const { changeLanguage, language } = useLanguage();
   const { updateDestination } = usePath();
-
+  const myStand = getMyStand();
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -31,6 +32,7 @@ export default function SearchPanel({ setIsResultOpen, onShowResult }) {
             <DestinationCard
               key={index}
               shop={shop}
+              myStand = {myStand}
               onClick={() => {
                 updateDestination({
                   x: shop.entrance.x,
