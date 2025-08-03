@@ -3,6 +3,8 @@ import { Vector3, Color } from 'three';
 
 export default function DottedStraightPath({ points, spacing = 0.05, size = 0.01, animate = true }) {
   const dots = useMemo(() => {
+    if (!points || points.length < 2) return [];
+
     const result = [];
     for (let i = 0; i < points.length - 1; i++) {
       const start = new Vector3(points[i].x, points[i].y, points[i].z);
@@ -15,22 +17,23 @@ export default function DottedStraightPath({ points, spacing = 0.05, size = 0.01
         result.push(new Vector3().addVectors(start, dir.clone().multiplyScalar(j * spacing)));
       }
     }
+
     return result;
   }, [points, spacing]);
 
-  const [headIndices, setHeadIndices] = useState([0, 20, 80]); // چند هد با فاصله
+  const [headIndices, setHeadIndices] = useState([0, 20, 80]);
 
   useEffect(() => {
-    if (!animate) return;
+    if (!animate || dots.length === 0) return;
+
     const interval = setInterval(() => {
-      setHeadIndices(prev =>
-        prev.map(i => (i + 1) % dots.length)
-      );
+      setHeadIndices(prev => prev.map(i => (i + 1) % dots.length));
     }, 50);
+
     return () => clearInterval(interval);
   }, [dots.length, animate]);
 
-  const maxEffectDistance = 20; // چند نقطه عقب‌تر هم اثر بگیرند
+  const maxEffectDistance = 20;
 
   const getDotProps = (index) => {
     let maxInfluence = 0;
@@ -45,15 +48,15 @@ export default function DottedStraightPath({ points, spacing = 0.05, size = 0.01
 
     if (maxInfluence > 0) {
       const color = new Color().lerpColors(
-        new Color('#fff'),
-        new Color('red'),
+        new Color('#ffffff'),
+        new Color('#ff0000'),
         maxInfluence
       );
-      const scale = size + (size * 0 * maxInfluence); // سایز از size تا 2.5 برابر
+      const scale = size + (size * 0.5 * maxInfluence);
       return { color: color.getStyle(), scale };
     }
 
-    return { color: '#fff', scale: size };
+    return { color: '#ffffff', scale: size };
   };
 
   return (
