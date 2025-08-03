@@ -75,7 +75,7 @@ export default function Path3D() {
       let initialFloor = null;
 
       if (myStand) {
-        initialFloor = floors.find((f) => f.number === myStand.floorNumber);
+        initialFloor = floors.find((f) => f.number === myStand.floorNum);
       }
 
       // اگر استند نبود یا طبقه‌اش یافت نشد، برو سراغ اولین طبقه
