@@ -115,7 +115,7 @@ export function PathProvider({ children }) {
     });
   };
 
-  const fetchPath = async (start, end, mapId = 'iranmall') => {
+  const fetchPath = async (start, end, mapId = 'hospital1') => {
     setLoading(true);
     try {
       if (!start) {

@@ -1,19 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { MdElectricalServices,
-   MdBuild,
-   MdPrecisionManufacturing,
-   MdSensors,
-   MdComputer,
-   MdSettingsInputAntenna,
-   MdSmartToy,
-   MdSettings,
-   MdElectricBolt,
-   MdCompareArrows,
-   MdSchema,
-   MdFunctions,
-   MdBatteryChargingFull,
-   MdSyncAlt,
- } from 'react-icons/md';
 import StickyPanels from '../common/StickyPanels';
 import AdBanner from '../common/Ads/AdBanner';
 import PanelModal from '../Modal/PanelModal';
@@ -52,8 +37,8 @@ export default function BottomNav() {
 
   return (
     <>
-<div className=' fixed bottom-[10px] left-[10px] right-[10px] flex flex-col z-50'>
-
+<div className=' fixed bottom-[10px] left-[10px] right-[10px] flex flex-col z-50 '>
+<div className="mx-auto w-full max-w-screen-xl flex flex-col">
 {/* نتایج جست و حو  */}
 
 <PanelModal
@@ -70,6 +55,7 @@ export default function BottomNav() {
   setIsResultOpen={setIsResultOpen}
 />
 <AdBanner content={ad} />
+</div>
       </div>
     </>
   );
