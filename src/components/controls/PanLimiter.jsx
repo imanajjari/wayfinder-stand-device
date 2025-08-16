@@ -9,8 +9,8 @@ export default function PanLimiter({ controls, isPortrait }) {
     if (!controls.current) return;
 
     const limit = isPortrait
-    ? { minX: -10, maxX: 20, minY: 0, maxY: 20 }
-    :{ minX: -15, maxX: 30, minY: 0, maxY: 20 };
+    ? { minX: -20, maxX: 30, minY: -10, maxY: 40 }
+    :{ minX: -25, maxX: 50, minY: -10, maxY: 40 };
 
     const clampPositionAndTarget = () => {
       if (!controls.current) return;

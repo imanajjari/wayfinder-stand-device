@@ -40,7 +40,7 @@ export default function Path3D() {
   const { colors } = useTheme();
   const controlsRef = useRef();
 
-  // useCheckStandAndCompany();
+  useCheckStandAndCompany();
 
   const currentFloorNumber = activeFloor?.number ?? 0;
   const destinationFloorNumber = lastDestination?.floorNumber ?? null;
@@ -113,7 +113,7 @@ export default function Path3D() {
     }
   };
 
-  const minZoomDistance = isPortrait ? 40 : 30;
+  const minZoomDistance = isPortrait ? 20 : 0;
   const maxZoomDistance = isPortrait ? 60 : 50;
   const BASE_OFFSET = 10;
 
