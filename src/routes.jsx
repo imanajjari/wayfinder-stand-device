@@ -1,14 +1,15 @@
-import Path3D from "./components/Models/Path3D";
-import ReloadPage from "./pages/settings/reload.jsx/ReloadPage";
-import SettingPage from './pages/settings/SettingPage';
+import { lazy } from "react";
 
-let routes = [
-  { path: "/", element: <Path3D /> },
+const Navigator3DPage = lazy(() => import("./pages/navigator/Navigator3DPage"));
+const SettingPage = lazy(() => import("./pages/settings/SettingPage"));
+const ReloadPage = lazy(() => import("./pages/settings/ReloadPage"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+
+const routes = [
+  { path: "/", element: <Navigator3DPage /> },
   { path: "/setting", element: <SettingPage /> },
   { path: "/setting/reload", element: <ReloadPage /> },
-//   { path: "/*", element: <Error404 /> },
+  { path: "*", element: <NotFound /> }
 ];
 
 export default routes;
-
-

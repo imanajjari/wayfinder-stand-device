@@ -16,5 +16,9 @@
     "resistance_calc": "محاسبه مقاومت",
     "bms_analysis": "تحلیل BMS",
     "voltage_converter": "مبدل ولتاژ"
+  },
+  "notFound":{
+    "page_not_found": "صفحه مورد نظر یافت نشد",
+    "back_home": "بازگشت به صفحه اصلی"
   }
 }

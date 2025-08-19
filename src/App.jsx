@@ -4,25 +4,37 @@ import { useTranslation } from "react-i18next";
 import { Route, Routes } from "react-router-dom";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { PathProvider } from "./contexts/PathContext";
-
-import routes from './routes';  // ایمپورت مسیرها
+import routes from "./routes";
+import { Suspense } from "react";
 
 export default function App() {
-  const { t } = useTranslation();
+  const { i18n: i18next } = useTranslation();
 
   useEffect(() => {
-    const rtlLanguages = ["fa", "ar"];
-    document.body.dir = rtlLanguages.includes(i18n.language) ? "rtl" : "ltr";
-  }, [i18n.language]);
+    const setDirLang = (lng) => {
+      const rtlLanguages = ["fa", "ar"];
+      const dir = rtlLanguages.includes(lng) ? "rtl" : "ltr";
+      document.documentElement.setAttribute("dir", dir);
+      document.documentElement.setAttribute("lang", lng);
+    };
+
+    setDirLang(i18next.language);
+    const handler = (lng) => setDirLang(lng);
+
+    i18n.on("languageChanged", handler);
+    return () => i18n.off("languageChanged", handler);
+  }, [i18next.language]);
 
   return (
     <ThemeProvider>
       <PathProvider>
+      {/* <Suspense fallback={<div style={{ padding: 24 }}>Loading…</div>}> */}
         <Routes>
-          {routes.map((route, index) => (
-            <Route key={index} path={route.path} element={route.element} />
+          {routes.map((r) => (
+            <Route key={r.path} path={r.path} element={r.element} />
           ))}
         </Routes>
+      {/* </Suspense> */}
       </PathProvider>
     </ThemeProvider>
   );

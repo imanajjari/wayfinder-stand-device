@@ -135,5 +135,6 @@ dist
 .yarn/install-state.gz
 .pnp.*
 public/models/hospital1r.glb
-public/models/hospital1.glb
+# public/models/hospital1.glb
 public/models/hospital1old.glb
+public/models/hospital11.glb

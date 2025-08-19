@@ -18,7 +18,7 @@ export default function LocationButton() {
       if (hasActiveCustomer.current) {
         refreshPage();
       }
-    }, 60 * 1000); // 1 دقیقه بی‌حرکتی
+    }, 6000 * 1000); // 1 دقیقه بی‌حرکتی
   };
 
   const onUserInteraction = () => {
