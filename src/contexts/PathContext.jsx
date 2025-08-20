@@ -158,7 +158,7 @@ export function PathProvider({ children }) {
       const calibratedPath = res.path.map(([x, y]) => ({
         x: x / 100,
         y: y / 100,
-        z: 2,
+        z: 0.8,
       }));
 
       setPath({ ...res, path: calibratedPath, type: 'path' });
