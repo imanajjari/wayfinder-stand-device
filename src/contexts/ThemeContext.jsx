@@ -13,7 +13,7 @@ const lightTheme = {
 
 const darkTheme = {
   background: "#1a1a1a",
-  canvasBackground: "#26282B",
+  canvasBackground: "#3A4147FF", // TODO : شروین این بخش رنگش رو تغییر بده و هر رنگی رو مد نظرت بود کد رنگیش رو بده بزارم رو پروژه 
   text: "#ffffff",
   modelColor: "#474D84",
   pointStart: "#3b82f6",
