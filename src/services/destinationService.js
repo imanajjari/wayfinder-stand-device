@@ -38,7 +38,7 @@ export const searchDestinationsByCategory = async (categoryName) => {
 
 export const searchDestinationsByName = async (destinationName) => {
   const company = getCompanyData();
-  const response = await api.post(`/api/search`,{"id": company.id,"data": destinationName });
+  const response = await api.post(`/api/search`,{"userId": company.id,"data": destinationName });
   return response.data; 
 };
 

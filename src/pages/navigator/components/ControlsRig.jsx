@@ -21,9 +21,9 @@ export default function ControlsRig({ controlsRef, min, max }) {
       minDistance={min}
       maxDistance={max}
       minPolarAngle={Math.PI / 2}
-      maxPolarAngle={Math.PI / 1.1}
-      minAzimuthAngle={-Math.PI / 3}
-      maxAzimuthAngle={Math.PI / 3}
+      maxPolarAngle={Math.PI / 1.4}
+      minAzimuthAngle={-Math.PI / 5}
+      maxAzimuthAngle={Math.PI / 5}
     />
   );
 }
