@@ -90,6 +90,12 @@ function SceneCore({
             rotation={[0, 0, 0]}
             onLoaded={handleModelLoaded}
           />
+          {/* <GLBModel
+            url={'./public/models/arrow.glb'}
+            scale={1}
+            rotation={[0, 0, 0]}
+            onLoaded={handleModelLoaded}
+          /> */}
           <LabelsLayer
             floorDestinations={floorDestinations}
             lastPoint={lastPoint}
@@ -105,6 +111,7 @@ function SceneCore({
           labelText={labelText}
           maxZoomDistance={maxZoom}
         />
+        
       </group>
 
       {/* فیت دوربین داخل Canvas */}

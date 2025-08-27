@@ -1,6 +1,7 @@
 // src/pages/navigator/components/PathOverlay.jsx
 import DottedStraightPath from "../../../components/paths/DottedStraightPath";
 import LabeledPoint from "../../../components/Models/LabeledPoint";
+import ArrowStraightPath from "../../../components/paths/ArrowStraightPath";
 
 export default function PathOverlay({ points, colors, labelText, maxZoomDistance }) {
   if (!points?.length) return null;
@@ -10,7 +11,14 @@ export default function PathOverlay({ points, colors, labelText, maxZoomDistance
 
   return (
     <>
-      <DottedStraightPath points={points} spacing={1} size={0.1} animate />
+      {/* <DottedStraightPath points={points} spacing={1} size={0.1} animate /> */}
+       <ArrowStraightPath
+     points={points}
+      spacing={0.7}     
+      size={0.1}        
+      animate={true}     
+      yawOffset={0}      
+    />
       {points.length > 1 ? (
         <>
           <LabeledPoint
