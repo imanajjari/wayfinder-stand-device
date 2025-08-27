@@ -1,3 +1,4 @@
+// src/pages/navigator/components/controls/PanLimiter.jsx
 import { useThree } from '@react-three/fiber';
 import { useEffect } from 'react';
 import * as THREE from 'three';
@@ -6,27 +7,37 @@ export default function PanLimiter({ controls, isPortrait }) {
   const { camera } = useThree();
 
   useEffect(() => {
-    if (!controls.current) return;
+    const ctrl = controls.current;
+    if (!ctrl) return;
 
+    // باکس محدودیت؛ بسته به پرتره/لنداسکیپ
     const limit = isPortrait
-    ? { minX: -20, maxX: 30, minY: -10, maxY: 40 }
-    :{ minX: -25, maxX: 50, minY: -10, maxY: 40 };
+      ? { minX: -5, maxX: 30, minY: 0 , maxY: 30, minZ: -25, maxZ: 45 } //استند
+      : { minX: -10, maxX: 40, minY: 0, maxY: 30, minZ: -30, maxZ: 50 };
 
-    const clampPositionAndTarget = () => {
+    const clampTargetAndKeepOffset = () => {
       if (!controls.current) return;
 
-      controls.current.target.x = THREE.MathUtils.clamp(controls.current.target.x, limit.minX, limit.maxX);
-      controls.current.target.y = THREE.MathUtils.clamp(controls.current.target.y, limit.minY, limit.maxY);
+      // offset بین position و target را ثابت نگه‌دار
+      const offset = camera.position.clone().sub(ctrl.target);
 
-    //   camera.position.x = THREE.MathUtils.clamp(camera.position.x, limit.minX, limit.maxX);
-    //   camera.position.y = THREE.MathUtils.clamp(camera.position.y, limit.minY, limit.maxY);
+      // clamp روی هر سه محور
+      const clampedX = THREE.MathUtils.clamp(ctrl.target.x, limit.minX, limit.maxX);
+      const clampedY = THREE.MathUtils.clamp(ctrl.target.y, limit.minY, limit.maxY);
+      const clampedZ = THREE.MathUtils.clamp(ctrl.target.z, limit.minZ, limit.maxZ);
+
+      if (clampedX !== ctrl.target.x || clampedY !== ctrl.target.y || clampedZ !== ctrl.target.z) {
+        ctrl.target.set(clampedX, clampedY, clampedZ);
+        camera.position.copy(ctrl.target).add(offset); // زاویه حفظ می‌شود
+        ctrl.update();
+      }
     };
 
-    controls.current.addEventListener('change', clampPositionAndTarget);
+    // یک‌بار در شروع هم اعمال شود
+    clampTargetAndKeepOffset();
 
-    return () => {
-      controls.current?.removeEventListener('change', clampPositionAndTarget);
-    };
+    ctrl.addEventListener('change', clampTargetAndKeepOffset);
+    return () => ctrl.removeEventListener('change', clampTargetAndKeepOffset);
   }, [camera, controls, isPortrait]);
 
   return null;

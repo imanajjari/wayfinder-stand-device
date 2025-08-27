@@ -15,7 +15,7 @@ export default function PathOverlay({ points, colors, labelText, maxZoomDistance
        <ArrowStraightPath
      points={points}
       spacing={0.7}     
-      size={0.1}        
+      size={0.12}        
       animate={true}     
       yawOffset={0}      
     />

@@ -3,10 +3,6 @@ import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 
 export default function ControlsRig({ controlsRef, min, max }) {
-  console.log('====================================');
-  console.log('min :',min);
-  console.log('max :',max);
-  console.log('====================================');
   return (
     <OrbitControls
       ref={controlsRef}
@@ -14,7 +10,7 @@ export default function ControlsRig({ controlsRef, min, max }) {
       enableDamping
       dampingFactor={0.08}
       enablePan
-      enableRotate
+      enableRotate={false}
       enableZoom
       mouseButtons={{
         LEFT: THREE.MOUSE.PAN,
