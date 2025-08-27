@@ -66,8 +66,8 @@ function SceneCore({
   const controlsRef = useRef();
   const [loadedTick, setLoadedTick] = useState(0);
 
-  const minZoom = isPortrait ? 20 : 0;
-  const maxZoom = isPortrait ? 60 : 50;
+  const minZoom = isPortrait ? 20 : 20;
+  const maxZoom = isPortrait ? 60 : 40;
 
   const handleModelLoaded = useCallback(() => {
     setLoadedTick(t => t + 1);
