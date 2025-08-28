@@ -71,7 +71,7 @@ export default function SearchPanel({ setIsResultOpen, onShowResult }) {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="عبارتی برای جست‌وجو وارد کنید..."
+          placeholder="مقصدی برای جست‌وجو وارد کنید..."
           className="flex-1 px-4 py-2 rounded-xl text-black bg-white text-base md:text-2xl"
         />
         <button

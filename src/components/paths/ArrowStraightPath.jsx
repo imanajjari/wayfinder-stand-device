@@ -9,10 +9,13 @@ export default function ArrowStraightPath({
   size = 0.3,
   animate = true,
   yawOffset = 0,
+  headCount = 3,        // تعداد هدها
+  headIntervalMs = 50,  // سرعت حرکت
+  maxD = 20,            // طول دُم موج
 }) {
   const { scene } = useGLTF("/models/arrow.glb");
 
-  // نمونه‌برداری یکنواخت روی مسیر (بدون تکرار مرزی)
+  // ----------------- نمونه‌برداری مسیر -----------------
   const dots = useMemo(() => {
     if (!points || points.length < 2) return [];
     const res = [];
@@ -33,30 +36,107 @@ export default function ArrowStraightPath({
     return res;
   }, [points, spacing]);
 
-  // افکت موجی (اختیاری)
-  const [heads, setHeads] = useState([0, 20, 80]);
-  useEffect(() => {
-    if (!animate || dots.length === 0) return;
-    setHeads(h => h.map(i => (dots.length ? i % dots.length : 0)));
-    const id = setInterval(() => {
-      setHeads(h => h.map(i => (i + 1) % dots.length));
-    }, 50);
-    return () => clearInterval(id);
-  }, [dots.length, animate]);
+  const N = dots.length;
+  if (N === 0) return null;
 
-  const maxD = 20;
+  // ----------------- هدها با فاصله‌ی مساوی -----------------
+  const gap = useMemo(() => {
+    if (!N || headCount <= 0) return 1;
+    return Math.floor(N / headCount) || 1;
+  }, [N, headCount]);
+
+  const [base, setBase] = useState(0);
+  useEffect(() => {
+    setBase(0); // با تغییر مسیر از 0 شروع
+  }, [N]);
+
+  useEffect(() => {
+    if (!animate || N === 0) return;
+    const id = setInterval(() => {
+      setBase((b) => (b + 1) % N);
+    }, headIntervalMs);
+    return () => clearInterval(id);
+  }, [animate, N, headIntervalMs]);
+
+  // پس از اینکه همه هدها وارد شدند، دیگر ریست نشوند
+  const [allEntered, setAllEntered] = useState(false);
+  useEffect(() => {
+    setAllEntered(false);
+  }, [N]);
+
+  useEffect(() => {
+    if (!N || headCount <= 0 || gap === 0) return;
+    if (!allEntered && base >= (headCount - 1) * gap) {
+      setAllEntered(true);
+    }
+  }, [base, gap, headCount, N, allEntered]);
+
+  const activeCount = useMemo(() => {
+    if (!N || headCount <= 0 || gap === 0) return 1;
+    if (allEntered) return headCount;
+    return Math.min(headCount, Math.floor(base / gap) + 1);
+  }, [base, gap, headCount, N, allEntered]);
+
+  const heads = useMemo(() => {
+    const arr = [];
+    for (let k = 0; k < activeCount; k++) {
+      const h = (base - k * gap + N) % N;
+      arr.push(h);
+    }
+    return arr;
+  }, [base, gap, activeCount, N]);
+
+  // ----------------- Intro فقط بار اول -----------------
+  const [intro, setIntro] = useState(true);
+  const [activated, setActivated] = useState([]);
+
+  useEffect(() => {
+    setIntro(true);
+    setActivated(new Array(N).fill(false));
+  }, [N]);
+
+  useEffect(() => {
+    if (!intro || N === 0) return;
+    setActivated((prev) => {
+      if (prev.length !== N) return new Array(N).fill(false);
+      const next = prev.slice();
+      for (const h of heads) {
+        const start = Math.max(0, h - maxD);
+        const end = Math.min(N - 1, h);
+        for (let i = start; i <= end; i++) next[i] = true;
+      }
+      return next;
+    });
+  }, [heads, intro, N, maxD]);
+
+  useEffect(() => {
+    if (!intro) return;
+    if (activated.length === N && activated.every(Boolean)) {
+      setIntro(false);
+    }
+  }, [activated, intro, N]);
+
+  // ----------------- ظاهر بصری هر فلش -----------------
   const getVisualProps = (idx) => {
     let w = 0;
     for (const h of heads) {
       const d = h - idx;
       if (d >= 0 && d <= maxD) w = Math.max(w, 1 - d / maxD);
+      // اگر wrap هم بخوای: فاصله‌ی مدولویی را هم حساب کن
+      // const wrapD = (idx - h + N) % N;
+      // if (wrapD <= maxD) w = Math.max(w, 1 - wrapD / maxD);
     }
+
+    if (intro && !activated[idx]) {
+      return { scale: 0, color: new Color("#000000") };
+    }
+
     const s = size + size * 0.5 * w;
     const c = new Color("#ffffff").lerp(new Color("#FF0000"), w);
     return { scale: s, color: c };
   };
 
-  // کلون با متریال مستقل و رنگ سفارشی
+  // ----------------- utilities -----------------
   const cloneWithColor = (root, color) => {
     const c = root.clone(true);
     c.traverse((o) => {
@@ -68,11 +148,10 @@ export default function ArrowStraightPath({
     return c;
   };
 
-  // جهت: فقط به سمت نقطه‌ی بعدی (برای آخرین، به سمت قبلی)
   const dirToNext = (i) => {
-    if (dots.length === 1) return new Vector3(1, 0, 0);
+    if (N <= 1) return new Vector3(1, 0, 0);
     const cur = dots[i].pos;
-    const nxt = i < dots.length - 1 ? dots[i + 1].pos : dots[i - 1].pos; // <- نکته
+    const nxt = i < N - 1 ? dots[i + 1].pos : dots[i - 1].pos;
     const v = new Vector3().subVectors(nxt, cur);
     if (v.lengthSq() === 0) return new Vector3(1, 0, 0);
     return v.normalize();
@@ -83,16 +162,13 @@ export default function ArrowStraightPath({
       {dots.map((d, idx) => {
         const { scale, color } = getVisualProps(idx);
         const dir = dirToNext(idx);
-
-        // زاویه‌ی حول Y روی صفحه‌ی XY (طبق نیاز تو)
-        const yaw = -Math.atan2(dir.x, dir.y) + yawOffset;
-
+        const yaw = -Math.atan2(dir.x, dir.y) + yawOffset; // مسیر روی صفحه XY
         return (
           <primitive
             key={idx}
             object={cloneWithColor(scene, color)}
             position={d.pos.toArray()}
-            rotation={[1.5, yaw, 0]}   // X=1.5 ثابت، Y=زاویه مسیر، Z=0
+            rotation={[1.5, yaw, 0]}
             scale={[scale, scale, scale]}
           />
         );
