@@ -1,5 +1,5 @@
 // src/pages/navigator/components/LabelsLayer.jsx
-import DestinationsLabels from "../../../components/Models/DestinationsLabels";
+import DestinationsLabels from "../Models/DestinationsLabels";
 
 export default function LabelsLayer({ floorDestinations, lastPoint, verticalOffset, maxZoomDistance }) {
   return (

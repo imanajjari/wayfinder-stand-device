@@ -1,7 +1,7 @@
 // src/pages/navigator/components/PathOverlay.jsx
-import DottedStraightPath from "../../../components/paths/DottedStraightPath";
-import LabeledPoint from "../../../components/Models/LabeledPoint";
-import ArrowStraightPath from "../../../components/paths/ArrowStraightPath";
+import DottedStraightPath from "../paths/DottedStraightPath";
+import LabeledPoint from "../Models/LabeledPoint";
+import ArrowStraightPath from "../paths/ArrowStraightPath";
 
 export default function PathOverlay({ points, colors, labelText, maxZoomDistance }) {
   if (!points?.length) return null;

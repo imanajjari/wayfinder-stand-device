@@ -3,10 +3,10 @@ import { Canvas, useThree } from "@react-three/fiber";
 import { Suspense, useCallback, useMemo, useRef, useState, useEffect } from "react";
 import * as THREE from "three";
 import GLBModel from "../../components/Models/GLBModel";
-import LightsRig from "./components/LightsRig";
-import ControlsRig from "./components/ControlsRig";
-import PathOverlay from "./components/PathOverlay";
-import LabelsLayer from "./components/LabelsLayer";
+import LightsRig from "../../components/scene/LightsRig";
+import ControlsRig from "../../components/scene/ControlsRig";
+import PathOverlay from "../../components/scene/PathOverlay";
+import LabelsLayer from "../../components/scene/LabelsLayer";
 import PanLimiter from "../../components/controls/PanLimiter";
 
 /** این کامپوننت فقط داخل Canvas استفاده می‌شود */

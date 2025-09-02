@@ -2,6 +2,7 @@ import { MdSearch } from 'react-icons/md';
 import { useState } from 'react';
 import useLanguage from '../../hooks/useLanguage';
 import LocationButton from '../buttons/LocationButton';
+import ThemeToggle from '../buttons/ThemeToggle';
 import { searchDestinationsByName } from '../../services/destinationService';
 import { usePath } from '../../contexts/PathContext';
 import { findFloorOfDestination } from '../../lib/floorUtils';
@@ -98,6 +99,7 @@ export default function SearchPanel({ setIsResultOpen, onShowResult }) {
           </button>
         ))}
         <LocationButton />
+        <ThemeToggle />
       </div>
 
       {/* نمایش ارور */}

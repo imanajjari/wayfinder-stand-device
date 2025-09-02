@@ -7,11 +7,11 @@ import { usePath } from "../../contexts/PathContext";
 import { useFloors } from "../../hooks/useFloors";
 import useTheme from "../../hooks/useTheme";
 
-import useOrientation from "./hooks/useOrientation";
-import useFloorInit from "./hooks/useFloorInit";
-import usePathPoints from "./hooks/usePathPoints";
+import useOrientation from "../../hooks/navigator/useOrientation";
+import useFloorInit from "../../hooks/navigator/useFloorInit";
+import usePathPoints from "../../hooks/navigator/usePathPoints";
 import Navigator3DScene from "./Navigator3DScene";
-import PageLoader from "./components/PageLoader";
+import PageLoader from "../../components/scene/PageLoader";
 
 const BASE_OFFSET = 0;
 
