@@ -21,7 +21,7 @@ export default function DestinationCard({ shop, onClick, myStand }) {
         </div>
       )}
       <div className="space-y-1">
-        <h3 className="text-lg font-semibold">{shop.fullName}</h3>
+        <h3 className="text-lg font-semibold">{shop.shortName}</h3>
         <p className="text-sm text-gray-300">{shop.description}</p>
         <p className="text-sm text-gray-400">
           طبقه {shop.floorNum==0 ? 'همکف': shop.floorNum} - ساختمان {shop.buildingNumber} {myStand.floorNum===shop.floorNum && "در این طبقه قرار دارد"}
