@@ -126,7 +126,7 @@ export default function Navigator3DScene(props) {
   const { colors } = props;
   return (
     <Canvas
-      style={{ background: colors.canvasBackground }}
+      style={{ background: colors.canvasBackground ,transition:"0.5s"}}
       camera={{ position: [0, 0, 60], fov: 50 }}
       dpr={[1, 2]}
       shadows

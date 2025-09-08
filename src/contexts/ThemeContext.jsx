@@ -5,7 +5,11 @@ export const ThemeContext = createContext();
 const lightTheme = {
   background: "#f8f8f8",
   canvasBackground: "#ffffff",
-  text: "#1a1a1a",
+  textPrimary: "#1a1a1a", // متن اصلی
+  textSecondary: "#2B2E2EFF", // متن ثانویه
+  textMuted: "#666666", // متن کم‌رنگ
+  textHeader: "#000000", // متن هدر
+  textLink: "#0066cc", // رنگ لینک
   modelColor: "#474D84",
   pointStart: "blue",
   pointEnd: "red",
@@ -14,7 +18,11 @@ const lightTheme = {
 const darkTheme = {
   background: "#1a1a1a",
   canvasBackground: "#3A4147FF", // TODO : شروین این بخش رنگش رو تغییر بده و هر رنگی رو مد نظرت بود کد رنگیش رو بده بزارم رو پروژه 
-  text: "#ffffff",
+  textPrimary: "#1A1A1AFF", // متن اصلی
+  textSecondary: "#C1C1C1FF", // متن ثانویه
+  textMuted: "#666666", // متن کم‌رنگ
+  textHeader: "#000000", // متن هدر
+  textLink: "#0066cc", // رنگ لینک
   modelColor: "#474D84",
   pointStart: "#3b82f6",
   pointEnd: "#ef4444",
@@ -45,7 +53,7 @@ export const ThemeProvider = ({ children }) => {
 
   useEffect(() => {
     if (themeColors?.text) {
-      document.documentElement.style.setProperty('--text-color', themeColors.text);
+      document.documentElement.style.setProperty('--text-color', themeColors.textPrimary);
     }
   }, [themeColors]);
 
