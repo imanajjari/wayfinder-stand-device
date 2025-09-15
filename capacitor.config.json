@@ -1,0 +1,9 @@
+{
+  "appId": "ir.shivapardaz.wayfinder.standdevice",
+  "appName": "Wayfinder Stand Device",
+  "webDir": "dist",
+  "server": {
+    "url": "http://192.168.220.1:5173",
+    "cleartext": true
+  }
+}
