@@ -10,7 +10,9 @@ export default function ControlsRig({ controlsRef, min, max }) {
       enableDamping
       dampingFactor={0.08}
       enablePan
-      enableRotate={false}
+      enableRotate
+      screenSpacePanning={true}
+      rotateSpeed={0.9}
       enableZoom
       mouseButtons={{
         LEFT: THREE.MOUSE.PAN,
