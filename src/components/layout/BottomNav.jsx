@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import StickyPanels from '../common/StickyPanels';
 import AdBanner from '../common/Ads/AdBanner';
-import PanelModal from '../Modal/PanelModal';
 import { fetchAds } from '../../services/adsService';
+import NavigatorSearchResultsModal from '../Modal/NavigatorSearchResultsModal';
 
 
 export default function BottomNav() {
   const [visiblePanel, setVisiblePanel] = useState(null);
-  const [isResultOpen, setIsResultOpen] = useState(false);
-  const [resultContent, setResultContent] = useState(null);
   const [ad, setAd] = useState(null);
   
     useEffect(() => {
@@ -27,10 +25,6 @@ export default function BottomNav() {
       loadAd();
     }, []);
 
-  const showResult = (content) => {
-    setResultContent(content);
-    setIsResultOpen(true);
-  };
   const togglePanel = (panelName) => {
     setVisiblePanel((prev) => (prev === panelName ? null : panelName));
   };
@@ -39,22 +33,11 @@ export default function BottomNav() {
     <>
 <div className=' fixed bottom-[10px] left-[10px] right-[10px] flex flex-col z-50 '>
 <div className="mx-auto w-full max-w-screen-xl flex flex-col">
-{/* نتایج جست و حو  */}
-
-<PanelModal
-  isOpen={isResultOpen}
-  onClose={() => setIsResultOpen(false)}
-  title="نتایج"
->
-  {resultContent}
-</PanelModal>
-
+        {/* Navigator Specific Modals */}
+        <NavigatorSearchResultsModal />
       {/* کامپوننت یکپارچه پنل‌ها */}
-      <StickyPanels
-  onShowResult={showResult}
-  setIsResultOpen={setIsResultOpen}
-/>
-<AdBanner content={ad} />
+      <StickyPanels />
+      <AdBanner content={ad} />
 </div>
       </div>
     </>

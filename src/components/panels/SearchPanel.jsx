@@ -4,17 +4,12 @@ import useLanguage from '../../hooks/useLanguage';
 import LocationButton from '../buttons/LocationButton';
 import ThemeToggle from '../buttons/ThemeToggle';
 import { searchDestinationsByName } from '../../services/destinationService';
-import { usePath } from '../../contexts/PathContext';
-import { findFloorOfDestination } from '../../lib/floorUtils';
-import DestinationCard from '../cards/DestinationCard';
-import { getMyStand } from '../../services/floorService';
+import { useSearchResults } from '../../contexts/SearchResultsContext';
 
-export default function SearchPanel({ setIsResultOpen, onShowResult }) {
+export default function SearchPanel() {
   const { changeLanguage, language } = useLanguage();
-  const { updateDestination } = usePath();
-  const myStand = getMyStand();
+  const { showResults, setLoading, loading } = useSearchResults();
   const [query, setQuery] = useState('');
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleSearch = async () => {
@@ -24,35 +19,11 @@ export default function SearchPanel({ setIsResultOpen, onShowResult }) {
 
     try {
       const results = await searchDestinationsByName(query);
-
-      if (results.data.length === 0) {
-        onShowResult(<p className="text-center text-gray-300">نتیجه‌ای یافت نشد.</p>);
-      } else {
-        onShowResult(
-          results.data.map((shop, index) => (
-            <DestinationCard
-              key={index}
-              shop={shop}
-              myStand = {myStand}
-              onClick={() => {
-                updateDestination({
-                  x: shop.entrance.x,
-                  y: shop.entrance.y,
-                  z: 1,
-                  floorNumber: shop.floorNum,
-                  floorId: findFloorOfDestination(shop).floorId,
-                });
-                setIsResultOpen(false);
-              }}
-            />
-          ))
-        );
-      }
-
-      setIsResultOpen(true);
+      showResults(results.data, `نتایج جستجو: "${query}"`);
     } catch (err) {
       console.error("❌ خطا در جستجو:", err);
       setError('مشکلی در جستجو پیش آمد.');
+      showResults([], 'خطا در جستجو');
     } finally {
       setLoading(false);
     }
@@ -78,9 +49,9 @@ export default function SearchPanel({ setIsResultOpen, onShowResult }) {
         <button
           onClick={handleSearch}
           className="bg-blue-600 text-2xl md:text-3xl text-white p-2 rounded-xl hover:bg-blue-500 transition"
-        >
-          {loading ? '...' : <MdSearch />}
-        </button>
+                  >
+            {loading ? '...' : <MdSearch />}
+          </button>
       </div>
 
       {/* دکمه‌های زبان */}

@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import { Route, Routes } from "react-router-dom";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { PathProvider } from "./contexts/PathContext";
+import { ShopDetailsProvider } from "./contexts/ShopDetailsContext";
+import { SearchResultsProvider } from "./contexts/SearchResultsContext";
 import routes from "./routes";
 import { Suspense } from "react";
 
@@ -28,13 +30,17 @@ export default function App() {
   return (
     <ThemeProvider>
       <PathProvider>
-      {/* <Suspense fallback={<div style={{ padding: 24 }}>Loading…</div>}> */}
-        <Routes>
-          {routes.map((r) => (
-            <Route key={r.path} path={r.path} element={r.element} />
-          ))}
-        </Routes>
-      {/* </Suspense> */}
+        <SearchResultsProvider>
+          <ShopDetailsProvider>
+          {/* <Suspense fallback={<div style={{ padding: 24 }}>Loading…</div>}> */}
+            <Routes>
+              {routes.map((r) => (
+                <Route key={r.path} path={r.path} element={r.element} />
+              ))}
+            </Routes>
+          {/* </Suspense> */}
+          </ShopDetailsProvider>
+        </SearchResultsProvider>
       </PathProvider>
     </ThemeProvider>
   );

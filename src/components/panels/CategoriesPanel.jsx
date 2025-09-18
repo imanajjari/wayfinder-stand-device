@@ -1,21 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { usePath } from '../../contexts/PathContext';
 import { getFileUrl } from '../../services/fileService';
 import { searchDestinationsByCategory } from '../../services/destinationService';
-import { findFloorOfDestination } from '../../lib/floorUtils';
+import { useSearchResults } from '../../contexts/SearchResultsContext';
 import DestinationListModal from '../Modal/DestinationListModal';
-import DestinationCard from '../cards/DestinationCard';
-import { getMyStand } from '../../services/floorService';
 
-export default function CategoriesPanel({ categories = [], maxVisible = 20, onShowResult, setIsResultOpen }) {
+export default function CategoriesPanel({ categories = [], maxVisible = 20 }) {
   const [modalOpen, setModalOpen] = useState(false);
   const containerRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-
-  const { fetchPath, updateDestination } = usePath();
-const myStand = getMyStand();
+  const { showResults } = useSearchResults();
   const handleMouseDown = (e) => {
     setIsDragging(true);
     setStartX(e.pageX - containerRef.current.offsetLeft);
@@ -55,27 +50,10 @@ const myStand = getMyStand();
   const handleCategoryClick = async (cat) => {
     try {
       const results = await searchDestinationsByCategory(cat.name);
-      onShowResult(
-        results.data.map((shop, index) => (
-          <DestinationCard
-            key={index}
-            shop={shop}
-            myStand = {myStand}
-            onClick={() => {
-              updateDestination({
-                x: shop.entrance.x,
-                y: shop.entrance.y,
-                z: 1,
-                floorNumber: shop.floorNum,
-                floorId: findFloorOfDestination(shop).floorId,
-              });
-              setIsResultOpen(false);
-            }}
-          />
-        ))
-      );
+      showResults(results.data, `دسته‌بندی: ${cat.name}`);
     } catch (err) {
       console.error(`❌ خطا در دریافت فروشگاه‌های دسته ${cat.name}:`, err);
+      showResults([], `خطا در دریافت ${cat.name}`);
     }
   };
 
@@ -124,21 +102,12 @@ const myStand = getMyStand();
         onSelect={async (cat) => {
           try {
             const results = await searchDestinationsByCategory(cat.name);
-            onShowResult(
-              results.data.map((shop, i) => (
-                <DestinationCard
-                  key={i}
-                  shop={shop}
-                  myStand = {myStand}
-                  onClick={() => {
-                    fetchPath('A1', shop.uniqueId);
-                    setModalOpen(false);
-                  }}
-                />
-              ))
-            );
+            showResults(results.data, `دسته‌بندی: ${cat.name}`);
+            setModalOpen(false); // بستن مودال دسته‌بندی‌ها
           } catch (err) {
             console.error(`❌ خطا در دریافت فروشگاه‌های دسته ${cat.name}:`, err);
+            showResults([], `خطا در دریافت ${cat.name}`);
+            setModalOpen(false);
           }
         }}
       />

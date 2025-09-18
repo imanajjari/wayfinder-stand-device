@@ -12,6 +12,8 @@ import useFloorInit from "../../hooks/navigator/useFloorInit";
 import usePathPoints from "../../hooks/navigator/usePathPoints";
 import Navigator3DScene from "./Navigator3DScene";
 import PageLoader from "../../components/scene/PageLoader";
+import NavigatorSearchResultsModal from "../../components/Modal/NavigatorSearchResultsModal";
+import NavigatorShopDetailsModal from "../../components/Modal/NavigatorShopDetailsModal";
 
 const BASE_OFFSET = 0;
 
@@ -57,6 +59,9 @@ export default function Navigator3DPage() {
       />
       {/* ⬅️ لودرِ سراسری، خارج از Canvas تا پرش اولیه نداشته باشیم */}
       <PageLoader />
+      
+      {/* Navigator Specific Modals */}
+      <NavigatorShopDetailsModal />
     </div>
   );
 }
