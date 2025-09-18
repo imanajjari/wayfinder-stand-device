@@ -3,6 +3,7 @@ import { IoClose, IoLocation, IoCall, IoTime, IoInformation, IoNavigate } from '
 import { getFileUrl } from '../../services/fileService';
 import useTheme from '../../hooks/useTheme';
 import { usePath } from '../../contexts/PathContext';
+import { useSearchResults } from '../../contexts/SearchResultsContext';
 import { findFloorOfDestination } from '../../lib/floorUtils';
 
 export default function ShopDetailsModal({ isOpen, onClose, shop }) {
@@ -10,6 +11,7 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
   const [animateIn, setAnimateIn] = useState(false);
   const { colors } = useTheme();
   const { updateDestination } = usePath();
+  const { hideResults } = useSearchResults();
 
   const handleNavigateToShop = () => {
     if (shop && shop.entrance) {
@@ -20,7 +22,10 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
         floorNumber: shop.floorNum,
         floorId: findFloorOfDestination(shop).floorId,
       });
-      onClose(); // بستن مودال بعد از شروع مسیریابی
+      
+      // بستن هر دو مودال بعد از شروع مسیریابی
+      hideResults(); // بستن مودال لیست فروشگاه‌ها
+      onClose(); // بستن مودال جزئیات فروشگاه
     }
   };
 
