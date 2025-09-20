@@ -48,7 +48,7 @@ export default function FloorSelectorColumn({ floors = [], onSelect, activeFloor
         return (
           <button
             key={index}
-            onClick={() => onSelect?.(floor)}
+            onClick={() => {console.log("floor select:",floor) ;onSelect?.(floor)}}
             className={`font-semibold my-1 transition-all duration-200 ${
               isActive
                 ? 'text-yellow-300 text-xl scale-110'

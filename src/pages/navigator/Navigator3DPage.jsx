@@ -32,12 +32,17 @@ export default function Navigator3DPage() {
   const destinationFloorNumber = lastDestination?.floorNumber ?? null;
 
   const labelText = useMemo(() => {
-    if (!destinationFloorNumber) return "نقطه پایان";
+
+    // if (!destinationFloorNumber) return "نقطه پایان";
     if (destinationFloorNumber > currentFloorNumber) return "پله برقی - برو طبقه بالا";
     if (destinationFloorNumber < currentFloorNumber) return "پله برقی - برو طبقه پایین";
     return "نقطه پایان";
   }, [destinationFloorNumber, currentFloorNumber]);
-
+  console.log('====================================');
+  console.log('destinationFloorNumber',destinationFloorNumber);
+  console.log('currentFloorNumber',currentFloorNumber);
+  console.log('labelText🎄',labelText);
+  console.log('====================================');
   return (
     <div style={{ width:"100%", height:"100vh", position:"relative", background: colors.background }}>
       <TopNav />
