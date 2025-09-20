@@ -26,7 +26,7 @@ export const findOnePath = async ({ start, end, skip = 0, mapId, floorId }) => {
       mapId,
       floorId
     });
-    console.error('چیزی که دریافت کرده :', response);
+    // console.error('چیزی که دریافت کرده :', response);
     return response.data;
   } catch (error) {
     console.error('Error fetching single path:', error);

@@ -23,7 +23,7 @@ export default function LocationButton() {
 
   const onUserInteraction = () => {
     if (!hasActiveCustomer.current) {
-      console.log('مشتری جدید شروع به تعامل کرد');
+      // console.log('مشتری جدید شروع به تعامل کرد');
     }
     hasActiveCustomer.current = true; // مشتری فعال است
     startInactivityTimer();

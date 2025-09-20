@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useEffect, useState, useMemo, useCallback } from 'react';
 
 export const ThemeContext = createContext();
 
@@ -48,19 +48,32 @@ export const ThemeProvider = ({ children }) => {
     }
   }, [theme]);
 
-  const toggleTheme = () => setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
-  const themeColors = theme === 'light' ? lightTheme : darkTheme;
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  }, []);
+
+  // Memoize theme colors to prevent recalculation
+  const themeColors = useMemo(() => {
+    return theme === 'light' ? lightTheme : darkTheme;
+  }, [theme]);
 
   useEffect(() => {
-    if (themeColors?.text) {
+    if (themeColors?.textPrimary) {
       document.documentElement.style.setProperty('--text-color', themeColors.textPrimary);
     }
   }, [themeColors]);
 
+  // Memoize context value
+  const contextValue = useMemo(() => ({
+    theme,
+    toggleTheme,
+    colors: themeColors
+  }), [theme, toggleTheme, themeColors]);
+
   if (!theme) return null; // یا loading spinner
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, colors: themeColors }}>
+    <ThemeContext.Provider value={contextValue}>
       {children}
     </ThemeContext.Provider>
   );

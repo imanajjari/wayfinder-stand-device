@@ -25,22 +25,22 @@ export function PathProvider({ children }) {
   };
 
   const navigateToDestination = async (destination , currentFloorNumber ) => {
-    console.log('🚀 navigateToDestination called with destination:', destination);
+    // console.log('🚀 navigateToDestination called with destination:', destination);
     
   
     const startFloor = currentFloorNumber ?? 0;
     const endFloor = destination.floorNumber ?? 0;
   
-    console.log('🟩 currentFloorNumber:', currentFloorNumber, 'startFloor:', startFloor, 'endFloor:', endFloor);
+    // console.log('🟩 currentFloorNumber:', currentFloorNumber, 'startFloor:', startFloor, 'endFloor:', endFloor);
   
     if (startFloor === endFloor) {
-      console.log('✅ Floors are same, fetching path directly');
+      // console.log('✅ Floors are same, fetching path directly');
       await fetchPath(null, destination);
     } else {
       const currentStand = getCurrentStandPosition();
-            console.log('====================================');
-      console.log("currentStand :",currentStand);
-      console.log('====================================');
+      //       console.log('====================================');
+      // console.log("currentStand :",currentStand);
+      // console.log('====================================');
       setPath({
         "message": "Path posted",
         "id": 18,
@@ -70,8 +70,8 @@ export function PathProvider({ children }) {
   // تابع برای رفرش مسیر قبلی
   const refreshLastDestination = async ({ currentFloorNumber }) => {
     if (lastDestination) {
-      console.log('🔄 Refreshing last destination:', lastDestination);
-      console.log('🔄 Refreshing last currentFloorNumber:', currentFloorNumber);
+      // console.log('🔄 Refreshing last destination:', lastDestination);
+      // console.log('🔄 Refreshing last currentFloorNumber:', currentFloorNumber);
   
       // صبر کن تا طبقه تنظیم شود
       await new Promise((resolve) => {

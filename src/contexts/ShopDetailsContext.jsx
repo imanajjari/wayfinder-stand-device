@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useMemo, useCallback } from 'react';
 
 const ShopDetailsContext = createContext();
 
@@ -6,26 +6,27 @@ export function ShopDetailsProvider({ children }) {
   const [selectedShop, setSelectedShop] = useState(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
-  const showShopDetails = (shop) => {
+  const showShopDetails = useCallback((shop) => {
     setSelectedShop(shop);
     setIsDetailsModalOpen(true);
-  };
+  }, []);
 
-  const hideShopDetails = () => {
+  const hideShopDetails = useCallback(() => {
     setIsDetailsModalOpen(false);
     // کمی تأخیر برای انیمیشن خروج
     setTimeout(() => setSelectedShop(null), 300);
-  };
+  }, []);
+
+  // Memoize context value to prevent unnecessary re-renders
+  const contextValue = useMemo(() => ({
+    selectedShop,
+    isDetailsModalOpen,
+    showShopDetails,
+    hideShopDetails,
+  }), [selectedShop, isDetailsModalOpen, showShopDetails, hideShopDetails]);
 
   return (
-    <ShopDetailsContext.Provider
-      value={{
-        selectedShop,
-        isDetailsModalOpen,
-        showShopDetails,
-        hideShopDetails,
-      }}
-    >
+    <ShopDetailsContext.Provider value={contextValue}>
       {children}
     </ShopDetailsContext.Provider>
   );
