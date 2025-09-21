@@ -1,5 +1,6 @@
 import { MdSearch } from 'react-icons/md';
-import { useState } from 'react';
+import { ImSpinner8 } from 'react-icons/im';
+import { useEffect, useState } from 'react';
 import useLanguage from '../../hooks/useLanguage';
 import LocationButton from '../buttons/LocationButton';
 import ThemeToggle from '../buttons/ThemeToggle';
@@ -11,6 +12,17 @@ export default function SearchPanel() {
   const { showResults, setLoading, loading } = useSearchResults();
   const [query, setQuery] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (!query) return;
+    const timeout = setTimeout(() => {
+      searchDestinationsByName(query).then(res => {
+        // اینجا مثلا نتایج پیشنهادی رو توی state نگه دار
+      });
+    }, 500); // نصف ثانیه دیلی
+  
+    return () => clearTimeout(timeout);
+  }, [query]);
 
   const handleSearch = async () => {
     if (!query.trim()) return;
@@ -43,15 +55,16 @@ export default function SearchPanel() {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
           placeholder="مقصدی برای جست‌وجو وارد کنید..."
           className="flex-1 px-4 py-2 rounded-xl text-black bg-white text-base md:text-2xl"
         />
-        <button
-          onClick={handleSearch}
-          className="bg-blue-600 text-2xl md:text-3xl text-white p-2 rounded-xl hover:bg-blue-500 transition"
-                  >
-            {loading ? '...' : <MdSearch />}
-          </button>
+<button
+  onClick={handleSearch}
+  className="bg-blue-600 text-2xl md:text-3xl text-white p-2 rounded-xl hover:bg-blue-500 active:scale-95 hover:scale-110 transition-transform duration-200"
+>
+  {loading ? <ImSpinner8 className="animate-spin" /> : <MdSearch />}
+</button>
       </div>
 
       {/* دکمه‌های زبان */}
