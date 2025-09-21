@@ -66,6 +66,7 @@ function SceneCore({
   const controlsRef = useRef();
   const [loadedTick, setLoadedTick] = useState(0);
 
+  
   const minZoom = isPortrait ? 20 : 20;
   const maxZoom = isPortrait ? 60 : 40;
 
@@ -90,6 +91,7 @@ function SceneCore({
             rotation={[0, 0, 0]}
             onLoaded={handleModelLoaded}
           />
+        </Suspense>
           <LabelsLayer
             floorDestinations={floorDestinations}
             lastPoint={lastPoint}
@@ -97,7 +99,6 @@ function SceneCore({
             maxVisibleDistance={maxZoom}
             fadeStartDistance={maxZoom - 15}
           />
-        </Suspense>
 
         <PathOverlay
           points={pathPoints}

@@ -13,14 +13,11 @@ export default function PathOverlay({ points, colors, labelText, maxZoomDistance
 
   const start = points[0];
   const end = points[points.length - 1];
-console.log('====================================');
-console.log("points 🧨🎇",points);
-console.log('====================================');
   return (
     <>
-      {/* <DottedStraightPath points={points} spacing={1} size={0.1} animate /> */}
       {points.length > 1 ? (
         <>
+        {/* <DottedStraightPath points={points} spacing={1} size={0.1} animate /> */}
         <ArrowStraightPath
       points={points}
        spacing={0.7}     

@@ -11,7 +11,10 @@ export default function DestinationsLabels({ destinations, z = 2, verticalOffset
       Math.abs(destPosition[2] - pos[2]) < 0.01
     );
   };
-
+console.log('====================================');
+console.log('maxVisibleDistance :',maxVisibleDistance);
+console.log('fadeStartDistance :',fadeStartDistance);
+console.log('====================================');
   return (
     <>
       {destinations.map(dest => {
