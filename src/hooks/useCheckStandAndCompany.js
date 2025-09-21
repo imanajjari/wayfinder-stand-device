@@ -1,3 +1,4 @@
+// src\hooks\useCheckStandAndCompany.js
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCompanyData } from "../services/companyService";

@@ -28,6 +28,14 @@ export default function SettingPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();  // به فرم جلوگیری از ریفرش بده
+
+
+    // ذخیره اطلاعات کاربر در localStorage
+    localStorage.setItem("userCredentials", JSON.stringify({ id, email, password }));
+
+
+
+
     setError(null);
     setMessage('');
     setIsLoading(true);
@@ -42,9 +50,6 @@ export default function SettingPage() {
         saveStandData(response);
 
         if (response.user) {
-          console.log('====================================');
-          console.log('response.user :',response.user);
-          console.log('====================================');
           await saveCompanyWithLogo(response.user);
         }
 
