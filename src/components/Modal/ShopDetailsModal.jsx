@@ -1,17 +1,60 @@
-import React, { useEffect, useState } from 'react';
-import { IoClose, IoLocation, IoCall, IoTime, IoInformation, IoNavigate } from 'react-icons/io5';
-import { getFileUrl } from '../../services/fileService';
-import useTheme from '../../hooks/useTheme';
-import { usePath } from '../../contexts/PathContext';
-import { useSearchResults } from '../../contexts/SearchResultsContext';
-import { findFloorOfDestination } from '../../lib/floorUtils';
+// src/components/modals/ShopDetailsModal.jsx
+import React, { useEffect, useState, useMemo } from "react";
+import {
+  IoClose,
+  IoLocation,
+  IoCall,
+  IoTime,
+  IoInformation,
+  IoNavigate,
+} from "react-icons/io5";
+import { getFileUrl } from "../../services/fileService";
+import useTheme from "../../hooks/useTheme";
+import { usePath } from "../../contexts/PathContext";
+import { useSearchResults } from "../../contexts/SearchResultsContext";
+import { findFloorOfDestination } from "../../lib/floorUtils";
+
+function hexToRgba(hex, alpha = 1) {
+  if (!hex) return `rgba(0,0,0,${alpha})`;
+  let c = hex.replace("#", "");
+  if (c.length === 3) c = c.split("").map((x) => x + x).join("");
+  const bigint = parseInt(c, 16);
+  // If 8-digit HEX (AARRGGBB), slice last 6 for RGB
+  const hasAlphaInHex = c.length === 8;
+  const r = hasAlphaInHex ? (bigint >> 16) & 255 : (bigint >> 16) & 255;
+  const g = hasAlphaInHex ? (bigint >> 8) & 255 : (bigint >> 8) & 255;
+  const b = hasAlphaInHex ? bigint & 255 : bigint & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
 
 export default function ShopDetailsModal({ isOpen, onClose, shop }) {
   const [shouldRender, setShouldRender] = useState(false);
   const [animateIn, setAnimateIn] = useState(false);
-  const { colors } = useTheme();
+  const { theme, colors } = useTheme();
   const { updateDestination } = usePath();
   const { hideResults } = useSearchResults();
+
+  const headerGradient = useMemo(
+    () =>
+      theme === "dark"
+        ? "linear-gradient(90deg, #0f172a, #1f2937)" // slate-900 → gray-800
+        : "linear-gradient(90deg, #3b82f6, #8b5cf6)", // blue-500 → purple-500
+    [theme]
+  );
+
+  const sectionCardStyle = useMemo(
+    () => ({
+      backgroundColor: hexToRgba(colors.canvasBackground, theme === "dark" ? 0.08 : 0.5),
+      border: `1px solid ${hexToRgba(colors.textMuted, 0.18)}`,
+      borderRadius: "0.75rem",
+    }),
+    [colors, theme]
+  );
+
+  const softBorder = useMemo(
+    () => ({ borderColor: hexToRgba(colors.textMuted, 0.2) }),
+    [colors]
+  );
 
   const handleNavigateToShop = () => {
     if (shop && shop.entrance) {
@@ -22,26 +65,23 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
         floorNumber: shop.floorNum,
         floorId: findFloorOfDestination(shop).floorId,
       });
-      
-      // بستن هر دو مودال بعد از شروع مسیریابی
-      hideResults(); // بستن مودال لیست فروشگاه‌ها
-      onClose(); // بستن مودال جزئیات فروشگاه
+      hideResults(); // بستن مودال نتایج
+      onClose(); // بستن همین مودال
     }
   };
 
   useEffect(() => {
     if (isOpen) {
       setShouldRender(true);
-      document.body.style.overflow = 'hidden'; // جلوگیری از اسکرول صفحه
+      document.body.style.overflow = "hidden";
       setTimeout(() => setAnimateIn(true), 10);
     } else {
       setAnimateIn(false);
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
       setTimeout(() => setShouldRender(false), 300);
     }
-
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isOpen]);
 
@@ -50,97 +90,163 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
   return (
     <div className="fixed inset-0 z-[9999] flex justify-center pt-8 pb-4">
       {/* Backdrop */}
-      <div 
-        className={`absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity duration-300 ${
-          animateIn ? 'opacity-100' : 'opacity-0'
+      <div
+        className={`absolute inset-0 transition-opacity duration-300 ${
+          animateIn ? "opacity-100" : "opacity-0"
         }`}
+        style={{
+          backgroundColor: "rgba(0,0,0,0.8)",
+          backdropFilter: "blur(6px)",
+        }}
         onClick={onClose}
       />
-      
-      {/* Modal Content */}
-      <div 
-        className={`relative bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[calc(100vh-4rem)] overflow-hidden transition-all duration-300 ease-out mx-4 ${
-          animateIn ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
+
+      {/* Modal */}
+      <div
+        className={`relative w-full max-w-4xl max-h-[calc(100vh-4rem)] overflow-hidden transition-all duration-300 ease-out mx-4 rounded-2xl shadow-2xl ${
+          animateIn ? "scale-100 opacity-100" : "scale-95 opacity-0"
         }`}
         style={{ backgroundColor: colors.background }}
+        role="dialog"
+        aria-modal="true"
+        aria-label={shop.fullName || shop.shortName || "Shop details"}
       >
         {/* Header */}
-        <div className="relative h-64 bg-gradient-to-r from-blue-600 to-purple-600 overflow-hidden">
+        <div
+          className="relative h-64 overflow-hidden"
+          style={{ background: headerGradient }}
+        >
           {shop.icon && (
             <img
               src={getFileUrl(shop.icon)}
               alt={shop.name}
-              className="absolute inset-0 w-full h-full object-cover opacity-30"
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ opacity: 0.3 }}
             />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          
-          {/* Close Button */}
+          <div
+            className="absolute inset-0"
+            style={{ background: "linear-gradient(to top, rgba(0,0,0,0.5), transparent)" }}
+          />
+
+          {/* Close */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 w-10 h-10 bg-black/30 hover:bg-black/50 rounded-full flex items-center justify-center transition-colors"
+            className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center transition-colors"
+            style={{
+              backgroundColor: "rgba(0,0,0,0.35)",
+            }}
+            aria-label="بستن"
+            title="بستن"
           >
-            <IoClose className="w-6 h-6" />
+            <IoClose className="w-6 h-6" style={{ color: "#fff" }} />
           </button>
 
-          {/* Navigation Button */}
+          {/* Navigate */}
           <button
             onClick={handleNavigateToShop}
-            className="absolute top-4 right-16 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full flex items-center gap-2 transition-colors shadow-lg"
+            className="absolute top-4 right-16 px-4 py-2 rounded-full flex items-center gap-2 transition-colors shadow-lg"
+            style={{
+              background:
+                theme === "dark"
+                  ? "linear-gradient(90deg, #2563eb, #7c3aed)"
+                  : "linear-gradient(90deg, #3b82f6, #8b5cf6)",
+              color: "#fff",
+            }}
             title="شروع مسیریابی به این فروشگاه"
           >
             <IoNavigate className="w-5 h-5" />
             <span className="text-sm font-medium">نمایش مسیر</span>
           </button>
 
-          {/* Shop Logo/Icon */}
+          {/* Identity */}
           <div className="absolute bottom-4 left-6 flex items-end gap-4">
             {shop.icon ? (
               <img
                 src={getFileUrl(shop.icon)}
                 alt={shop.name}
-                className="w-20 h-20 rounded-xl bg-white/10 backdrop-blur-sm object-cover border-2 border-white/20"
+                className="w-20 h-20 rounded-xl object-cover border-2"
+                style={{
+                  backgroundColor: hexToRgba(colors.canvasBackground, 0.2),
+                  ...softBorder,
+                }}
               />
             ) : (
-                             <div className="w-20 h-20 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center text-2xl font-bold border-2 border-white/20">
-                 {shop.shortName?.[0] || shop.fullName?.[0] || "?"}
-               </div>
+              <div
+                className="w-20 h-20 rounded-xl flex items-center justify-center text-2xl font-bold border-2"
+                style={{
+                  backgroundColor: hexToRgba(colors.canvasBackground, 0.2),
+                  color: colors.textPrimary,
+                  ...softBorder,
+                }}
+              >
+                {shop.shortName?.[0] || shop.fullName?.[0] || "?"}
+              </div>
             )}
-            
+
             <div className="pb-2">
-              <h1 className="text-2xl font-bold mb-1">{shop.fullName || shop.shortName}</h1>
-              <p className="text-white/80 text-sm">
-                طبقه {shop.floorNum === 0 ? 'همکف' : shop.floorNum}
+              <h1
+                className="text-2xl font-bold mb-1"
+                style={{ color: colors.textPrimary }}
+              >
+                {shop.fullName || shop.shortName}
+              </h1>
+              <p className="text-sm" style={{ color: colors.textSecondary }}>
+                طبقه {shop.floorNum === 0 ? "همکف" : shop.floorNum}
                 {shop.buildingNumber && ` - ساختمان ${shop.buildingNumber}`}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(100vh-20rem)]">
+        {/* Body */}
+        <div
+          className="p-6 overflow-y-auto max-h-[calc(100vh-20rem)]"
+          style={{ color: colors.textPrimary }}
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
-            {/* Shop Information */}
+            {/* Info */}
             <div className="space-y-4">
-              <div className="flex items-center gap-3 mb-4">
-                <IoInformation className="w-5 h-5 text-blue-400" />
-                <h2 className="text-xl font-semibold">اطلاعات فروشگاه</h2>
+              <div className="flex items-center gap-3 mb-2">
+                <IoInformation className="w-5 h-5" style={{ color: colors.textSecondary }} />
+                <h2 className="text-xl font-semibold" style={{ color: colors.textPrimary }}>
+                  اطلاعات فروشگاه
+                </h2>
               </div>
 
               {shop.desc && (
-                <div className="bg-white/5 rounded-lg p-4">
-                  <h3 className="font-medium mb-2 text-gray-300">توضیحات</h3>
-                  <p className="text-gray-200 leading-relaxed">{shop.desc}</p>
+                <div style={sectionCardStyle} className="p-4">
+                  <h3
+                    className="font-medium mb-2"
+                    style={{ color: colors.textSecondary }}
+                  >
+                    توضیحات
+                  </h3>
+                  <p className="leading-relaxed">{shop.desc}</p>
                 </div>
               )}
 
-              {shop.categories && shop.categories.length > 0 && (
-                <div className="bg-white/5 rounded-lg p-4">
-                  <h3 className="font-medium mb-2 text-gray-300">دسته‌بندی</h3>
+              {shop.categories?.length > 0 && (
+                <div style={sectionCardStyle} className="p-4">
+                  <h3
+                    className="font-medium mb-2"
+                    style={{ color: colors.textSecondary }}
+                  >
+                    دسته‌بندی
+                  </h3>
                   <div className="flex flex-wrap gap-2">
-                    {shop.categories.map((category, index) => (
-                      <span key={index} className="inline-block bg-blue-600/20 text-blue-300 px-3 py-1 rounded-full text-sm">
+                    {shop.categories.map((category, i) => (
+                      <span
+                        key={i}
+                        className="inline-block px-3 py-1 rounded-full text-sm"
+                        style={{
+                          background:
+                            theme === "dark"
+                              ? hexToRgba(colors.modelColor, 0.18)
+                              : hexToRgba(colors.modelColor, 0.12),
+                          color: colors.textPrimary,
+                        }}
+                      >
                         {category}
                       </span>
                     ))}
@@ -148,12 +254,27 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
                 </div>
               )}
 
-              {shop.tags && shop.tags.length > 0 && (
-                <div className="bg-white/5 rounded-lg p-4">
-                  <h3 className="font-medium mb-2 text-gray-300">برچسب‌ها</h3>
+              {shop.tags?.length > 0 && (
+                <div style={sectionCardStyle} className="p-4">
+                  <h3
+                    className="font-medium mb-2"
+                    style={{ color: colors.textSecondary }}
+                  >
+                    برچسب‌ها
+                  </h3>
                   <div className="flex flex-wrap gap-2">
-                    {shop.tags.map((tag, index) => (
-                      <span key={index} className="bg-purple-600/20 text-purple-300 px-2 py-1 rounded text-xs">
+                    {shop.tags.map((tag, i) => (
+                      <span
+                        key={i}
+                        className="px-2 py-1 rounded text-xs"
+                        style={{
+                          background:
+                            theme === "dark"
+                              ? hexToRgba("#7c3aed", 0.18)
+                              : hexToRgba("#7c3aed", 0.12),
+                          color: colors.textPrimary,
+                        }}
+                      >
                         {tag}
                       </span>
                     ))}
@@ -162,49 +283,69 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
               )}
             </div>
 
-            {/* Contact Information */}
+            {/* Contact */}
             <div className="space-y-4">
-              <div className="flex items-center gap-3 mb-4">
-                <IoCall className="w-5 h-5 text-green-400" />
-                <h2 className="text-xl font-semibold">اطلاعات تماس</h2>
+              <div className="flex items-center gap-3 mb-2">
+                <IoCall className="w-5 h-5" style={{ color: colors.textSecondary }} />
+                <h2 className="text-xl font-semibold" style={{ color: colors.textPrimary }}>
+                  اطلاعات تماس
+                </h2>
               </div>
 
               {shop.phone && (
-                <div className="bg-white/5 rounded-lg p-4">
+                <div style={sectionCardStyle} className="p-4">
                   <div className="flex items-center gap-3">
-                    <IoCall className="w-4 h-4 text-green-400" />
+                    <IoCall className="w-4 h-4" style={{ color: colors.pointStart }} />
                     <div>
-                      <h3 className="font-medium text-gray-300">تلفن</h3>
-                      <p className="text-gray-200">{shop.phone}</p>
+                      <h3
+                        className="font-medium"
+                        style={{ color: colors.textSecondary }}
+                      >
+                        تلفن
+                      </h3>
+                      <p>{shop.phone}</p>
                     </div>
                   </div>
                 </div>
               )}
 
               {shop.workingHours && (
-                <div className="bg-white/5 rounded-lg p-4">
+                <div style={sectionCardStyle} className="p-4">
                   <div className="flex items-center gap-3">
-                    <IoTime className="w-4 h-4 text-orange-400" />
+                    <IoTime className="w-4 h-4" style={{ color: colors.pointEnd }} />
                     <div>
-                      <h3 className="font-medium text-gray-300">ساعات کاری</h3>
-                      <p className="text-gray-200">{shop.workingHours}</p>
+                      <h3
+                        className="font-medium"
+                        style={{ color: colors.textSecondary }}
+                      >
+                        ساعات کاری
+                      </h3>
+                      <p>{shop.workingHours}</p>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Location Info */}
-              <div className="bg-white/5 rounded-lg p-4">
+              {/* Location */}
+              <div style={sectionCardStyle} className="p-4">
                 <div className="flex items-center gap-3">
-                  <IoLocation className="w-4 h-4 text-red-400" />
+                  <IoLocation className="w-4 h-4" style={{ color: "#ef4444" }} />
                   <div>
-                    <h3 className="font-medium text-gray-300">موقعیت</h3>
-                    <p className="text-gray-200">
-                      طبقه {shop.floorNum === 0 ? 'همکف' : shop.floorNum}
+                    <h3
+                      className="font-medium"
+                      style={{ color: colors.textSecondary }}
+                    >
+                      موقعیت
+                    </h3>
+                    <p>
+                      طبقه {shop.floorNum === 0 ? "همکف" : shop.floorNum}
                       {shop.buildingNumber && `، ساختمان ${shop.buildingNumber}`}
                     </p>
                     {shop.entrance && (
-                      <p className="text-sm text-gray-400 mt-1">
+                      <p
+                        className="text-sm mt-1"
+                        style={{ color: colors.textMuted }}
+                      >
                         مختصات: ({shop.entrance.x}, {shop.entrance.y})
                       </p>
                     )}
@@ -212,17 +353,23 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
                 </div>
               </div>
 
-              {/* Additional Images */}
-              {shop.gallery && shop.gallery.length > 0 && (
-                <div className="bg-white/5 rounded-lg p-4">
-                  <h3 className="font-medium mb-3 text-gray-300">گالری تصاویر</h3>
+              {/* Gallery */}
+              {shop.gallery?.length > 0 && (
+                <div style={sectionCardStyle} className="p-4">
+                  <h3
+                    className="font-medium mb-3"
+                    style={{ color: colors.textSecondary }}
+                  >
+                    گالری تصاویر
+                  </h3>
                   <div className="grid grid-cols-2 gap-2">
-                    {shop.gallery.map((image, index) => (
+                    {shop.gallery.map((image, i) => (
                       <img
-                        key={index}
+                        key={i}
                         src={getFileUrl(image)}
-                        alt={`${shop.name} - تصویر ${index + 1}`}
+                        alt={`${shop.name} - تصویر ${i + 1}`}
                         className="w-full h-20 object-cover rounded-lg"
+                        style={{ border: `1px solid ${hexToRgba(colors.textMuted, 0.12)}` }}
                       />
                     ))}
                   </div>
@@ -231,48 +378,75 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
             </div>
           </div>
 
-          {/* Additional Information - Show only if we have basic shop info */}
-          {shop.id && (
-            <div className="mt-6 pt-6 border-t border-white/10">
-              <h2 className="text-xl font-semibold mb-4">اطلاعات تکمیلی</h2>
+          {/* Extra */}
+          {(shop.id || shop.fullName || shop.website || shop.email || shop.specialOffers) && (
+            <div
+              className="mt-6 pt-6"
+              style={{ borderTop: `1px solid ${hexToRgba(colors.textMuted, 0.12)}` }}
+            >
+              <h2
+                className="text-xl font-semibold mb-4"
+                style={{ color: colors.textPrimary }}
+              >
+                اطلاعات تکمیلی
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                
-                {/* Shop ID */}
-                <div className="bg-white/5 rounded-lg p-4">
-                  <h3 className="font-medium mb-2 text-gray-300">شناسه فروشگاه</h3>
-                  <p className="text-gray-200 text-sm">#{shop.id}</p>
-                </div>
-
-                {/* Full Name if different from short name */}
-                {shop.fullName && shop.fullName !== shop.shortName && (
-                  <div className="bg-white/5 rounded-lg p-4">
-                    <h3 className="font-medium mb-2 text-gray-300">نام کامل</h3>
-                    <p className="text-gray-200 text-sm">{shop.fullName}</p>
+                {shop.id && (
+                  <div style={sectionCardStyle} className="p-4">
+                    <h3
+                      className="font-medium mb-2"
+                      style={{ color: colors.textSecondary }}
+                    >
+                      شناسه فروشگاه
+                    </h3>
+                    <p className="text-sm">#{shop.id}</p>
                   </div>
                 )}
 
-                {/* Website if exists */}
+                {shop.fullName && shop.fullName !== shop.shortName && (
+                  <div style={sectionCardStyle} className="p-4">
+                    <h3
+                      className="font-medium mb-2"
+                      style={{ color: colors.textSecondary }}
+                    >
+                      نام کامل
+                    </h3>
+                    <p className="text-sm">{shop.fullName}</p>
+                  </div>
+                )}
+
                 {shop.website && (
-                  <div className="bg-white/5 rounded-lg p-4">
-                    <h3 className="font-medium mb-2 text-gray-300">وب‌سایت</h3>
-                    <a 
-                      href={shop.website} 
-                      target="_blank" 
+                  <div style={sectionCardStyle} className="p-4">
+                    <h3
+                      className="font-medium mb-2"
+                      style={{ color: colors.textSecondary }}
+                    >
+                      وب‌سایت
+                    </h3>
+                    <a
+                      href={shop.website}
+                      target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-400 hover:text-blue-300 transition-colors text-sm"
+                      className="text-sm underline"
+                      style={{ color: colors.textLink }}
                     >
                       مشاهده وب‌سایت
                     </a>
                   </div>
                 )}
 
-                {/* Email if exists */}
                 {shop.email && (
-                  <div className="bg-white/5 rounded-lg p-4">
-                    <h3 className="font-medium mb-2 text-gray-300">ایمیل</h3>
-                    <a 
+                  <div style={sectionCardStyle} className="p-4">
+                    <h3
+                      className="font-medium mb-2"
+                      style={{ color: colors.textSecondary }}
+                    >
+                      ایمیل
+                    </h3>
+                    <a
                       href={`mailto:${shop.email}`}
-                      className="text-blue-400 hover:text-blue-300 transition-colors text-sm"
+                      className="text-sm underline break-all"
+                      style={{ color: colors.textLink }}
                     >
                       {shop.email}
                     </a>
@@ -280,24 +454,48 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
                 )}
               </div>
 
-              {/* Special offers if exists */}
               {shop.specialOffers && (
                 <div className="mt-4">
-                  <div className="bg-gradient-to-r from-yellow-600/20 to-orange-600/20 rounded-lg p-4 text-center border border-yellow-600/30">
-                    <h3 className="font-medium mb-2 text-yellow-300">پیشنهاد ویژه</h3>
-                    <p className="text-yellow-200 text-sm">{shop.specialOffers}</p>
+                  <div
+                    className="rounded-lg p-4 text-center"
+                    style={{
+                      background:
+                        theme === "dark"
+                          ? "linear-gradient(90deg, rgba(234,179,8,0.15), rgba(234,88,12,0.15))"
+                          : "linear-gradient(90deg, rgba(234,179,8,0.25), rgba(234,88,12,0.25))",
+                      border: `1px solid ${hexToRgba("#eab308", 0.35)}`,
+                      color: theme === "dark" ? "#fde68a" : "#92400e",
+                    }}
+                  >
+                    <h3 className="font-medium mb-2">پیشنهاد ویژه</h3>
+                    <p className="text-sm">{shop.specialOffers}</p>
                   </div>
                 </div>
               )}
             </div>
-                      )}
+          )}
         </div>
 
-        {/* Bottom Navigation Button */}
-        <div className="sticky bottom-0 bg-gradient-to-t from-gray-900 to-transparent p-6 pt-8">
+        {/* Bottom CTA */}
+        <div
+          className="sticky bottom-0 p-6 pt-8"
+          style={{
+            background: `linear-gradient(to top, ${hexToRgba(
+              colors.background,
+              0.95
+            )}, ${hexToRgba(colors.background, 0)})`,
+          }}
+        >
           <button
             onClick={handleNavigateToShop}
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 px-6 rounded-xl flex items-center justify-center gap-3 transition-all duration-200 transform hover:scale-105 shadow-lg"
+            className="w-full py-3 px-6 rounded-xl flex items-center justify-center gap-3 transition-transform hover:scale-[1.02] shadow-lg"
+            style={{
+              background:
+                theme === "dark"
+                  ? "linear-gradient(90deg, #2563eb, #7c3aed)"
+                  : "linear-gradient(90deg, #3b82f6, #8b5cf6)",
+              color: "#fff",
+            }}
           >
             <IoNavigate className="w-6 h-6" />
             <span className="text-lg font-semibold">شروع مسیریابی</span>
@@ -306,4 +504,4 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
       </div>
     </div>
   );
-} 
+}
