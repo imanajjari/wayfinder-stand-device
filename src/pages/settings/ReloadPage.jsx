@@ -1,5 +1,7 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import SettingsLayout from "../../layouts/SettingsLayout";
+import { toast } from "react-toastify";
 
 export default function ReloadPage() {
   const navigate = useNavigate();
@@ -7,7 +9,8 @@ export default function ReloadPage() {
 
   const handleConfirm = () => {
     localStorage.clear();
-    navigate('/');
+    toast.success("خروج از حساب");
+    navigate("/");
   };
 
   const handleCancel = () => {
@@ -15,16 +18,21 @@ export default function ReloadPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 via-blue-50 to-indigo-100 p-6">
-      <div className="bg-white shadow-lg rounded-xl p-6 md:p-10 max-w-md text-center space-y-6 border border-gray-200">
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+    <SettingsLayout>
+      <div className="bg-[#10172A70]/40 backdrop-blur-lg shadow-lg rounded-xl p-6 md:p-10 max-w-md text-white text-center space-y-6 border border-[#525f8170]">
+        <h2 className="text-2xl md:text-3xl font-bold text-white ">
           آیا از پاک کردن حافظه اطمینان دارید؟
         </h2>
-        <p className="text-gray-600 text-sm md:text-base">
-          با انجام این کار، تمام اطلاعات ذخیره‌شده در حافظه حذف می‌شود و به صفحه ورود یا تنظیمات بازمی‌گردید.
+        <p className="text-gray-300 text-sm md:text-base">
+          با انجام این کار، تمام اطلاعات ذخیره‌شده در حافظه حذف می‌شود و به صفحه
+          ورود یا تنظیمات بازمی‌گردید.
         </p>
 
-        <div className={`flex justify-center gap-4 mt-6 ${canGoBack ? '' : 'justify-center'}`}>
+        <div
+          className={`flex justify-center gap-4 mt-6 ${
+            canGoBack ? "" : "justify-center"
+          }`}
+        >
           <button
             onClick={handleConfirm}
             className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg transition"
@@ -42,6 +50,6 @@ export default function ReloadPage() {
           )}
         </div>
       </div>
-    </div>
+    </SettingsLayout>
   );
 }

@@ -59,7 +59,7 @@ export const saveCompanyWithLogo = async (companyData) => {
     }
 
     saveCompanyData(companyData);
-    console.log('✅ اطلاعات کمپانی همراه با لوگو ذخیره شد.');
+    // console.log('✅ اطلاعات کمپانی همراه با لوگو ذخیره شد.');
   } catch (error) {
     console.error('خطا در ذخیره کمپانی همراه با لوگو:', error);
   }

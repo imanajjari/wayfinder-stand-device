@@ -5,6 +5,7 @@ import { postSetting } from "../../services/settingService";
 import { saveFloors, saveMyStand, saveStandData, saveDestinations } from "../../services/floorService";
 import { getAllDestinations } from "../../services/destinationService";
 import { saveCompanyWithLogo } from "../../services/companyService";
+import SettingsLayout from "../../layouts/SettingsLayout";
 
 export default function UpdateDataPage() {
   const navigate = useNavigate();
@@ -54,12 +55,12 @@ export default function UpdateDataPage() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4">
-      <div className="w-full max-w-sm sm:max-w-md bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-xl text-center">
+    <SettingsLayout>
+      <div className="w-full max-w-sm sm:max-w-md bg-[#10172A70]/40 backdrop-blur-lg border border-[#414f7470] p-6 rounded-2xl shadow-xl text-center">
         {status === "loading" && (
           <>
-            <IoReload className="animate-spin w-10 h-10 mx-auto text-blue-500" />
-            <p className="mt-4 text-gray-700">در حال به‌روزرسانی داده‌ها...</p>
+            <IoReload className="animate-spin w-10 h-10 mx-auto text-white" />
+            <p className="mt-4 text-gray-300">در حال به‌روزرسانی داده‌ها...</p>
           </>
         )}
 
@@ -77,6 +78,6 @@ export default function UpdateDataPage() {
           </>
         )}
       </div>
-    </div>
+      </SettingsLayout>
   );
 }

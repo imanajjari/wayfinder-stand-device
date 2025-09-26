@@ -28,13 +28,13 @@ export default function TopNav() {
         <AdBanner
           content={
             ad ? (
-              <img src={getFileUrl(ad.file)} alt={ad.name} className="w-full" />
+              <img src={getFileUrl(ad.file)} alt={ad.name} className="w-full rounded-2xl" />
             ) : (
-              <img src="/gift/6831618277c514f21f69a714dfd8a21dc58938dc_1748446476.gif" className="" />
+              <img src="/gift/6831618277c514f21f69a714dfd8a21dc58938dc_1748446476.gif" className="rounded-2xl" />
             )
           }
           onClick={() => alert("بنر کلیک شد!")}
-          className="bg-red-600/20 2xl:hidden"
+          className=" 2xl:hidden"
         />
         <WideNavbar />
       </div>
