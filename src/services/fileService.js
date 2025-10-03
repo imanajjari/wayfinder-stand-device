@@ -1,6 +1,16 @@
+// src\services\fileService.js
 import api from '../api/api';
 import { getCompanyData } from './companyService';
 import { appendCompanyIdToUrl } from './urlBuilder';
+
+export const uploadQrCodeImage = async (formData) => {
+  const company = await getCompanyData();
+  return api.post(`/api/file/map/${company.id}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+};
+
+
 // 📌 آپلود فایل (عکس دسته‌بندی مثلاً)
 export const uploadFile = async (formData) => {
   return api.post('/api/file', formData, {
@@ -32,3 +42,4 @@ export const fetchImageAsBase64 = async (url) => {
     reader.readAsDataURL(blob);
   });
 };
+
