@@ -1,4 +1,5 @@
 // Navigator3DScene.jsx
+import { Perf } from "r3f-perf";
 import { Canvas, useThree } from "@react-three/fiber";
 import { Suspense, useCallback, useMemo, useRef, useState } from "react";
 import GLBModel from "../../components/Models/GLBModel";
@@ -11,6 +12,7 @@ import FitCameraToObject from "../../components/scene/FitCameraToObject";
 import { useScreenshot } from "../../utils/useScreenshot";
 import { QRCodeCanvas } from "qrcode.react";
 import { useQrCodeUpload } from "../../hooks/QrCode/useQrCodeUpload";
+
 
 import { MdOutlineScreenshot } from "react-icons/md";
 import { ImSpinner8 } from "react-icons/im";
@@ -88,10 +90,12 @@ function SceneCore({
 export default function Navigator3DScene(props) {
   const { colors } = props;
   const [qrUrl, setQrUrl] = useState(null);
-  const { handleUploadQr, loading } = useQrCodeUpload();
+  const [loading, setLoading] = useState(false);
+  const { handleUploadQr } = useQrCodeUpload();
 
   const handleCapture = useCallback(
     async (screenshot) => {
+      setLoading(true)
       // 1️⃣ تبدیل Base64 به فایل برای آپلود
       const res = await fetch(screenshot);
       const blob = await res.blob();
@@ -106,6 +110,7 @@ export default function Navigator3DScene(props) {
       } catch (err) {
         console.error("خطا در آپلود عکس:", err);
       }
+      setLoading(false)
     },
     [handleUploadQr]
   );
@@ -117,6 +122,7 @@ export default function Navigator3DScene(props) {
         camera={{ position: [0, 0, 60], fov: 50 }}
         gl={{ antialias: true, preserveDrawingBuffer: true }}
       >
+         <Perf position="top-left" />
         <SceneCore {...props} onCapture={handleCapture} />
       </Canvas>
 <ScreenshotQrOverlay qrUrl={qrUrl} loading={loading}/>
