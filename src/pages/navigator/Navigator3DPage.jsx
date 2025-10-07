@@ -15,6 +15,7 @@ import PageLoader from "../../components/scene/PageLoader";
 import NavigatorSearchResultsModal from "../../components/Modal/NavigatorSearchResultsModal";
 import useCheckStandAndCompany from "../../hooks/useCheckStandAndCompany"
 import NavigatorShopDetailsModal from "../../components/Modal/NavigatorShopDetailsModal";
+import BackgroundLightsScene from "../../components/scene/BackgroundLightsScene";
 
 const BASE_OFFSET = 0;
 
@@ -43,7 +44,7 @@ export default function Navigator3DPage() {
     return "نقطه پایان";
   }, [destinationFloorNumber, currentFloorNumber]);
   return (
-    <div style={{ width:"100%", height:"100vh", position:"relative", background: colors.background }}>
+    <div className="overflow-hidden" style={{ width: "100%", height: "100vh", position: "relative", background: colors.background }}>
       <TopNav />
       <Navigator3DScene
         colors={colors}
@@ -63,7 +64,7 @@ export default function Navigator3DPage() {
       />
       {/* ⬅️ لودرِ سراسری، خارج از Canvas تا پرش اولیه نداشته باشیم */}
       <PageLoader />
-      
+      <BackgroundLightsScene />
       {/* Navigator Specific Modals */}
       <NavigatorShopDetailsModal />
     </div>

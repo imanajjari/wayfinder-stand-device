@@ -1,14 +1,13 @@
 import { MdSearch } from 'react-icons/md';
 import { ImSpinner8 } from 'react-icons/im';
 import { useEffect, useState } from 'react';
-import useLanguage from '../../hooks/useLanguage';
 import LocationButton from '../buttons/LocationButton';
 import ThemeToggle from '../buttons/ThemeToggle';
+import LanguageDropdown from '../buttons/LanguageDropdown';
 import { searchDestinationsByName } from '../../services/destinationService';
 import { useSearchResults } from '../../contexts/SearchResultsContext';
 
 export default function SearchPanel() {
-  const { changeLanguage, language } = useLanguage();
   const { showResults, setLoading, loading } = useSearchResults();
   const [query, setQuery] = useState('');
   const [error, setError] = useState('');
@@ -19,8 +18,8 @@ export default function SearchPanel() {
       searchDestinationsByName(query).then(res => {
         // اینجا مثلا نتایج پیشنهادی رو توی state نگه دار
       });
-    }, 500); // نصف ثانیه دیلی
-  
+    }, 500);
+
     return () => clearTimeout(timeout);
   }, [query]);
 
@@ -41,14 +40,8 @@ export default function SearchPanel() {
     }
   };
 
-  const buttons = [
-    { code: 'fa', label: 'فارسی' },
-    { code: 'en', label: 'EN' },
-    { code: 'ar', label: 'AR' },
-  ];
-
   return (
-    <div className="md:flex justify-between flex-col md:flex-row gap-4 px-10">
+    <div className="flex justify-between md:flex-row gap-4 px-3">
       {/* جستجو */}
       <div className="flex items-center gap-2 w-full md:w-1/2">
         <input
@@ -57,33 +50,22 @@ export default function SearchPanel() {
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
           placeholder="مقصدی برای جست‌وجو وارد کنید..."
-          className="flex-1 px-4 py-2 rounded-xl text-black bg-white text-base md:text-2xl"
+          className="w-1/2 flex-1 px-4 py-2 rounded-xl text-[#ffffff] bg-[#324154] text-base md:text-2xl "
         />
-<button
-  onClick={handleSearch}
-  className="bg-blue-600 text-2xl md:text-3xl text-white p-2 rounded-xl hover:bg-blue-500 active:scale-95 hover:scale-110 transition-transform duration-200"
->
-  {loading ? <ImSpinner8 className="animate-spin" /> : <MdSearch />}
-</button>
+        <button
+          onClick={handleSearch}
+          className=" bg-[#00FFAB] 
+                  shadow-[0_0_30px_#00FFAA8D] text-xl sm:text-2xl md:text-3xl text-black p-2 rounded-xl hover:bg-blue-500 active:scale-95 hover:scale-110 transition-transform duration-200"
+        >
+          {loading ? <ImSpinner8 className="animate-spin" /> : <MdSearch />}
+        </button>
       </div>
 
-      {/* دکمه‌های زبان */}
-      <div className="flex justify-center gap-2 pt-2 md:p-0">
-        {buttons.map(({ code, label }) => (
-          <button
-            key={code}
-            onClick={() => changeLanguage(code)}
-            className={`px-2 py-1 md:px-4 md:py-2 rounded-xl border border-gray-500 transition text-sm ${
-              language === code
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-700 hover:bg-gray-600 text-white'
-            }`}
-          >
-            {label}
-          </button>
-        ))}
+      {/* دکمه‌های زبان + موقعیت + تم */}
+      <div className="flex justify-center gap-2 items-center">
+        <LanguageDropdown />
         <LocationButton />
-        <ThemeToggle />
+        {/* <ThemeToggle /> */}
       </div>
 
       {/* نمایش ارور */}

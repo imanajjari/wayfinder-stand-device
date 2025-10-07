@@ -37,16 +37,16 @@ export default function StickyPanels() {
 
   
   return (
-    <div className="bg-black/40 backdrop-blur-md border border-gray-500 text-white  py-4  space-y-6 rounded-2xl ">
+    <div className="bg-black/40  backdrop-blur-md border border-gray-500 text-white  py-4  space-y-6 rounded-2xl ">
       <SearchPanel />
       <CategoriesPanel
         categories={categories}
         maxVisible={20}
       />
       
-      <AmenityPanel
+      {/* <AmenityPanel
         amenity={amenities}
-      />
+      /> */}
     </div>
   );
 }

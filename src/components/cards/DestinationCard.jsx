@@ -20,7 +20,7 @@ function DestinationCard({ shop, onClick, myStand }) {
     <div
       className={`relative flex items-start gap-4 p-4 rounded-xl border ${
         isOnSameFloor 
-          ? 'border-yellow-300 bg-yellow-800' 
+          ? 'border-[#00FFAB] bg-[#2e463e]' 
           : 'border-gray-600 bg-neutral-800'
       } cursor-pointer`}
       onClick={onClick}
@@ -41,7 +41,7 @@ function DestinationCard({ shop, onClick, myStand }) {
         <h3 className="text-lg font-semibold">{shop.shortName}</h3>
         <p className="text-sm text-gray-300">{shop.desc}</p>
         <p className="text-sm text-gray-400">
-          طبقه {shop.floorNum === 0 ? 'همکف' : shop.floorNum}
+          طبقه {shop.floorNum === 0 ? 'همکف' : shop.floorNum} -
           {shop.buildingNumber && ` - ساختمان ${shop.buildingNumber}`}
           {isOnSameFloor && " در این طبقه قرار دارد"}
         </p>
@@ -50,11 +50,11 @@ function DestinationCard({ shop, onClick, myStand }) {
       {/* Question Mark Icon for Details */}
       <button
         onClick={handleDetailsClick}
-        className="absolute top-3 left-3 w-8 h-8 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center transition-colors group"
+        className="absolute top-3 left-3 w-8 h-8 bg-[#00FFAB] hover:bg-[#59ffc8] rounded-full flex items-center justify-center transition-colors group"
         title="مشاهده جزئیات فروشگاه"
         aria-label="مشاهده جزئیات فروشگاه"
       >
-        <IoHelpCircleOutline className="w-5 h-5 text-white group-hover:scale-110 transition-transform" />
+        <IoHelpCircleOutline className="w-5 h-5 text-black group-hover:scale-110 transition-transform" />
       </button>
     </div>
   );

@@ -61,7 +61,7 @@ export default function CategoriesPanel({ categories = [], maxVisible = 20 }) {
     <div>
       <div
         ref={containerRef}
-        className="flex gap-2 overflow-x-auto pb-1 scrollbar-hidden transition-all duration-300 cursor-grab active:cursor-grabbing px-4"
+        className="flex gap-2 overflow-x-auto scrollbar-hidden transition-all duration-300 cursor-grab active:cursor-grabbing px-4"
         onMouseDown={handleMouseDown}
         onMouseLeave={handleMouseLeave}
         onMouseUp={handleMouseUp}
@@ -74,7 +74,7 @@ export default function CategoriesPanel({ categories = [], maxVisible = 20 }) {
           <button
             key={i}
             onClick={() => handleCategoryClick(cat)}
-            className="flex items-center gap-2 px-3 py-1 bg-neutral-700 rounded-full whitespace-normal break-words border border-gray-500 hover:bg-neutral-600 transition"
+            className="flex items-center gap-2 px-4 py-2 bg-[#10172A] rounded-xl whitespace-normal break-words border border-gray-500 hover:bg-neutral-600 transition"
           >
             <img
               src={getFileUrl(cat.icon)}

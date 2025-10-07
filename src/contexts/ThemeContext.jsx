@@ -7,7 +7,7 @@ const lightTheme = {
   background: "#f8f8f8",
   canvasBackground: "#ffffff",
   textPrimary: "#1a1a1a", // متن اصلی
-  textSecondary: "#2B2E2EFF", // متن ثانویه
+  textSecondary: "#C1C1C1FF", // متن ثانویه
   textMuted: "#666666", // متن کم‌رنگ
   textHeader: "#000000", // متن هدر
   textLink: "#0066cc", // رنگ لینک

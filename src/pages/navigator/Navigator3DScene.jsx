@@ -35,7 +35,7 @@ function SceneCore({
   const [loadedTick, setLoadedTick] = useState(0);
 
   const minZoom = isPortrait ? 20 : 20;
-  const maxZoom = isPortrait ? 60 : 40;
+  const maxZoom = isPortrait ? 100 : 100;
 
   const handleModelLoaded = useCallback(() => {
     setLoadedTick((t) => t + 1);
@@ -93,6 +93,9 @@ export default function Navigator3DScene(props) {
   const [loading, setLoading] = useState(false);
   const { handleUploadQr } = useQrCodeUpload();
 
+  const handlerefreshQRUrl =() =>{
+setQrUrl(null)
+  }
   const handleCapture = useCallback(
     async (screenshot) => {
       setLoading(true)
@@ -118,14 +121,14 @@ export default function Navigator3DScene(props) {
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <Canvas
-        style={{ background: colors.canvasBackground, transition: "0.5s" }}
+        style={{ background: "#000",backgroundImage: "url('/images/bg-scene.png')",backgroundRepeat: "repeat",backgroundSize: "100px", transition: "0.5s" }}
         camera={{ position: [0, 0, 60], fov: 50 }}
         gl={{ antialias: true, preserveDrawingBuffer: true }}
       >
-         <Perf position="top-left" />
+         {/* <Perf position="top-left" /> */}
         <SceneCore {...props} onCapture={handleCapture} />
       </Canvas>
-<ScreenshotQrOverlay qrUrl={qrUrl} loading={loading}/>
+<ScreenshotQrOverlay qrUrl={qrUrl} handlerefreshQRUrl={handlerefreshQRUrl}  loading={loading}/>
 
       
 
