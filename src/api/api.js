@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: 'http://45.159.150.16:3000/', // آدرس بک‌اند محلی
-  timeout: 30000,
+  timeout: 50000,
   headers: {
     'Content-Type': 'application/json',
   },
