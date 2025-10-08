@@ -132,7 +132,7 @@ export default function ArrowStraightPath({
     }
 
     const s = size + size * 0.5 * w;
-    const c = new Color("#ffffff").lerp(new Color("#FF0000"), w);
+    const c = new Color("#ffffff").lerp(new Color("#00FFAB"), w);
     return { scale: s, color: c };
   };
 

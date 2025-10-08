@@ -38,7 +38,7 @@ export default function PathOverlay({ points, colors, labelText, maxZoomDistance
             position={{ x: end.x, y: end.y, z: end.z }}
             label="نقطه پایان"
             pointColor={colors.pointEnd}
-            textColor="red"
+            textColor={colors.pointEnd}
             textHeightOffset={1}
             fadeStartDistance={maxZoomDistance - 10}
             maxVisibleDistance={maxZoomDistance}

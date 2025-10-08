@@ -12,8 +12,8 @@ const lightTheme = {
   textHeader: "#000000", // متن هدر
   textLink: "#0066cc", // رنگ لینک
   modelColor: "#474D84",
-  pointStart: "blue",
-  pointEnd: "red",
+  pointStart: "#008AFF",
+  pointEnd: "#00FFAB",
 };
 
 const darkTheme = {
@@ -25,8 +25,8 @@ const darkTheme = {
   textHeader: "#000000", // متن هدر
   textLink: "#0066cc", // رنگ لینک
   modelColor: "#474D84",
-  pointStart: "#3b82f6",
-  pointEnd: "#ef4444",
+  pointStart: "#008AFF",
+  pointEnd: "#00FFAB",
 };
 
 export const ThemeProvider = ({ children }) => {
