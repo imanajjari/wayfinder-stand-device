@@ -74,7 +74,7 @@ export default function CategoriesPanel({ categories = [], maxVisible = 20 }) {
           <button
             key={i}
             onClick={() => handleCategoryClick(cat)}
-            className="flex items-center gap-2 px-4 py-2 bg-[#10172A] rounded-xl whitespace-normal break-words border border-gray-500 hover:bg-neutral-600 transition"
+            className="flex items-center gap-2 px-4 py-2 bg-[#10172A] rounded-2xl whitespace-normal break-words border border-gray-500 hover:bg-neutral-600 transition"
           >
             <img
               src={getFileUrl(cat.icon)}

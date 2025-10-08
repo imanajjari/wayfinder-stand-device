@@ -69,6 +69,79 @@
   font-display: swap;
 }
 
+/* فونت یکان بخ - تین */
+@font-face {
+  font-family: 'YekanBakh';
+  src: url('/fonts/yekanbakh/YekanBakh-Thin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* فونت یکان بخ - لایت */
+@font-face {
+  font-family: 'YekanBakh';
+  src: url('/fonts/yekanbakh/YekanBakh-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* فونت یکان بخ - رگولار */
+@font-face {
+  font-family: 'YekanBakh';
+  src: url('/fonts/yekanbakh/YekanBakh-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* فونت یکان بخ - مدیوم */
+@font-face {
+  font-family: 'YekanBakh';
+  src: url('/fonts/yekanbakh/YekanBakh-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* فونت یکان بخ - بولد */
+@font-face {
+  font-family: 'YekanBakh';
+  src: url('/fonts/yekanbakh/YekanBakh-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* فونت یکان بخ - فَت (Extra Bold) */
+@font-face {
+  font-family: 'YekanBakh';
+  src: url('/fonts/yekanbakh/YekanBakh-Fat.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* فونت یکان بخ - هِوی (Black) */
+@font-face {
+  font-family: 'YekanBakh';
+  src: url('/fonts/yekanbakh/YekanBakh-Heavy.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* فونت یکان بخ - Hairline (خیلی نازک) */
+@font-face {
+  font-family: 'YekanBakh';
+  src: url('/fonts/yekanbakh/YekanBakh-Hairline.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+
 /* تعریف breakpointها بر اساس ارتفاع viewport */
 @custom-variant short (@media (min-height: 50rem));     /* تا ~800px */
 @custom-variant mediumh (@media (min-height: 75rem));  /* 800–1200px */
@@ -76,7 +149,7 @@
 @custom-variant xhtall (@media (min-height: 112.5rem)); /* ≥1800px (مانیتور 43″ عمودی) */
 
 body {
-  font-family: 'Vazir', sans-serif;
+  font-family: 'YekanBakh','Vazir', sans-serif;
   margin: 0;
 }
 
