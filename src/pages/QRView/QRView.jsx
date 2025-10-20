@@ -38,7 +38,7 @@ const QRView = () => {
             {/* تصویر اصلی */}
             <AutoCropImage
                 // src={"/images/snapshotfack.png"} // یا getFileUrl(slug)
-                src={"/images/snapshotfack.png"} // یا getFileUrl(slug)
+                src={getFileUrl(slug)} // یا getFileUrl(slug)
                 bgColor="#000000"   // رنگ پس‌زمینه‌ای که باید حذف بشه
                 tolerance={20}      // افزایش می‌ده حساسیت (برای اختلاف‌های کوچک)
                 sampling={4}        // 1 = دقیق‌ترین، مقادیر بزرگتر سریع‌ترند
