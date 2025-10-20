@@ -37,7 +37,7 @@ export default function BottomNav() {
         <NavigatorSearchResultsModal />
       {/* کامپوننت یکپارچه پنل‌ها */}
       <StickyPanels />
-      <div className='hidden sm:block'>
+      <div className='hidden sm:block mt-2'>
 
       <AdBanner content={ad} />
       </div>

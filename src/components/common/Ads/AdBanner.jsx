@@ -20,13 +20,13 @@ export default function AdBanner({
       }}
     >
       {isEmpty ? (
-        <div className="flex items-center gap-3 rtl:space-x-reverse animate-marquee whitespace-nowrap">
+        <div className="flex items-center gap-3 p-1 rtl:space-x-reverse animate-marquee whitespace-nowrap">
           <span className="text-lg font-bold text-gray-300"       style={{color: colors?.textSecondary}}>
             📢 محل درج تبلیغ شما
           </span>
         </div>
       ) : typeof content === "string" ? (
-        <div className="flex items-center justify-center gap-3 rtl:space-x-reverse animate-marquee whitespace-nowrap text-center">
+        <div className="flex items-center justify-center gap-3 p-1 rtl:space-x-reverse animate-marquee whitespace-nowrap text-center">
           <span className="text-base font-medium tracking-wide ">
             {content}
           </span>
