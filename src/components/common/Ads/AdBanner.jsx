@@ -14,7 +14,7 @@ export default function AdBanner({
   return (
     <div
       onClick={() => onClick?.()}
-      className={`bg-black/40 backdrop-blur-md border border-white/20 rounded-xl text-white shadow-lg overflow-hidden my-4 p-2 cursor-pointer transition hover:scale-[1.01] ${className}`}
+      className={`bg-black/40 backdrop-blur-md border border-white/20 rounded-xl text-white shadow-lg overflow-hidden mb-4 cursor-pointer transition hover:scale-[1.01] ${className}`}
       style={{
         ...style,
       }}

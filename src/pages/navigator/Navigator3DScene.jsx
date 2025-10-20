@@ -109,7 +109,7 @@ setQrUrl(null)
         console.log('uploaded:',uploaded);
         
         // 2️⃣ ساخت URL نهایی فایل برای QR
-        setQrUrl(`http://45.159.150.16:3000/api/file/5/${uploaded.name}`); // assuming backend returns { url: '...' }
+        setQrUrl(`http://45.159.150.16:4000/SnapShare/${uploaded.name}`); // assuming backend returns { url: '...' }
       } catch (err) {
         console.error("خطا در آپلود عکس:", err);
       }

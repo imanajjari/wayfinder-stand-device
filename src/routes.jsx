@@ -4,6 +4,7 @@ const Navigator3DPage = lazy(() => import("./pages/navigator/Navigator3DPage"));
 const UpdateDataPage = lazy(() => import("./pages/settings/UpadateDataPage"));
 const SettingPage = lazy(() => import("./pages/settings/SettingPage"));
 const ReloadPage = lazy(() => import("./pages/settings/ReloadPage"));
+const QRView = lazy(() => import("./pages/QRView/QRView"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const routes = [
@@ -11,6 +12,7 @@ const routes = [
   { path: "/resend", element: <UpdateDataPage /> },
   { path: "/setting", element: <SettingPage /> },
   { path: "/setting/reload", element: <ReloadPage /> },
+  { path: "/SnapShare/:slug", element: <QRView /> },
   { path: "*", element: <NotFound /> }
 ];
 
