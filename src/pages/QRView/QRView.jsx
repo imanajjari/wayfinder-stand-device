@@ -22,6 +22,8 @@ const QRView = () => {
                 backgroundSize: "100px",
             }}
         >
+            <div className="z-10">
+
             <AdBanner
                 content={
                     ad ? (
@@ -32,7 +34,8 @@ const QRView = () => {
                 }
                 onClick={() => alert("بنر کلیک شد!")}
                 className=" 2xl:hidden"
-            />
+                />
+                </div>
             <BackgroundLightsQRView />
 
             {/* تصویر اصلی */}

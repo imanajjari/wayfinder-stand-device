@@ -47,7 +47,17 @@ function SceneCore({
   );
 
   // Use the screenshot hook
-  useScreenshot({ gl, scene, size, onCapture });
+
+useScreenshot({
+  gl, scene, size, onCapture,
+  options: {
+    maxLongSide: 2160,   // خروجی شارپ ولی سنگین؛ می‌تونی 1600/1920 بذاری
+    padding: 1.15,       // 15% فاصله از لبه‌ها
+    zoomFactor: 1.0,     // اگر مدل خیلی به قاب نزدیکه، 1.1 یا 1.2 کن
+    // fixedAspect: 16/9, // اگر همیشه 16:9 می‌خوای، اینو باز کن
+  },
+});
+
 
   return (
     <>
@@ -109,6 +119,8 @@ setQrUrl(null)
         console.log('uploaded:',uploaded);
         
         // 2️⃣ ساخت URL نهایی فایل برای QR
+        console.log(`http://45.159.150.16:4000/SnapShare/${uploaded.name}`);
+        
         setQrUrl(`http://45.159.150.16:4000/SnapShare/${uploaded.name}`); // assuming backend returns { url: '...' }
       } catch (err) {
         console.error("خطا در آپلود عکس:", err);
