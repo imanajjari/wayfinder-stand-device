@@ -6,8 +6,6 @@ import { usePath } from "../../contexts/PathContext";
 
 export default function PathOverlay({ points, colors, labelText, maxZoomDistance }) {
 
-  const { getCurrentStandPosition} = usePath();
-  const CurrentStandPositionStarnd = getCurrentStandPosition();
 
   if (!points?.length) return null;
 
@@ -45,6 +43,7 @@ export default function PathOverlay({ points, colors, labelText, maxZoomDistance
           />
         </>
       ) : (
+ 
         <LabeledPoint
           position={{ x: end.x, y: end.y, z: end.z }}
           label={labelText}

@@ -21,7 +21,7 @@ const BASE_OFFSET = 0;
 
 export default function Navigator3DPage() {
   const { floors, hasFloors, getFloorByName } = useFloors();
-  const { path, updateCurrentFloorNumber, refreshLastDestination, lastDestination } = usePath();
+  const { path, updateCurrentFloorNumber } = usePath();
   const { colors } = useTheme();
 
   // برای وقتی که اطلاعات استند ها و طبقات رو نداشته باشه ؛ می ره برای لاگین
@@ -34,15 +34,19 @@ export default function Navigator3DPage() {
   const { points: pathPoints, last: lastPoint } = usePathPoints(path, verticalOffset);
 
   const currentFloorNumber = activeFloor?.number ?? 0;
-  const destinationFloorNumber = lastDestination?.floorNumber ?? null;
 
+
+  const pointsv2= path?.paths?.find(p=>p.floorId===activeFloor.id)?.path || [];
+
+  console.log("activeFloor :", activeFloor);
+  console.log("pointsv2 :", pointsv2);
   const labelText = useMemo(() => {
 
     // if (!destinationFloorNumber) return "نقطه پایان";
-    if (destinationFloorNumber > currentFloorNumber) return "پله برقی - برو طبقه بالا";
-    if (destinationFloorNumber < currentFloorNumber) return "پله برقی - برو طبقه پایین";
+    // if (destinationFloorNumber > currentFloorNumber) return "پله برقی - برو طبقه بالا";
+    // if (destinationFloorNumber < currentFloorNumber) return "پله برقی - برو طبقه پایین";
     return "نقطه پایان";
-  }, [destinationFloorNumber, currentFloorNumber]);
+  }, [ currentFloorNumber]);
   return (
     <div className="overflow-hidden" style={{ width: "100%", height: "100vh", position: "relative", background: colors.background }}>
       <TopNav />
@@ -51,7 +55,7 @@ export default function Navigator3DPage() {
         currentModelFile={currentModelFile}
         verticalOffset={verticalOffset}
         floorDestinations={floorDestinations}
-        pathPoints={pathPoints}
+        pathPoints={pointsv2}
         lastPoint={lastPoint}
         labelText={labelText}
         isPortrait={isPortrait}
@@ -59,7 +63,7 @@ export default function Navigator3DPage() {
       <BottomNav />
       <FloorSelectorColumn
         floors={floors}
-        onSelect={(f) => handleFloorSelect(f, getFloorByName, refreshLastDestination)}
+        onSelect={(f) => handleFloorSelect(f, getFloorByName)}
         activeFloor={activeFloor}
       />
       {/* ⬅️ لودرِ سراسری، خارج از Canvas تا پرش اولیه نداشته باشیم */}

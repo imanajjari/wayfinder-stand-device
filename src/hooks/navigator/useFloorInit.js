@@ -10,16 +10,9 @@ export default function useFloorInit({ floors, hasFloors, updateCurrentFloorNumb
   const fetchFloorDestinations = useCallback((floorNumber) => {
     const all = getDestinations();
     setFloorDestinations(all.filter(d => d.floorNum === floorNumber));
-    console.log('====================================');
-    console.log('floorNumber :',floorNumber);
-    console.log('all.filter(d => d.floorNum === floorNumber) :',all.filter(d => d.floorNum === floorNumber));
-    console.log('====================================');
   }, []);
 
   useEffect(() => {
-    console.log('====================================');
-    console.log('hi iman');
-    console.log('====================================');
     if (!hasFloors || floors.length === 0) return;
     const myStand = getMyStand();
     let initialFloor = myStand ? floors.find(f => f.number === myStand.floorNum) : floors[0];
@@ -33,18 +26,13 @@ export default function useFloorInit({ floors, hasFloors, updateCurrentFloorNumb
     }
   }, [hasFloors, floors]);
 
-  const handleFloorSelect = useCallback((floor, getFloorByName, refreshLastDestination) => {
+  const handleFloorSelect = useCallback((floor, getFloorByName) => {
     const floorData = typeof floor === "object" ? floor : getFloorByName(floor);
-    console.log('====================================');
-    console.log('handleFloorSelect floorData :',floorData);
-    console.log('handleFloorSelect floorData.number :',floorData.number);
-    console.log('====================================');
     if (!floorData?.file) return;
     fetchFloorDestinations(floorData.number ?? 0);
     setCurrentModelFile(`/models/${floorData.file}`);
     setActiveFloor(floorData);
     updateCurrentFloorNumber(floorData.number ?? 0);
-    refreshLastDestination({ currentFloorNumber: floorData.number });
   }, [fetchFloorDestinations]);
 
   return { activeFloor, currentModelFile, floorDestinations, handleFloorSelect };

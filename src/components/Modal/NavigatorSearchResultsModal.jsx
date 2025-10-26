@@ -7,17 +7,19 @@ import DestinationCard from '../cards/DestinationCard';
 
 export default function NavigatorSearchResultsModal() {
   const { results, isResultsModalOpen, modalTitle, hideResults } = useSearchResults();
-  const { updateDestination } = usePath();
+  const { fetchPathV2 } = usePath();
   const myStand = getMyStand();
 
   const handleSelectShop = (shop) => {
-    updateDestination({
-      x: shop.entrance.x,
-      y: shop.entrance.y,
-      z: 1,
-      floorNumber: shop.floorNum,
-      floorId: findFloorOfDestination(shop).floorId,
-    });
+    // CHECK:V1
+    // updateDestination({
+    //   x: shop.entrance.x,
+    //   y: shop.entrance.y,
+    //   z: 1,
+    //   floorNumber: shop.floorNum,
+    //   floorId: findFloorOfDestination(shop).floorId,
+    // });
+    fetchPathV2({end:shop})
     hideResults(); // بستن مودال بعد از انتخاب
   };
 

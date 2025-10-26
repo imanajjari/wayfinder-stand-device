@@ -12,7 +12,7 @@ export default function DestinationLabel({
 }) {
   const { camera } = useThree();
   const [opacity, setOpacity] = useState(1);
-  const { updateDestination } = usePath();
+  const { fetchPathV2 } = usePath();
   useFrame(() => {
     const distance = camera.position.distanceTo({
       x: position[0],
@@ -41,13 +41,7 @@ export default function DestinationLabel({
       color="white"
       opacity={opacity}
       onClick={() => {
-        updateDestination({
-          x: dest.entrance.x,
-          y: dest.entrance.y,
-          z: 1,
-          floorNumber: dest.floorNum,
-          floorId: findFloorOfDestination(dest).floorId,
-        });
+        fetchPathV2({ end: dest });
       }}
     />
   );

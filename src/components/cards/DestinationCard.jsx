@@ -6,7 +6,6 @@ import { getFileUrl } from "../../services/fileService";
 import { IoHelpCircleOutline } from 'react-icons/io5';
 
 function DestinationCard({ shop, onClick, myStand }) {
-  const { currentFloorNumber } = usePath();
   const { showShopDetails } = useShopDetails();
 
   const handleDetailsClick = useCallback((e) => {

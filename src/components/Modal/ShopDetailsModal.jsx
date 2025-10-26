@@ -31,7 +31,7 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
   const [shouldRender, setShouldRender] = useState(false);
   const [animateIn, setAnimateIn] = useState(false);
   const { theme, colors } = useTheme();
-  const { updateDestination } = usePath();
+  const { fetchPathV2 } = usePath();
   const { hideResults } = useSearchResults();
 
   const headerGradient = useMemo(
@@ -58,13 +58,15 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
 
   const handleNavigateToShop = () => {
     if (shop && shop.entrance) {
-      updateDestination({
-        x: shop.entrance.x,
-        y: shop.entrance.y,
-        z: 1,
-        floorNumber: shop.floorNum,
-        floorId: findFloorOfDestination(shop).floorId,
-      });
+      // CHECK:V1
+      // updateDestination({
+      //   x: shop.entrance.x,
+      //   y: shop.entrance.y,
+      //   z: 1,
+      //   floorNumber: shop.floorNum,
+      //   floorId: findFloorOfDestination(shop).floorId,
+      // });
+      fetchPathV2({end:shop})
       hideResults(); // بستن مودال نتایج
       onClose(); // بستن همین مودال
     }
