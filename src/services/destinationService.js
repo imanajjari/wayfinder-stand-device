@@ -2,15 +2,15 @@ import api from '../api/api';
 import { getCompanyData } from './companyService';
 import { appendCompanyIdToUrl } from './urlBuilder';
 
-export const addDestination = async (data) => {
-  const url = await appendCompanyIdToUrl('/api/destination');
-  return api.post(url, data);
-};
+// export const addDestination = async (data) => {
+//   const url = await appendCompanyIdToUrl('/api/destination');
+//   return api.post(url, data);
+// };
 
-export const editDestination = async (id, data) => {
-  const url = await appendCompanyIdToUrl(`/api/destination/${id}`);
-  return api.put(url, data);
-};
+// export const editDestination = async (id, data) => {
+//   const url = await appendCompanyIdToUrl(`/api/destination/${id}`);
+//   return api.put(url, data);
+// };
 
 // جستجوی فروشگاه‌ها بر اساس نام دسته‌بندی
 // export const searchDestinationsByCategoryOld = async (categoryName) => {
@@ -23,7 +23,7 @@ export const editDestination = async (id, data) => {
 // جستجوی فروشگاه‌ها بر اساس نام دسته‌بندی
 export const searchDestinationsByCategory = async (categoryName) => {
   const company = getCompanyData();
-  const response = await api.post('/api/search/category',{"id": company.id,"data": categoryName });
+  const response = await api.post('/search/category',{"id": company.id,"data": categoryName });
   return response.data; // چون بک‌اند مستقیم array برمی‌گردونه
 };
 
@@ -38,13 +38,13 @@ export const searchDestinationsByCategory = async (categoryName) => {
 
 export const searchDestinationsByName = async (destinationName) => {
   const company = getCompanyData();
-  const response = await api.post(`/api/search`,{"userId": company.id,"data": destinationName });
+  const response = await api.post(`/search`,{"userId": company.id,"data": destinationName });
   return response.data; 
 };
 
 // جستجوی فروشگاه‌ها بر اساس نام دسته‌بندی
 export const getAllDestinations = async () => {
-  const url = await appendCompanyIdToUrl(`/api/destination/all`);
-  const response = await api.get(url);
+  const url = await appendCompanyIdToUrl(`/destination/all`);
+  const response = await api.get(`/destination/all`);
   return response.data; // چون بک‌اند مستقیم array برمی‌گردونه
 };

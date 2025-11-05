@@ -23,9 +23,7 @@ function SceneCore({
   currentModelFile,
   verticalOffset,
   floorDestinations,
-  pathPoints,
-  lastPoint,
-  labelText,
+  activeFloor,
   isPortrait,
   onCapture,
 }) {
@@ -73,15 +71,13 @@ useScreenshot({
         </Suspense>
         <LabelsLayer
           floorDestinations={floorDestinations}
-          lastPoint={lastPoint}
           verticalOffset={verticalOffset}
           maxVisibleDistance={maxZoom}
           fadeStartDistance={maxZoom - 15}
         />
         <PathOverlay
-          points={pathPoints}
           colors={colors}
-          labelText={labelText}
+          activeFloor={activeFloor}
           maxZoomDistance={maxZoom}
         />
       </group>

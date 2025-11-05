@@ -3,7 +3,7 @@ import api from '../api/api';
 
 export const findManyPaths = async ({ start, ends, skipPoints = 0, mapId }) => {
   try {
-    const response = await api.post('api/paths', {
+    const response = await api.post('paths', {
       start,
       ends,
       skipPoints,
@@ -19,7 +19,7 @@ export const findManyPaths = async ({ start, ends, skipPoints = 0, mapId }) => {
 // 📍 مسیر بین یک مبدا و یک مقصد
 export const findOnePath = async ({ start, end, skip = 0, floorId }) => {
   try {
-    const response = await api.post('api/path', {
+    const response = await api.post('path', {
       start,
       end,
       skip,
@@ -38,7 +38,7 @@ export const findOnePathMulityfloorV2 = async ({ start, end, userId, skip = 100 
   console.log('در سرویس مسیر چند طبقه با پارامترها:', { start, end, userId, skip });
   
   try {
-    const response = await api.post('api/path/v2', {
+    const response = await api.post('path/v2', {
       start,
       end,
       userId,

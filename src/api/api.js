@@ -1,36 +1,34 @@
 // src/api/api.js
 import axios from 'axios';
+import { tokenStorage } from './tokenStorage';
 
-const api = axios.create({
-  baseURL: 'http://45.159.150.16:3000/', // آدرس بک‌اند محلی
+const BASE = 'http://45.159.150.16:3000';
+
+export const apiPublic = axios.create({
+  baseURL: `${BASE}/api/v1`,
   timeout: 50000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
 });
 
-// اینترسپتور برای اضافه کردن توکن (در صورت نیاز)
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token'); // اگر توکن ذخیره شده داری
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+export const apiPrivate = axios.create({
+  baseURL: `${BASE}/api/v2`,
+  timeout: 50000,
+  headers: { 'Content-Type': 'application/json' },
+});
 
-// هندل خطاهای پاسخ
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      console.warn('توکن معتبر نیست یا منقضی شده!');
-      // می‌تونی اینجا به صفحه لاگین منتقل بشی یا رفرش توکن بزنی
-    }
-    return Promise.reject(error);
+// فقط هدر سفارشی را ست کن
+const attachMainApiKey = (config) => {
+  const key = tokenStorage.getAccess();
+  if (key) {
+    // نام دقیق هدر شما
+    config.headers['X-Main-Api-key'] = key;
   }
-);
+  return config;
+};
 
+apiPublic.interceptors.request.use(attachMainApiKey);
+apiPrivate.interceptors.request.use(attachMainApiKey);
+
+// برای سازگاری با import قدیمی
+const api = apiPrivate;
 export default api;

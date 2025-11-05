@@ -25,11 +25,11 @@ export default function UpdateDataPage() {
       try {
         const response = await postSetting({ id, email, password });
         if (response.message === "Stand is valid") {
-          if (response.floors?.length > 0) saveFloors(response.floors);
-          saveStandData(response);
-          if (response.user) await saveCompanyWithLogo(response.user);
+          if (response.data.floors?.length > 0) saveFloors(response.data.floors);
+          saveStandData(response.data);
+          if (response.user) await saveCompanyWithLogo(response.data.user);
 
-          const myStand = response.stands?.find((stand) => stand.isMe);
+          const myStand = response.data.stands?.find((stand) => stand.isMe);
           if (myStand) saveMyStand(myStand);
 
           const dest = await getAllDestinations();

@@ -5,7 +5,7 @@ import { appendCompanyIdToUrl } from './urlBuilder';
 
 export const uploadQrCodeImage = async (formData) => {
   const company = await getCompanyData();
-  return api.post(`/api/file/map/${company.id}`, formData, {
+  return api.post(`/file/map/${company.id}`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 };
@@ -13,7 +13,7 @@ export const uploadQrCodeImage = async (formData) => {
 
 // 📌 آپلود فایل (عکس دسته‌بندی مثلاً)
 export const uploadFile = async (formData) => {
-  return api.post('/api/file', formData, {
+  return api.post('/file', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 };
@@ -23,12 +23,12 @@ export const uploadFile = async (formData) => {
 // 📌 گرفتن URL مستقیم عکس برای <img src=...>
 export const getFileUrl = (fileName) => {
   const company = getCompanyData();
-  return `http://45.159.150.16:3000/api/file/${company.id}/${fileName}`;
+  return `http://45.159.150.16:3000/api/v1/file/${company.id}/${fileName}`;
 };
 
 // 📌 گرفتن URL مستقیم عکس برای <img src=...>
 export const getFileUrlWithoutCompanyId = (fileName,id) => {
-  return `http://45.159.150.16:3000/api/file/${id}/${fileName}`;
+  return `http://45.159.150.16:3000/api/v1/file/${id}/${fileName}`;
 };
 
 export const fetchImageAsBase64 = async (url) => {

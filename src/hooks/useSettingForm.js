@@ -31,12 +31,16 @@ export function useSettingForm(navigate) {
 
     try {
       const response = await postSetting({ id, email, password });
+      console.log('postSetting response:', response);
+      console.log('postSetting saveFloors:', response.data.floors);
+      console.log('postSetting saveCompanyWithLogo:', response.data.user);
+      
       if (response.message === "Stand is valid") {
-        if (response.floors?.length > 0) saveFloors(response.floors);
-        saveStandData(response);
-        if (response.user) await saveCompanyWithLogo(response.user);
+        if (response.data.floors?.length > 0) saveFloors(response.data.floors);
+        saveStandData(response.data);
+        if (response.data.user) await saveCompanyWithLogo(response.data.user);
 
-        const myStand = response.stands?.find((stand) => stand.isMe);
+        const myStand = response.data.stands?.find((stand) => stand.isMe);
         if (myStand) saveMyStand(myStand);
 
         await fetchAndSaveDestinations();

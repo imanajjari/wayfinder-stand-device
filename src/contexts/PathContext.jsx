@@ -27,7 +27,7 @@ export function PathProvider({ children }) {
 
     const fetchPathV2 = async ({start, end}) => {
       console.log("🚀 fetchPathV2 called with:", { start, end });
-      
+      setLastDestination(end)
     setLoading(true);
     const myStand = getMyStand();
     const companyData = getCompanyData();

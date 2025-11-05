@@ -31,22 +31,7 @@ export default function Navigator3DPage() {
   const { activeFloor, currentModelFile, floorDestinations, handleFloorSelect } =
     useFloorInit({ floors, hasFloors, updateCurrentFloorNumber });
 
-  const { points: pathPoints, last: lastPoint } = usePathPoints(path, verticalOffset);
 
-  const currentFloorNumber = activeFloor?.number ?? 0;
-
-
-  const pointsv2= path?.paths?.find(p=>p.floorId===activeFloor.id)?.path || [];
-
-  console.log("activeFloor :", activeFloor);
-  console.log("pointsv2 :", pointsv2);
-  const labelText = useMemo(() => {
-
-    // if (!destinationFloorNumber) return "نقطه پایان";
-    // if (destinationFloorNumber > currentFloorNumber) return "پله برقی - برو طبقه بالا";
-    // if (destinationFloorNumber < currentFloorNumber) return "پله برقی - برو طبقه پایین";
-    return "نقطه پایان";
-  }, [ currentFloorNumber]);
   return (
     <div className="overflow-hidden" style={{ width: "100%", height: "100vh", position: "relative", background: colors.background }}>
       <TopNav />
@@ -55,10 +40,8 @@ export default function Navigator3DPage() {
         currentModelFile={currentModelFile}
         verticalOffset={verticalOffset}
         floorDestinations={floorDestinations}
-        pathPoints={pointsv2}
-        lastPoint={lastPoint}
-        labelText={labelText}
         isPortrait={isPortrait}
+        activeFloor={activeFloor}
       />
       <BottomNav />
       <FloorSelectorColumn

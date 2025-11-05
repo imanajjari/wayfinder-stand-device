@@ -47,6 +47,8 @@ export const clearCompanyData = () => {
  * @param {Object} companyData - اطلاعات کمپانی از API
  */
 export const saveCompanyWithLogo = async (companyData) => {
+  console.log('companyData :', companyData);
+  
   try {
     if (companyData.icon) {
       const imageUrl = getFileUrlWithoutCompanyId(companyData.icon,companyData.id);
