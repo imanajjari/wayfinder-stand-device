@@ -1,4 +1,13 @@
 {
+  "Navigator3DPage": {
+    "search_placeholder": "Enter a destination to search...",
+    "current_location": "Current Location",
+    "navigate_to_upstairs": "Go to the upper floor",
+    "navigate_to_downstairs": "Go to the lower floor",
+    "continue_route": "Continue route on this floor",
+    "arrived_at_destination": "You have arrived at your destination",
+    "advertisement_placeholder": "Your ad placement here"
+  },
   "category": {
     "electronics": "Electronics",
     "instrumentation": "Instrumentation",

@@ -5,9 +5,9 @@ import {
   saveMyStand,
   saveStandData,
   saveDestinations,
-} from "../services/floorService";
+} from "../storage/floorStorage";
 import { getAllDestinations } from "../services/destinationService";
-import { saveCompanyWithLogo } from "../services/companyService";
+import { saveCompanyWithLogo } from "../storage/companyStorage";
 import { toast } from "react-toastify";
 
 export function useSettingForm(navigate) {

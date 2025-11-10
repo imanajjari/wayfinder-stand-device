@@ -1,9 +1,9 @@
 import { createContext, useContext, useState } from "react";
 import { findOnePath, findOnePathMulityfloorV2 } from "../services/pathService";
-import { getStandData } from "../services/floorService";
+import { getStandData } from "../storage/floorStorage";
 import { findFloorOfDestination } from "../lib/floorUtils";
-import { getMyStand } from "../services/floorService";
-import { getCompanyData } from '../services/companyService';
+import { getMyStand } from "../storage/floorStorage";
+import { getCompanyData } from '../storage/companyStorage';
 
 const PathContext = createContext();
 

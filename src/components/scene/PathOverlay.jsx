@@ -4,6 +4,7 @@ import LabeledPoint from "../Models/LabeledPoint";
 import ArrowStraightPath from "../paths/ArrowStraightPath";
 import { usePath } from "../../contexts/PathContext";
 import { useMemo } from "react";
+import { t } from "i18next";
 
 export default function PathOverlay({ colors, activeFloor, maxZoomDistance }) {
   const { path } = usePath();
@@ -21,14 +22,14 @@ export default function PathOverlay({ colors, activeFloor, maxZoomDistance }) {
     const nextFloorId = nextPath?.floorId;
     const currentFloorId = activeFloor.id;
 
-    let endLabel = "نقطه پایان";
+    let endLabel = t('Navigator3DPage.arrived_at_destination');
     if (nextFloorId) {
-      if (nextFloorId > currentFloorId) endLabel = "پله برقی - برو طبقه بالا";
-      else if (nextFloorId < currentFloorId) endLabel = "پله برقی - برو طبقه پایین";
-      else endLabel = "ادامه مسیر در همین طبقه";
+      if (nextFloorId > currentFloorId) endLabel = t('Navigator3DPage.navigate_to_upstairs');
+      else if (nextFloorId < currentFloorId) endLabel = t('Navigator3DPage.navigate_to_downstairs');
+      else endLabel = t('Navigator3DPage.continue_route');
     }
 
-    const startLabel = currentIndex === 0 ? "نقطه شروع" : "ادامه مسیر";
+    const startLabel = currentIndex === 0 ? t('Navigator3DPage.current_location') : t('Navigator3DPage.continue_route');
     return { startLabel, endLabel };
   }, [path, activeFloor?.id]);
 

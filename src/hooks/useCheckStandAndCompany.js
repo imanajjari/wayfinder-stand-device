@@ -1,8 +1,8 @@
 // src\hooks\useCheckStandAndCompany.js
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCompanyData } from "../services/companyService";
-import { getMyStand } from "../services/floorService";
+import { getCompanyData } from "../storage/companyStorage";
+import { getMyStand } from "../storage/floorStorage";
 
 /**
  * بررسی اطلاعات کمپانی و استند.

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getFloors, getStandData } from '../services/floorService';
+import { getFloors, getStandData } from '../storage/floorStorage';
 
 /**
  * Custom hook برای مدیریت اطلاعات طبقات

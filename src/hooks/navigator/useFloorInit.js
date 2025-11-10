@@ -1,6 +1,6 @@
 // src/pages/navigator/hooks/useFloorInit.js
 import { useEffect, useState, useCallback } from "react";
-import { getMyStand, getDestinations } from "../../services/floorService";
+import { getMyStand, getDestinations } from "../../storage/floorStorage";
 
 export default function useFloorInit({ floors, hasFloors, updateCurrentFloorNumber }) {
   const [activeFloor, setActiveFloor] = useState(null);

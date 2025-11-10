@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { getMyStand } from '../../services/floorService';
-import { getCompanyData } from '../../services/companyService';
+import { getMyStand } from '../../storage/floorStorage';
+import { getCompanyData } from '../../storage/companyStorage';
 import { getFileUrl } from '../../services/fileService';
 
 export default function WideNavbar() {

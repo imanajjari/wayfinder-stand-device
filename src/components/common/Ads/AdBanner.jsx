@@ -1,6 +1,7 @@
 import React from "react";
 import { MdCampaign } from "react-icons/md";
 import useTheme from "../../../hooks/useTheme";
+import { t } from "i18next";
 
 export default function AdBanner({
   content,
@@ -22,7 +23,7 @@ export default function AdBanner({
       {isEmpty ? (
         <div className="flex items-center gap-3 p-1 rtl:space-x-reverse animate-marquee whitespace-nowrap">
           <span className="text-lg font-bold text-gray-300"       style={{color: colors?.textSecondary}}>
-            📢 محل درج تبلیغ شما
+            {t('Navigator3DPage.advertisement_placeholder')}
           </span>
         </div>
       ) : typeof content === "string" ? (

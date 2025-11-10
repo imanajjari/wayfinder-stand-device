@@ -1,5 +1,5 @@
 // components/modals/DestinationListModal.jsx
-import { getMyStand } from "../../services/floorService";
+import { getMyStand } from "../../storage/floorStorage";
 import PanelModal from "../Modal/PanelModal";
 import DestinationCard from "../cards/DestinationCard";
 

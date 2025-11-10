@@ -1,21 +1,11 @@
 import api from '../api/api';
 
-// 📌 افزودن دسته‌بندی جدید
-export const addCategory = async (data) => {
-  return api.post('/category/', data);
-};
-
-// 📌 ویرایش دسته‌بندی
-export const editCategory = async (id, data) => {
-  return api.put(`/category/${id}`, data);
-};
-
-// ✅ گرفتن همه دسته‌بندی‌ها
+// get all categories
 export const getAllCategories = async () => {
   return api.get('/category');
 };
 
-// ✅ گرفتن همه  امکانات 
+// get all amenities
 export const getAllAmenities = async () => {
   return api.get('/amenity');
 };

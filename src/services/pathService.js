@@ -1,6 +1,7 @@
 // src/services/pathService.js
 import api from '../api/api';
 
+// get paths between one start point and many end points
 export const findManyPaths = async ({ start, ends, skipPoints = 0, mapId }) => {
   try {
     const response = await api.post('paths', {
@@ -16,7 +17,7 @@ export const findManyPaths = async ({ start, ends, skipPoints = 0, mapId }) => {
   }
 };
 
-// 📍 مسیر بین یک مبدا و یک مقصد
+// get path between one start point and one end point
 export const findOnePath = async ({ start, end, skip = 0, floorId }) => {
   try {
     const response = await api.post('path', {
@@ -33,7 +34,7 @@ export const findOnePath = async ({ start, end, skip = 0, floorId }) => {
   }
 };
 
-// 📍 مسیر بین یک مبدا و یک مقصد
+// get path between one start point and one end point for multi-floor maps (version 2)
 export const findOnePathMulityfloorV2 = async ({ start, end, userId, skip = 100 }) => {
   console.log('در سرویس مسیر چند طبقه با پارامترها:', { start, end, userId, skip });
   

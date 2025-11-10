@@ -1,4 +1,4 @@
-import { getFloors } from "../services/floorService";
+import { getFloors } from "../storage/floorStorage";
 
   export function findFloorOfDestination(destination) {
     const floors = getFloors();

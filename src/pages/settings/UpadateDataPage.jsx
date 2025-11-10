@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoReload, IoWarning, IoCheckmarkCircle } from "react-icons/io5";
 import { postSetting } from "../../services/settingService";
-import { saveFloors, saveMyStand, saveStandData, saveDestinations } from "../../services/floorService";
+import { saveFloors, saveMyStand, saveStandData, saveDestinations } from "../../storage/floorStorage";
 import { getAllDestinations } from "../../services/destinationService";
-import { saveCompanyWithLogo } from "../../services/companyService";
+import { saveCompanyWithLogo } from "../../storage/companyStorage";
 import SettingsLayout from "../../layouts/SettingsLayout";
 
 export default function UpdateDataPage() {

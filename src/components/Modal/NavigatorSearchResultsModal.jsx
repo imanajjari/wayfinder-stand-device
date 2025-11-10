@@ -2,7 +2,7 @@ import React from 'react';
 import { usePath } from '../../contexts/PathContext';
 import { useSearchResults } from '../../contexts/SearchResultsContext';
 import { findFloorOfDestination } from '../../lib/floorUtils';
-import { getMyStand } from '../../services/floorService';
+import { getMyStand } from '../../storage/floorStorage';
 import DestinationCard from '../cards/DestinationCard';
 
 export default function NavigatorSearchResultsModal() {

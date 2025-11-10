@@ -1,8 +1,8 @@
 // src\services\fileService.js
-import api from '../api/api';
-import { getCompanyData } from './companyService';
-import { appendCompanyIdToUrl } from './urlBuilder';
+import api, { apiPublic } from '../api/api';
+import { getCompanyData } from '../storage';
 
+// upload QR code image
 export const uploadQrCodeImage = async (formData) => {
   const company = await getCompanyData();
   return api.post(`/file/map/${company.id}`, formData, {
@@ -10,23 +10,22 @@ export const uploadQrCodeImage = async (formData) => {
   });
 };
 
-
-// 📌 آپلود فایل (عکس دسته‌بندی مثلاً)
+// ipload any file
 export const uploadFile = async (formData) => {
   return api.post('/file', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 };
 
-
-
-// 📌 گرفتن URL مستقیم عکس برای <img src=...>
+// get file URL
+// example: <img src={getFileUrl(fileName)} />
 export const getFileUrl = (fileName) => {
   const company = getCompanyData();
   return `http://45.159.150.16:3000/api/v1/file/${company.id}/${fileName}`;
 };
 
-// 📌 گرفتن URL مستقیم عکس برای <img src=...>
+// get file URL without company ID
+// example: <img src={getFileUrlWithoutCompanyId(fileName, id)} />
 export const getFileUrlWithoutCompanyId = (fileName,id) => {
   return `http://45.159.150.16:3000/api/v1/file/${id}/${fileName}`;
 };

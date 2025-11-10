@@ -6,6 +6,7 @@ import ThemeToggle from '../buttons/ThemeToggle';
 import LanguageDropdown from '../buttons/LanguageDropdown';
 import { searchDestinationsByName } from '../../services/destinationService';
 import { useSearchResults } from '../../contexts/SearchResultsContext';
+import { t } from 'i18next';
 
 export default function SearchPanel() {
   const { showResults, setLoading, loading } = useSearchResults();
@@ -49,7 +50,7 @@ export default function SearchPanel() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-          placeholder="مقصدی برای جست‌وجو وارد کنید..."
+          placeholder={t('Navigator3DPage.search_placeholder')}
           className="w-1/2 flex-1 px-4 py-2 rounded-xl text-[#ffffff] bg-[#324154] text-base md:text-2xl "
         />
         <button

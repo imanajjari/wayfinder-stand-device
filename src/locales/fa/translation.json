@@ -1,4 +1,13 @@
 {
+  "Navigator3DPage":{
+    "search_placeholder": "مقصدی برای جست‌وجو وارد کنید...",
+    "current_location": "مکان فعلی",
+    "navigate_to_upstairs": "به طبقه بالا بروید",
+    "navigate_to_downstairs": "به طبقه پایین بروید",
+    "continue_route": "ادامه مسیر در همین طبقه",
+    "arrived_at_destination": "به مقصد رسیدید",
+    "advertisement_placeholder": "📢 محل درج تبلیغ شما"
+  },
   "category": {
     "electronics": "الکترونیک",
     "instrumentation": "ابزار دقیق",

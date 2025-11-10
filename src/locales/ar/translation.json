@@ -1,4 +1,13 @@
 {
+  "Navigator3DPage": {
+    "search_placeholder": "أدخل وجهة للبحث...",
+    "current_location": "الموقع الحالي",
+    "navigate_to_upstairs": "اذهب إلى الطابق العلوي",
+    "navigate_to_downstairs": "اذهب إلى الطابق السفلي",
+    "continue_route": "تابع المسار في هذا الطابق",
+    "arrived_at_destination": "لقد وصلت إلى وجهتك",
+    "advertisement_placeholder": "مكان إعلانك هنا"
+  },
   "category": {
     "electronics": "الإلكترونيات",
     "instrumentation": "الأجهزة الدقيقة",

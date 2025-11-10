@@ -1,7 +1,7 @@
 import api from '../api/api';
 /**
- * دریافت لیست تبلیغات
- * @returns {Promise<Object>} داده تبلیغات یا خطا
+ * get list of ads from server
+ * @returns {Promise<Object>} 
  */
 export const fetchAds = async (key) => {
   try {
