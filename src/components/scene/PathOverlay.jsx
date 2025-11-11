@@ -8,24 +8,23 @@ import { t } from "i18next";
 
 export default function PathOverlay({ colors, activeFloor, maxZoomDistance }) {
   const { path } = usePath();
-  const points = path?.paths?.find(p => p.floorId === activeFloor.id)?.path || [];
+  const points = path?.paths?.find(p => p.floorNum === activeFloor.number)?.path || [];
   if (!points?.length) return null;
-
-  const { startLabel, endLabel } = useMemo(() => {
-    if (!path?.paths || !activeFloor?.id) return { startLabel: "", endLabel: "" };
-
+  
+  const { startLabel, endLabel } = useMemo(() => {    
+    if (!path?.paths || !activeFloor) return { startLabel: "", endLabel: "" };
     const floors = path.paths;
-    const currentIndex = floors.findIndex(p => p.floorId === activeFloor.id);
+    const currentIndex = floors.findIndex(p => p.floorNum === activeFloor.number);
     if (currentIndex === -1) return { startLabel: "", endLabel: "" };
-
     const nextPath = floors[currentIndex + 1];
-    const nextFloorId = nextPath?.floorId;
-    const currentFloorId = activeFloor.id;
+    const nextFloorNum = nextPath?.floorNum;
+    const currentFloorNum = activeFloor.number;
+      
 
     let endLabel = t('Navigator3DPage.arrived_at_destination');
-    if (nextFloorId) {
-      if (nextFloorId > currentFloorId) endLabel = t('Navigator3DPage.navigate_to_upstairs');
-      else if (nextFloorId < currentFloorId) endLabel = t('Navigator3DPage.navigate_to_downstairs');
+    if (nextFloorNum) {
+      if (nextFloorNum > currentFloorNum) endLabel = t('Navigator3DPage.navigate_to_upstairs');
+      else if (nextFloorNum < currentFloorNum) endLabel = t('Navigator3DPage.navigate_to_downstairs');
       else endLabel = t('Navigator3DPage.continue_route');
     }
 

@@ -80,6 +80,7 @@ const normalizePathResponse = (res) => {
   const paths = floors.map((f) => ({
     floorId: f.floorId,
     path: (f.path ?? []).map(toMeters),
+    floorNum: f.floorNum,
   }));
 
   return {

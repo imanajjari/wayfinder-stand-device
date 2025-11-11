@@ -5,8 +5,6 @@ import { usePath } from "../../contexts/PathContext";
 
 export default function LabelsLayer({ floorDestinations, verticalOffset, maxVisibleDistance }) {
   const { lastDestination } = usePath();
-  console.log('lastDestination :',lastDestination);
-  console.log('floorDestinations :',floorDestinations);
   const visibleDestinations = lastDestination
     ? floorDestinations.filter(dest => dest.id !== lastDestination.id)
     : floorDestinations;
