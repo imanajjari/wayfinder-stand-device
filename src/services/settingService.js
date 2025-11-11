@@ -1,6 +1,6 @@
 // src/services/settingService.js
 import { apiPublic } from '../api/api';
-import { tokenStorage } from '../api/tokenStorage';
+import { tokenStorage } from '../api/tokenStorage.secure';
 
 /**
  * save setting data to server and get apiKey
