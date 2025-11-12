@@ -11,6 +11,8 @@ export const postSetting = async (data) => {
     const { data: res } = await apiPublic.post('/setting', data);
     // save access key in tokenStorage
     const apiKey = res?.data?.apiKey;
+    console.log("apiKey received:", apiKey);
+    
     if (apiKey) tokenStorage.setAccess(apiKey);
     return res;
   } catch (error) {

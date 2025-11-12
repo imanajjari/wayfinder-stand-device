@@ -4,8 +4,7 @@ import { getCompanyData } from '../storage';
 
 // upload QR code image
 export const uploadQrCodeImage = async (formData) => {
-  const company = await getCompanyData();
-  return api.post(`/file/map/${company.id}`, formData, {
+  return api.post(`/file/map/`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 };
