@@ -26,7 +26,7 @@ export default function ScreenshotQrOverlay({qrUrl,handlerefreshQRUrl, loading})
 
   <button
     // className="bg-black/40 backdrop-blur-md border border-gray-300 rounded-4xl shadow-md p-4 text-xl text-white self-start"
-    className="bg-[#008AFF] shadow-[0_0_20px_#008AFF] backdrop-blur-md border border-gray-300 rounded-4xl p-4 text-xl text-white self-start"
+    className="hidden sm:block bg-[#008AFF] shadow-[0_0_20px_#008AFF] backdrop-blur-md border border-gray-300 rounded-4xl p-4 text-xl text-white self-start"
     onClick={() => {
       if (window.captureScreenshot) {
         window.captureScreenshot();
