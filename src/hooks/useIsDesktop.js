@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
  * @param {number} breakpoint - مقدار پیکسل مورد نظر (پیش‌فرض 768 برای md)
  * @returns {boolean} true اگر دسکتاپ، false اگر موبایل
  */
-export function useIsDesktop(breakpoint = 768) {
+export function useIsDesktop(breakpoint = 640) {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= breakpoint);
 
   useEffect(() => {

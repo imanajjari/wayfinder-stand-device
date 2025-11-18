@@ -48,7 +48,8 @@ export default function FloorSelectorColumn({ floors = [], onSelect, activeFloor
       {/* پنل لیست با انیمیشن اکاردئونی ساده */}
       <div
         className={`flex flex-col items-center w-full overflow-hidden transition-all duration-300 ease-out
-        ${showFloors ? "opacity-100 translate-y-0 max-h-[60vh]" : "opacity-0 -translate-y-1 max-h-0 pointer-events-none"}`}
+        ${showFloors ? "opacity-100 translate-y-0 max-h-[60vh]" : "opacity-0 -translate-y-1 max-h-0 pointer-events-none"}
+        `}
       >
         <button
           aria-label="طبقه بالاتر"
