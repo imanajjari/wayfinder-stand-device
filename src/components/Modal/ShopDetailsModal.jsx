@@ -13,6 +13,7 @@ import useTheme from "../../hooks/useTheme";
 import { usePath } from "../../contexts/PathContext";
 import { useSearchResults } from "../../contexts/SearchResultsContext";
 import { findFloorOfDestination } from "../../lib/floorUtils";
+import { t } from 'i18next';
 
 function hexToRgba(hex, alpha = 1) {
   if (!hex) return `rgba(0,0,0,${alpha})`;
@@ -138,8 +139,8 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
             style={{
               backgroundColor: "rgba(0,0,0,0.35)",
             }}
-            aria-label="بستن"
-            title="بستن"
+            aria-label={t('ShopDetailsModal.close_button')}
+            title={t('ShopDetailsModal.close_button')}
           >
             <IoClose className="w-6 h-6" style={{ color: "#fff" }} />
           </button>
@@ -155,10 +156,10 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
                   : "linear-gradient(90deg, #3b82f6, #8b5cf6)",
               color: "#fff",
             }}
-            title="شروع مسیریابی به این فروشگاه"
+            title={t('ShopDetailsModal.start_navigation')}
           >
             <IoNavigate className="w-5 h-5" />
-            <span className="text-sm font-medium">نمایش مسیر</span>
+            <span className="text-sm font-medium">{t('ShopDetailsModal.show_route')}</span>
           </button>
 
           {/* Identity */}
@@ -189,13 +190,13 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
             <div className="pb-2">
               <h1
                 className="text-2xl font-bold mb-1"
-                style={{ color: colors.textPrimary }}
+                style={{ color: colors.textSecondary }}
               >
                 {shop.fullName || shop.shortName}
               </h1>
               <p className="text-sm" style={{ color: colors.textSecondary }}>
-                طبقه {shop.floorNum === 0 ? "همکف" : shop.floorNum}
-                {shop.buildingNumber && ` - ساختمان ${shop.buildingNumber}`}
+                {t('ShopDetailsModal.floor')}{shop.floorNum === 0 ? t('ShopDetailsModal.ground') : shop.floorNum}
+                {shop.buildingNumber && ` ${t('ShopDetailsModal.building')} ${shop.buildingNumber}`}
               </p>
             </div>
           </div>
@@ -212,7 +213,7 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
               <div className="flex items-center gap-3 mb-2">
                 <IoInformation className="w-5 h-5" style={{ color: colors.textSecondary }} />
                 <h2 className="text-xl font-semibold" style={{ color: colors.textPrimary }}>
-                  اطلاعات فروشگاه
+                 {t('ShopDetailsModal.shop_info')}
                 </h2>
               </div>
 
@@ -222,7 +223,7 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
                     className="font-medium mb-2"
                     style={{ color: colors.textSecondary }}
                   >
-                    توضیحات
+                    {t('ShopDetailsModal.Description')}
                   </h3>
                   <p className="leading-relaxed">{shop.desc}</p>
                 </div>
@@ -234,7 +235,7 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
                     className="font-medium mb-2"
                     style={{ color: colors.textSecondary }}
                   >
-                    دسته‌بندی
+                    {t('ShopDetailsModal.shop_category')}
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {shop.categories.map((category, i) => (
@@ -262,7 +263,7 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
                     className="font-medium mb-2"
                     style={{ color: colors.textSecondary }}
                   >
-                    برچسب‌ها
+                    {t('ShopDetailsModal.Tags')}
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {shop.tags.map((tag, i) => (
@@ -290,7 +291,7 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
               <div className="flex items-center gap-3 mb-2">
                 <IoCall className="w-5 h-5" style={{ color: colors.textSecondary }} />
                 <h2 className="text-xl font-semibold" style={{ color: colors.textPrimary }}>
-                  اطلاعات تماس
+                  {t('ShopDetailsModal.contact_info')}
                 </h2>
               </div>
 
@@ -303,7 +304,7 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
                         className="font-medium"
                         style={{ color: colors.textSecondary }}
                       >
-                        تلفن
+                        {t('ShopDetailsModal.phone_number')}
                       </h3>
                       <p>{shop.phone}</p>
                     </div>
@@ -320,7 +321,7 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
                         className="font-medium"
                         style={{ color: colors.textSecondary }}
                       >
-                        ساعات کاری
+                        {t('ShopDetailsModal.working_hours')}
                       </h3>
                       <p>{shop.workingHours}</p>
                     </div>
@@ -337,20 +338,12 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
                       className="font-medium"
                       style={{ color: colors.textSecondary }}
                     >
-                      موقعیت
+                      {t('ShopDetailsModal.location')}
                     </h3>
-                    <p>
+                    <p  style={{ color: colors.textSecondary }}>
                       طبقه {shop.floorNum === 0 ? "همکف" : shop.floorNum}
                       {shop.buildingNumber && `، ساختمان ${shop.buildingNumber}`}
                     </p>
-                    {shop.entrance && (
-                      <p
-                        className="text-sm mt-1"
-                        style={{ color: colors.textMuted }}
-                      >
-                        مختصات: ({shop.entrance.x}, {shop.entrance.y})
-                      </p>
-                    )}
                   </div>
                 </div>
               </div>
@@ -362,7 +355,7 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
                     className="font-medium mb-3"
                     style={{ color: colors.textSecondary }}
                   >
-                    گالری تصاویر
+                    {t('ShopDetailsModal.Gallery')}
                   </h3>
                   <div className="grid grid-cols-2 gap-2">
                     {shop.gallery.map((image, i) => (
@@ -390,20 +383,9 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
                 className="text-xl font-semibold mb-4"
                 style={{ color: colors.textPrimary }}
               >
-                اطلاعات تکمیلی
+                {t('ShopDetailsModal.additional_info')}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {shop.id && (
-                  <div style={sectionCardStyle} className="p-4">
-                    <h3
-                      className="font-medium mb-2"
-                      style={{ color: colors.textSecondary }}
-                    >
-                      شناسه فروشگاه
-                    </h3>
-                    <p className="text-sm">#{shop.id}</p>
-                  </div>
-                )}
 
                 {shop.fullName && shop.fullName !== shop.shortName && (
                   <div style={sectionCardStyle} className="p-4">
@@ -411,7 +393,7 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
                       className="font-medium mb-2"
                       style={{ color: colors.textSecondary }}
                     >
-                      نام کامل
+                      {t('ShopDetailsModal.full_name')}
                     </h3>
                     <p className="text-sm">{shop.fullName}</p>
                   </div>
@@ -423,7 +405,7 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
                       className="font-medium mb-2"
                       style={{ color: colors.textSecondary }}
                     >
-                      وب‌سایت
+                      {t('ShopDetailsModal.website')}
                     </h3>
                     <a
                       href={shop.website}
@@ -432,7 +414,7 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
                       className="text-sm underline"
                       style={{ color: colors.textLink }}
                     >
-                      مشاهده وب‌سایت
+                      {t('ShopDetailsModal.visit_website')}
                     </a>
                   </div>
                 )}
@@ -443,7 +425,7 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
                       className="font-medium mb-2"
                       style={{ color: colors.textSecondary }}
                     >
-                      ایمیل
+                      {t('ShopDetailsModal.email_address')}
                     </h3>
                     <a
                       href={`mailto:${shop.email}`}
@@ -500,7 +482,7 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
             }}
           >
             <IoNavigate className="w-6 h-6" />
-            <span className="text-lg font-semibold">شروع مسیریابی</span>
+            <span className="text-lg font-semibold">{t('ShopDetailsModal.start_navigation')}</span>
           </button>
         </div>
       </div>

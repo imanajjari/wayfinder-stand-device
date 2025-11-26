@@ -1,3 +1,4 @@
+// src\services\categoryService.js
 import api from '../api/api';
 
 // get all categories

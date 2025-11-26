@@ -1,3 +1,4 @@
+// src\services\destinationService.js
 import api from '../api/api';
 
 // search destinations by category name

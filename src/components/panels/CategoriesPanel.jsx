@@ -3,6 +3,7 @@ import { getFileUrl } from '../../services/fileService';
 import { searchDestinationsByCategory } from '../../services/destinationService';
 import { useSearchResults } from '../../contexts/SearchResultsContext';
 import DestinationListModal from '../Modal/DestinationListModal';
+import ServiceButton from '../buttons/ServiceButton';
 
 export default function CategoriesPanel({ categories = [], maxVisible = 20 }) {
   const [modalOpen, setModalOpen] = useState(false);
@@ -74,16 +75,17 @@ export default function CategoriesPanel({ categories = [], maxVisible = 20 }) {
           <button
             key={i}
             onClick={() => handleCategoryClick(cat)}
-            className="flex items-center gap-2 px-4 py-2 bg-[#10172A] rounded-2xl whitespace-normal break-words border border-gray-500 hover:bg-neutral-600 transition"
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-[#10172A] rounded-2xl whitespace-normal break-words border border-gray-500 hover:bg-neutral-600 transition"
           >
             <img
               src={getFileUrl(cat.icon)}
               alt={cat.name}
               className="w-5 md:w-8 rounded-full object-cover"
             />
-            <p className="text-base lg:text-lg">{cat.name}</p>
+            <p className="text-base lg:text-lg ">{cat.name}</p>
           </button>
         ))}
+              <ServiceButton />
         {hidden.length > 0 && (
           <button
             onClick={() => setModalOpen(true)}

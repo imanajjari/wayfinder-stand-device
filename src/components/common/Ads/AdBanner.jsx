@@ -3,6 +3,7 @@ import { MdCampaign } from "react-icons/md";
 import useTheme from "../../../hooks/useTheme";
 import { t } from "i18next";
 
+
 export default function AdBanner({
   content,
   className = "",
@@ -15,7 +16,7 @@ export default function AdBanner({
   return (
     <div
       onClick={() => onClick?.()}
-      className={`bg-black/40 backdrop-blur-md border border-white/20 rounded-xl text-white shadow-lg overflow-hidden mb-4 cursor-pointer transition hover:scale-[1.01] ${className}`}
+      className={`flex justify-between bg-black/40 backdrop-blur-md border border-white/20 rounded-xl text-white shadow-lg overflow-hidden mb-4 cursor-pointer transition hover:scale-[1.01] ${className}`}
       style={{
         ...style,
       }}

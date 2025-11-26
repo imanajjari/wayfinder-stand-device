@@ -40,7 +40,7 @@ function DestinationCard({ shop, onClick, myStand }) {
         <h3 className="text-lg font-semibold">{shop.shortName}</h3>
         <p className="text-sm text-gray-300">{shop.desc}</p>
         <p className="text-sm text-gray-400">
-          طبقه {shop.floorNum === 0 ? 'همکف' : shop.floorNum} -
+          طبقه {shop.floorNum === 0 ? 'همکف' : shop.floorNum} 
           {shop.buildingNumber && ` - ساختمان ${shop.buildingNumber}`}
           {isOnSameFloor && " در این طبقه قرار دارد"}
         </p>

@@ -1,3 +1,4 @@
+// src\services\adsService.js
 import api from '../api/api';
 /**
  * get list of ads from server

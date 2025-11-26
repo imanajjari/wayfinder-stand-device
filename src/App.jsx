@@ -8,6 +8,7 @@ import { ShopDetailsProvider } from "./contexts/ShopDetailsContext";
 import { SearchResultsProvider } from "./contexts/SearchResultsContext";
 import routes from "./routes";
 import { Suspense } from "react";
+import { ModalManagerProvider } from "./contexts/ModalManagerContext";
 
 export default function App() {
   const { i18n: i18next } = useTranslation();
@@ -32,6 +33,9 @@ export default function App() {
       <PathProvider>
         <SearchResultsProvider>
           <ShopDetailsProvider>
+            <ModalManagerProvider>
+
+            
           {/* <Suspense fallback={<div style={{ padding: 24 }}>Loading…</div>}> */}
             <Routes>
               {routes.map((r) => (
@@ -39,6 +43,7 @@ export default function App() {
               ))}
             </Routes>
           {/* </Suspense> */}
+          </ModalManagerProvider>
           </ShopDetailsProvider>
         </SearchResultsProvider>
       </PathProvider>
