@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import { BsGem } from "react-icons/bs";
 import { PiMapPinDuotone } from "react-icons/pi";
-
+import { t } from 'i18next';
 export default function ServiceList() {
   const { colors } = useContext(ThemeContext);
 
@@ -16,7 +16,7 @@ export default function ServiceList() {
     {
       icon: <PiMapPinDuotone size={28} color={colors.pointStart} />,
       title: "Lantern",
-      link: "https://shivacorp.com/",
+      link: "https://3dwayfinding.com/",
       description: null,
     },
     {
@@ -39,7 +39,7 @@ export default function ServiceList() {
         style={{ color: colors.textSecondary }}
         className="text-lg font-bold mb-4"
       >
-        سرویس‌ها
+       {t('ServiceListModal.Services')}
       </h2>
 
       <ul className="space-y-3">

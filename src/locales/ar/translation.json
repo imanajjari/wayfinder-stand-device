@@ -1,4 +1,7 @@
 {
+    "ServiceListModal":{
+    "Services":"الخدمات"
+  },
   "ShopDetailsModal": {
   "shop_details": "تفاصيل المتجر",
   "shop_info": "معلومات المتجر",

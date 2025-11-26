@@ -1,4 +1,7 @@
 {
+    "ServiceListModal":{
+    "Services":"Services"
+  },
   "ShopDetailsModal": {
   "shop_details": "Shop Details",
   "shop_info": "Shop Information",
