@@ -19,6 +19,12 @@ export default function ServiceList() {
       link: "https://shivacorp.com/",
       description: null,
     },
+    {
+      icon: <img src="./images/cropped-Shiva-LOGO-web-1-scaled-1-32x32.webp" />,
+      title: "shivacorp",
+      link: "https://shivacorp.com/",
+      description: null,
+    },
   ];
 
   return (
@@ -49,7 +55,7 @@ export default function ServiceList() {
               color: colors.textSecondary,
             }}
             className="
-              flex items-start gap-3 p-3 border rounded-xl 
+              flex items-center gap-3 p-3 border rounded-xl 
               hover:opacity-90 transition cursor-pointer
             "
           >
