@@ -1,15 +1,16 @@
 
 # Shivacorp 3D Wayfinder
 
-![Logo](./public/images/whiteLogo.webp)
+<!-- ![Logo](./public/images/whiteLogo.webp) -->
+<img src="./public/images/whiteLogo.webp" alt="Logo" style="width:100%">
 
 A modern web application for **indoor 3D wayfinding**, designed for shopping malls, exhibitions, hospitals, airports, and other large indoor environments.  
 Developed under **Shivacorp**  
 Website: https://shivacorp.com
 
 ---
-![baner](./public/images/settings/bg-settings.jpg)
-
+<!-- ![baner](./public/images/settings/bg-settings.jpg) -->
+<img src="./public/images/settings/bg-settings.jpg" alt="baner" style="width:100%;border-radius: 12px">
 ## 🚀 Key Features
 
 - Full **3D path visualization** using Three.js & React Three Fiber  
@@ -25,8 +26,8 @@ Website: https://shivacorp.com
 ---
 
 ## 🧩 Technologies Used
-![baner](./public/images/settings/wayfinding-logo-green.png)
-
+<!-- ![baner](./public/images/settings/wayfinding-logo-green.png) -->
+<img src="./public/images/settings/wayfinding-logo-green.png" alt="Logo" style="width:100%">
 ### Frontend
 - React 19  
 - Vite 6  
