@@ -1,30 +1,16 @@
 
 # Shivacorp 3D Wayfinder
 
-<img src="public/images/whiteLogo.webp" alt="Logo" style="width:100%">
+<!-- ![Logo](./public/images/whiteLogo.webp) -->
+<img src="./public/images/whiteLogo.webp" alt="Logo" style="width:100%">
 
 A modern web application for **indoor 3D wayfinding**, designed for shopping malls, exhibitions, hospitals, airports, and other large indoor environments.  
 Developed under **Shivacorp**  
 Website: https://shivacorp.com
 
 ---
-## 🌐 Live Demo
-
-<img src="public/images/settings/bg-settings.jpg" alt="baner" style="width:100%;border-radius: 12px">
-
-The project is currently live at:
-
-👉 **http://45.159.150.16:4000**
-
-### Demo Login Credentials
-```
-User: demo1  
-Email: demo@gmail.com  
-Password: Demo123
-```
-
----
-
+<!-- ![baner](./public/images/settings/bg-settings.jpg) -->
+<img src="./public/images/settings/bg-settings.jpg" alt="baner" style="width:100%;border-radius: 12px">
 ## 🚀 Key Features
 
 - Full **3D path visualization** using Three.js & React Three Fiber  
@@ -40,9 +26,8 @@ Password: Demo123
 ---
 
 ## 🧩 Technologies Used
-
-<img src="public/images/settings/wayfinding-logo-green.png" alt="Wayfinding Logo" style="width:100%">
-
+<!-- ![baner](./public/images/settings/wayfinding-logo-green.png) -->
+<img src="./public/images/settings/wayfinding-logo-green.png" alt="Logo" style="width:100%">
 ### Frontend
 - React 19  
 - Vite 6  
@@ -148,7 +133,7 @@ npm run preview
 - Auto-updating Service Worker  
 - Image & asset caching  
 - 192px and 512px icons  
-- Full manifest with Persian branding  
+- Complete manifest with Persian branding  
 
 ---
 
