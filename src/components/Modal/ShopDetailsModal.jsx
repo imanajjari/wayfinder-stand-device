@@ -199,6 +199,7 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
         <div
           className="relative p-6 max-h-[calc(100vh-20rem)] "
           style={{ color: colors.textPrimary }}
+          
         >
           {/* Identity */}
           <div className="absolute top-[-35px] right-6 flex items-end gap-4">
@@ -337,11 +338,11 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
 
         {/* Bottom CTA */}
         <div
-          className="sticky bottom-0 p-6 pt-8"
+          className="sticky bottom-0 pb-6 pt-8"
         >
           <button
             onClick={handleNavigateToShop}
-            className="w-full py-3 px-6 rounded-xl flex items-center justify-center gap-3 transition-transform hover:scale-[1.02] shadow-lg"
+            className="w-full py-3 rounded-xl flex items-center justify-center gap-3 transition-transform hover:scale-[1.02] shadow-lg"
             style={{
               background:"linear-gradient(90deg, #008AFF, #00FFAB)",
               color: "#fff",
