@@ -14,6 +14,11 @@ import { usePath } from "../../contexts/PathContext";
 import { useSearchResults } from "../../contexts/SearchResultsContext";
 import { findFloorOfDestination } from "../../lib/floorUtils";
 import { t } from 'i18next';
+import { getDestinationById } from "../../services/destinationService";
+import CartInfoProfileModal from "../common/CartInfoProfileModal";
+import { useModalManager } from "../../contexts/ModalManagerContext";
+import { useShopDetails } from "../../contexts/ShopDetailsContext";
+import WebViewModal from './../Modal/WebViewModal'
 
 function hexToRgba(hex, alpha = 1) {
   if (!hex) return `rgba(0,0,0,${alpha})`;
@@ -31,9 +36,18 @@ function hexToRgba(hex, alpha = 1) {
 export default function ShopDetailsModal({ isOpen, onClose, shop }) {
   const [shouldRender, setShouldRender] = useState(false);
   const [animateIn, setAnimateIn] = useState(false);
+  const [shopData, setShopData] = useState(["hi"]);
   const { theme, colors } = useTheme();
   const { fetchPathV2 } = usePath();
   const { hideResults } = useSearchResults();
+  const { showModal } = useModalManager();
+  const { hideShopDetails } = useShopDetails();
+
+  const openURL = () => {
+    hideShopDetails();     // مودال اصلی بسته می‌شود
+    showModal(<WebViewModal url={shopData.url} />);   // سایت نمایش داده می‌شود
+
+  };
 
   const headerGradient = useMemo(
     () =>
@@ -67,13 +81,26 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
       //   floorNumber: shop.floorNum,
       //   floorId: findFloorOfDestination(shop).floorId,
       // });
-      fetchPathV2({end:shop})
+      fetchPathV2({ end: shop })
       hideResults(); // بستن مودال نتایج
       onClose(); // بستن همین مودال
     }
   };
 
   useEffect(() => {
+    const fetchShopData = async () => {
+      try {
+        const data = await getDestinationById(shop.id);
+        setShopData(data.data); // داده‌ها را در state ذخیره می‌کنیم
+      } catch (error) {
+        console.error("Failed to fetch shop data:", error);
+      }
+    };
+    fetchShopData();
+  }, [isOpen])
+
+  useEffect(() => {
+
     if (isOpen) {
       setShouldRender(true);
       document.body.style.overflow = "hidden";
@@ -83,6 +110,7 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
       document.body.style.overflow = "unset";
       setTimeout(() => setShouldRender(false), 300);
     }
+
     return () => {
       document.body.style.overflow = "unset";
     };
@@ -90,13 +118,17 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
 
   if (!shouldRender || !shop) return null;
 
+  console.log("shopData :", shopData);
+  console.log("shopData.fullName :", shopData.fullName);
+
+
+
   return (
     <div className="fixed inset-0 z-[9999] flex justify-center pt-8 pb-4">
       {/* Backdrop */}
       <div
-        className={`absolute inset-0 transition-opacity duration-300 ${
-          animateIn ? "opacity-100" : "opacity-0"
-        }`}
+        className={`absolute inset-0 transition-opacity duration-300 ${animateIn ? "opacity-100" : "opacity-0"
+          }`}
         style={{
           backgroundColor: "rgba(0,0,0,0.8)",
           backdropFilter: "blur(6px)",
@@ -106,9 +138,8 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
 
       {/* Modal */}
       <div
-        className={`relative w-full max-w-4xl max-h-[calc(100vh-4rem)] overflow-hidden transition-all duration-300 ease-out mx-4 rounded-2xl shadow-2xl ${
-          animateIn ? "scale-100 opacity-100" : "scale-95 opacity-0"
-        }`}
+        className={`relative w-full max-w-4xl max-h-[calc(100vh-4rem)] overflow-y-auto no-scrollbar transition-all duration-300 ease-out mx-4 rounded-2xl shadow-2xl ${animateIn ? "scale-100 opacity-100" : "scale-95 opacity-0"
+          }`}
         style={{ backgroundColor: colors.background }}
         role="dialog"
         aria-modal="true"
@@ -116,20 +147,19 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
       >
         {/* Header */}
         <div
-          className="relative h-64 overflow-hidden"
+          className="relative h-64 overflow-hidden "
           style={{ background: headerGradient }}
         >
           {shop.icon && (
             <img
-              src={getFileUrl(shop.icon)}
+              src={'./images/settings/bg-settings.jpg'}
               alt={shop.name}
               className="absolute inset-0 w-full h-full object-cover"
-              style={{ opacity: 0.3 }}
             />
           )}
           <div
             className="absolute inset-0"
-            style={{ background: "linear-gradient(to top, rgba(0,0,0,0.5), transparent)" }}
+
           />
 
           {/* Close */}
@@ -152,7 +182,7 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
             style={{
               background:
                 theme === "dark"
-                  ? "linear-gradient(90deg, #2563eb, #7c3aed)"
+                  ? "linear-gradient(90deg, #008AFF, #00FFAB)"
                   : "linear-gradient(90deg, #3b82f6, #8b5cf6)",
               color: "#fff",
             }}
@@ -162,13 +192,21 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
             <span className="text-sm font-medium">{t('ShopDetailsModal.show_route')}</span>
           </button>
 
+
+        </div>
+
+        {/* Body */}
+        <div
+          className="relative p-6 max-h-[calc(100vh-20rem)] "
+          style={{ color: colors.textPrimary }}
+        >
           {/* Identity */}
-          <div className="absolute bottom-4 left-6 flex items-end gap-4">
+          <div className="absolute top-[-35px] right-6 flex items-end gap-4">
             {shop.icon ? (
               <img
                 src={getFileUrl(shop.icon)}
                 alt={shop.name}
-                className="w-20 h-20 rounded-xl object-cover border-2"
+                className="w-25 h-25 rounded-full object-cover border-2"
                 style={{
                   backgroundColor: hexToRgba(colors.canvasBackground, 0.2),
                   ...softBorder,
@@ -187,297 +225,125 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
               </div>
             )}
 
-            <div className="pb-2">
-              <h1
-                className="text-2xl font-bold mb-1"
-                style={{ color: colors.textSecondary }}
-              >
-                {shop.fullName || shop.shortName}
-              </h1>
-              <p className="text-sm" style={{ color: colors.textSecondary }}>
-                {t('ShopDetailsModal.floor')}{shop.floorNum === 0 ? t('ShopDetailsModal.ground') : shop.floorNum}
-                {shop.buildingNumber && ` ${t('ShopDetailsModal.building')} ${shop.buildingNumber}`}
-              </p>
-            </div>
+
           </div>
-        </div>
-
-        {/* Body */}
-        <div
-          className="p-6 overflow-y-auto max-h-[calc(100vh-20rem)]"
-          style={{ color: colors.textPrimary }}
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Info */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-3 mb-2">
-                <IoInformation className="w-5 h-5" style={{ color: colors.textSecondary }} />
-                <h2 className="text-xl font-semibold" style={{ color: colors.textPrimary }}>
-                 {t('ShopDetailsModal.shop_info')}
-                </h2>
-              </div>
-
-              {shop.desc && (
-                <div style={sectionCardStyle} className="p-4">
-                  <h3
-                    className="font-medium mb-2"
-                    style={{ color: colors.textSecondary }}
-                  >
-                    {t('ShopDetailsModal.Description')}
-                  </h3>
-                  <p className="leading-relaxed">{shop.desc}</p>
-                </div>
-              )}
-
-              {shop.categories?.length > 0 && (
-                <div style={sectionCardStyle} className="p-4">
-                  <h3
-                    className="font-medium mb-2"
-                    style={{ color: colors.textSecondary }}
-                  >
-                    {t('ShopDetailsModal.shop_category')}
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {shop.categories.map((category, i) => (
-                      <span
-                        key={i}
-                        className="inline-block px-3 py-1 rounded-full text-sm"
-                        style={{
-                          background:
-                            theme === "dark"
-                              ? hexToRgba(colors.modelColor, 0.18)
-                              : hexToRgba(colors.modelColor, 0.12),
-                          color: colors.textPrimary,
-                        }}
-                      >
-                        {category}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {shop.tags?.length > 0 && (
-                <div style={sectionCardStyle} className="p-4">
-                  <h3
-                    className="font-medium mb-2"
-                    style={{ color: colors.textSecondary }}
-                  >
-                    {t('ShopDetailsModal.Tags')}
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {shop.tags.map((tag, i) => (
-                      <span
-                        key={i}
-                        className="px-2 py-1 rounded text-xs"
-                        style={{
-                          background:
-                            theme === "dark"
-                              ? hexToRgba("#7c3aed", 0.18)
-                              : hexToRgba("#7c3aed", 0.12),
-                          color: colors.textPrimary,
-                        }}
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Contact */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-3 mb-2">
-                <IoCall className="w-5 h-5" style={{ color: colors.textSecondary }} />
-                <h2 className="text-xl font-semibold" style={{ color: colors.textPrimary }}>
-                  {t('ShopDetailsModal.contact_info')}
-                </h2>
-              </div>
-
-              {shop.phone && (
-                <div style={sectionCardStyle} className="p-4">
-                  <div className="flex items-center gap-3">
-                    <IoCall className="w-4 h-4" style={{ color: colors.pointStart }} />
-                    <div>
-                      <h3
-                        className="font-medium"
-                        style={{ color: colors.textSecondary }}
-                      >
-                        {t('ShopDetailsModal.phone_number')}
-                      </h3>
-                      <p>{shop.phone}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {shop.workingHours && (
-                <div style={sectionCardStyle} className="p-4">
-                  <div className="flex items-center gap-3">
-                    <IoTime className="w-4 h-4" style={{ color: colors.pointEnd }} />
-                    <div>
-                      <h3
-                        className="font-medium"
-                        style={{ color: colors.textSecondary }}
-                      >
-                        {t('ShopDetailsModal.working_hours')}
-                      </h3>
-                      <p>{shop.workingHours}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Location */}
-              <div style={sectionCardStyle} className="p-4">
-                <div className="flex items-center gap-3">
-                  <IoLocation className="w-4 h-4" style={{ color: "#ef4444" }} />
-                  <div>
-                    <h3
-                      className="font-medium"
-                      style={{ color: colors.textSecondary }}
-                    >
-                      {t('ShopDetailsModal.location')}
-                    </h3>
-                    <p  style={{ color: colors.textSecondary }}>
-                      طبقه {shop.floorNum === 0 ? "همکف" : shop.floorNum}
-                      {shop.buildingNumber && `، ساختمان ${shop.buildingNumber}`}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Gallery */}
-              {shop.gallery?.length > 0 && (
-                <div style={sectionCardStyle} className="p-4">
-                  <h3
-                    className="font-medium mb-3"
-                    style={{ color: colors.textSecondary }}
-                  >
-                    {t('ShopDetailsModal.Gallery')}
-                  </h3>
-                  <div className="grid grid-cols-2 gap-2">
-                    {shop.gallery.map((image, i) => (
-                      <img
-                        key={i}
-                        src={getFileUrl(image)}
-                        alt={`${shop.name} - تصویر ${i + 1}`}
-                        className="w-full h-20 object-cover rounded-lg"
-                        style={{ border: `1px solid ${hexToRgba(colors.textMuted, 0.12)}` }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Extra */}
-          {(shop.id || shop.fullName || shop.website || shop.email || shop.specialOffers) && (
-            <div
-              className="mt-6 pt-6"
-              style={{ borderTop: `1px solid ${hexToRgba(colors.textMuted, 0.12)}` }}
+          {/* name profile */}
+          <div className="pb-2 pr-28">
+            <h1
+              className="text-2xl font-bold mb-1"
+              style={{ color: colors.textSecondary }}
             >
-              <h2
-                className="text-xl font-semibold mb-4"
-                style={{ color: colors.textPrimary }}
-              >
-                {t('ShopDetailsModal.additional_info')}
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {shop.fullName || shop.shortName}
+            </h1>
+            <p className="text-sm" style={{ color: colors.textSecondary }}>
+              {t('ShopDetailsModal.floor')} {shop.floorNum === 0 ? t('ShopDetailsModal.ground') : shop.floorNum}
+              {shop.buildingNumber && ` ${t('ShopDetailsModal.building')}  ${shop.buildingNumber}`}
+            </p>
+          </div>
+          {shopData.fullName &&
+<CartInfoProfileModal content={'fullName'}>{shopData.fullName}</CartInfoProfileModal>
+          }
 
-                {shop.fullName && shop.fullName !== shop.shortName && (
-                  <div style={sectionCardStyle} className="p-4">
-                    <h3
-                      className="font-medium mb-2"
-                      style={{ color: colors.textSecondary }}
-                    >
-                      {t('ShopDetailsModal.full_name')}
-                    </h3>
-                    <p className="text-sm">{shop.fullName}</p>
-                  </div>
-                )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                {shop.website && (
-                  <div style={sectionCardStyle} className="p-4">
-                    <h3
-                      className="font-medium mb-2"
-                      style={{ color: colors.textSecondary }}
-                    >
-                      {t('ShopDetailsModal.website')}
-                    </h3>
-                    <a
-                      href={shop.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm underline"
-                      style={{ color: colors.textLink }}
-                    >
-                      {t('ShopDetailsModal.visit_website')}
-                    </a>
-                  </div>
-                )}
+          
 
-                {shop.email && (
-                  <div style={sectionCardStyle} className="p-4">
-                    <h3
-                      className="font-medium mb-2"
-                      style={{ color: colors.textSecondary }}
-                    >
-                      {t('ShopDetailsModal.email_address')}
-                    </h3>
-                    <a
-                      href={`mailto:${shop.email}`}
-                      className="text-sm underline break-all"
-                      style={{ color: colors.textLink }}
-                    >
-                      {shop.email}
-                    </a>
-                  </div>
-                )}
-              </div>
 
-              {shop.specialOffers && (
-                <div className="mt-4">
-                  <div
-                    className="rounded-lg p-4 text-center"
-                    style={{
-                      background:
-                        theme === "dark"
-                          ? "linear-gradient(90deg, rgba(234,179,8,0.15), rgba(234,88,12,0.15))"
-                          : "linear-gradient(90deg, rgba(234,179,8,0.25), rgba(234,88,12,0.25))",
-                      border: `1px solid ${hexToRgba("#eab308", 0.35)}`,
-                      color: theme === "dark" ? "#fde68a" : "#92400e",
-                    }}
-                  >
-                    <h3 className="font-medium mb-2">پیشنهاد ویژه</h3>
-                    <p className="text-sm">{shop.specialOffers}</p>
-                  </div>
-                </div>
-              )}
+
+
+
+
+          
+            <div className="flex justify-between">
+              <CartInfoProfileModal content={'buildingNum'}>{shopData.buildingNum}</CartInfoProfileModal>
+              <CartInfoProfileModal content={'floorNum'}>{shopData.floorNum == 0 ? "همکف" : shopData.floorNum}</CartInfoProfileModal>
+              {shopData.uniqueCode &&
+                <CartInfoProfileModal content={'uniqueCode'}>{shopData.uniqueCode}</CartInfoProfileModal>
+              }
             </div>
-          )}
-        </div>
+         
+         <CartInfoProfileModal content={'categories'}>{shopData.categories && shopData.categories.length > 0 ? (
+        <ul>
+          {shopData.categories.map((category, index) => (
+            <li key={index}>{category}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>فاقد دسته‌بندی</p>
+      )}</CartInfoProfileModal>
+
+  {shopData.relatedPersons && shopData.relatedPersons.length > 0 && 
+<CartInfoProfileModal content={'relatedPersons'}>
+        <ul className=" flex gap-2">
+          {shopData.relatedPersons.map((relatedPerson, index) => (
+            <li key={index}>{relatedPerson}</li>
+          ))}
+        </ul>
+      </CartInfoProfileModal>
+}
+
+{shopData.url &&
+<CartInfoProfileModal content={'url'} className={'text-left'}>
+   <button
+      className="text-blue-500 underline"
+      onClick={openURL}
+    >
+      {shopData.url}
+    </button>
+</CartInfoProfileModal>
+}
+{shopData.desc &&
+<CartInfoProfileModal content={'desc'}>
+  {shopData.desc}
+</CartInfoProfileModal>
+}
+{shopData.files && shopData.files.length > 0 &&
+<CartInfoProfileModal content={'files'}>
+       <ul className=" flex gap-2 ">
+          {shopData.files.map((file, index) => (
+            <li key={index}>
+              فایل{index}
+            </li>
+          ))}
+        </ul>
+</CartInfoProfileModal>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          </div>
 
         {/* Bottom CTA */}
         <div
           className="sticky bottom-0 p-6 pt-8"
-          style={{
-            background: `linear-gradient(to top, ${hexToRgba(
-              colors.background,
-              0.95
-            )}, ${hexToRgba(colors.background, 0)})`,
-          }}
         >
           <button
             onClick={handleNavigateToShop}
             className="w-full py-3 px-6 rounded-xl flex items-center justify-center gap-3 transition-transform hover:scale-[1.02] shadow-lg"
             style={{
-              background:
-                theme === "dark"
-                  ? "linear-gradient(90deg, #2563eb, #7c3aed)"
-                  : "linear-gradient(90deg, #3b82f6, #8b5cf6)",
+              background:"linear-gradient(90deg, #008AFF, #00FFAB)",
               color: "#fff",
             }}
           >
@@ -485,6 +351,8 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
             <span className="text-lg font-semibold">{t('ShopDetailsModal.start_navigation')}</span>
           </button>
         </div>
+        </div>
+
       </div>
     </div>
   );

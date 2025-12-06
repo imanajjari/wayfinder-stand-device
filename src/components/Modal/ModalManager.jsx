@@ -21,6 +21,7 @@ export default function ModalManager() {
       onMouseDown={handleOverlayClick} // مهم: روی overlay هندل شود
     >
       <div
+      className=" flex flex-col justify-center items-center  w-full h-full "
         ref={modalRef}
       >
         <button

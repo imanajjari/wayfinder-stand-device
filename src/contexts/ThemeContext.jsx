@@ -17,7 +17,7 @@ const lightTheme = {
 };
 
 const darkTheme = {
-  background: "#1a1a1a",
+  background: "#10172A",
   canvasBackground: "#3A4147FF", // TODO : شروین این بخش رنگش رو تغییر بده و هر رنگی رو مد نظرت بود کد رنگیش رو بده بزارم رو پروژه 
   textPrimary: "#1A1A1AFF", // متن اصلی
   textSecondary: "#C1C1C1FF", // متن ثانویه

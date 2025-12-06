@@ -14,6 +14,14 @@ export const searchDestinationsByName = async (destinationName) => {
 };
 
 // get all destinations data
+export const getDestinationById = async (id) => {
+  console.log('id:',id);
+  
+  const response = await api.get(`/destination/${id}`);
+  return response.data; 
+};
+
+// get all destinations data
 export const getAllDestinations = async () => {
   const response = await api.get(`/destination/all`);
   return response.data; 
