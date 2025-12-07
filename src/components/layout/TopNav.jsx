@@ -23,7 +23,7 @@ export default function TopNav() {
   }, []);
 
   return (
-    <div className='fixed top-[10px] left-[10px] right-[10px] z-[1000] pointer-events-none'>
+    <div className='fixed top-[10px] left-[10px] right-[10px] z-50 pointer-events-none'>
       <div className="pointer-events-auto">
         <AdBanner
           content={

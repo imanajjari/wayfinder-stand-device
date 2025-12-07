@@ -17,11 +17,10 @@ function DestinationCard({ shop, onClick, myStand }) {
 
   return (
     <div
-      className={`relative flex items-start gap-4 p-4 rounded-xl border ${
-        isOnSameFloor 
-          ? 'border-[#00FFAB] bg-[#2e463e]' 
+      className={`relative flex items-start gap-4 p-4 rounded-xl border ${isOnSameFloor
+          ? 'border-[#00FFAB] bg-[#2e463e]'
           : 'border-gray-600 bg-neutral-800'
-      } cursor-pointer`}
+        } cursor-pointer`}
       onClick={onClick}
     >
       {shop.icon ? (
@@ -38,14 +37,18 @@ function DestinationCard({ shop, onClick, myStand }) {
       )}
       <div className="flex-1 space-y-1">
         <h3 className="text-lg font-semibold">{shop.shortName}</h3>
-        <p className="text-sm text-gray-300">{shop.desc}</p>
+        <p className="text-sm text-gray-300 hidden md:block">
+          {shop.desc && shop.desc.length > 120
+            ? shop.desc.substring(0, 120) + "…"
+            : shop.desc}
+        </p>
         <p className="text-sm text-gray-400">
-          طبقه {shop.floorNum === 0 ? 'همکف' : shop.floorNum} 
+          طبقه {shop.floorNum === 0 ? 'همکف' : shop.floorNum}
           {shop.buildingNumber && ` - ساختمان ${shop.buildingNumber}`}
           {isOnSameFloor && " در این طبقه قرار دارد"}
         </p>
       </div>
-      
+
       {/* Question Mark Icon for Details */}
       <button
         onClick={handleDetailsClick}
