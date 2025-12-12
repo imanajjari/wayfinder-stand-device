@@ -5,6 +5,15 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
   base: '/', // اگر دامنه ساب‌پث نیست همین بماند
+  build: {
+  sourcemap: false,
+  minify: "esbuild",
+  terserOptions: {
+    format: {
+      comments: false, // 🚫 حذف همه کامنت‌ها
+    },
+  },
+},
   plugins: [
     react(),
     tailwindcss(),

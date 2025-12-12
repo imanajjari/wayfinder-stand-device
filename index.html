@@ -1,14 +1,41 @@
 <!doctype html>
-<html lang="en">
+<html lang="fa">
   <head>
     <meta charset="UTF-8" />
+
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/icon-title.svg" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>مسیر یاب شیواپرداز</title>
+
+    <!-- Content Security Policy (CSP) -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self';
+        script-src 'self';
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data: blob:;
+        connect-src 'self' https://your-api-domain.com;
+        font-src 'self';
+        manifest-src 'self';
+        child-src 'self';
+      "
+    />
+
+    <!--  HSTS Preload (Frontend) -->
+    <meta
+      http-equiv="Strict-Transport-Security"
+      content="max-age=31536000; includeSubDomains; preload"
+    />
   </head>
+
   <body>
     <div id="root"></div>
     <div id="modal-root"></div>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
