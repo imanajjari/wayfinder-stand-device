@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoReload, IoWarning, IoCheckmarkCircle } from "react-icons/io5";
-import { postSetting } from "../../services/settingService";
+import { getUpdateSetting } from "../../services/settingService";
 import { saveFloors, saveMyStand, saveStandData, saveDestinations } from "../../storage/floorStorage";
 import { getAllDestinations } from "../../services/destinationService";
 import { saveCompanyWithLogo } from "../../storage/companyStorage";
@@ -19,17 +19,18 @@ export default function UpdateDataPage() {
       return;
     }
 
-    const { id, email, password } = JSON.parse(stored);
+
 
     const fetchData = async () => {
       try {
-        const response = await postSetting({ id, email, password });
-        if (response.message === "Stand is valid") {
-          if (response.data.floors?.length > 0) saveFloors(response.data.floors);
-          saveStandData(response.data);
-          if (response.user) await saveCompanyWithLogo(response.data.user);
+        const response = await getUpdateSetting();
+        if (response.status === 200) {
+          
+          if (response.data.data.floors?.length > 0) saveFloors(response.data.data.floors);
+          saveStandData(response.data.data);
+          if (response.data.data.user) await saveCompanyWithLogo(response.data.data.user);
 
-          const myStand = response.data.stands?.find((stand) => stand.isMe);
+          const myStand = response.data.data.stands?.find((stand) => stand.isMe);
           if (myStand) saveMyStand(myStand);
 
           const dest = await getAllDestinations();
