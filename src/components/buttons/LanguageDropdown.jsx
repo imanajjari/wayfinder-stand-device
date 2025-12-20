@@ -43,7 +43,7 @@ export default function LanguageDropdown() {
 
       {/* منوی بازشونده به بالا */}
       {open && (
-        <div className="absolute bottom-full mb-2 w-36 bg-gray-800 text-white rounded-xl shadow-lg border border-gray-600 z-50">
+        <div className={`absolute ${currentLang=='English'?'right-0':'left-0'} bottom-full mb-2  w-36 bg-gray-800 text-white rounded-xl shadow-lg border border-gray-600 z-50`}>
           {buttons.map(({ code, label }) => (
             <button
               key={code}

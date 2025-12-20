@@ -18,7 +18,8 @@ import { getDestinationById } from "../../services/destinationService";
 import CartInfoProfileModal from "../common/CartInfoProfileModal";
 import { useModalManager } from "../../contexts/ModalManagerContext";
 import { useShopDetails } from "../../contexts/ShopDetailsContext";
-import WebViewModal from './../Modal/WebViewModal'
+import WebViewModal from './../Modal/WebViewModal';
+import { FaEye } from "react-icons/fa";
 
 function hexToRgba(hex, alpha = 1) {
   if (!hex) return `rgba(0,0,0,${alpha})`;
@@ -256,7 +257,9 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
 
           
             <div className="flex justify-between">
+              {shopData.buildingNum &&
               <CartInfoProfileModal content={'buildingNum'}>{shopData.buildingNum}</CartInfoProfileModal>
+              }
               <CartInfoProfileModal content={'floorNum'}>{shopData.floorNum == 0 ? "همکف" : shopData.floorNum}</CartInfoProfileModal>
               {shopData.uniqueCode &&
                 <CartInfoProfileModal content={'uniqueCode'}>{shopData.uniqueCode}</CartInfoProfileModal>
@@ -284,12 +287,17 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
 }
 
 {shopData.url &&
-<CartInfoProfileModal content={'url'} className={'text-left'}>
+<CartInfoProfileModal content={'url'} >
    <button
-      className="text-blue-500 underline"
+      className="w-full "
       onClick={openURL}
     >
-      {shopData.url}
+      <div className="text-left flex justify-between px-2">
+
+      <FaEye className="text-blue-400"/>
+      {shopData.url} 
+      </div>
+
     </button>
 </CartInfoProfileModal>
 }
