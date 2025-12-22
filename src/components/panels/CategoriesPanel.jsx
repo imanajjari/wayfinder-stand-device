@@ -4,6 +4,9 @@ import { searchDestinationsByCategory } from '../../services/destinationService'
 import { useSearchResults } from '../../contexts/SearchResultsContext';
 import DestinationListModal from '../Modal/DestinationListModal';
 import ServiceButton from '../buttons/ServiceButton';
+import { BsShop } from "react-icons/bs";
+import { usePath } from '../../contexts/PathContext';
+import { useShopDetails } from '../../contexts/ShopDetailsContext';
 
 export default function CategoriesPanel({ categories = [], maxVisible = 20 }) {
   const [modalOpen, setModalOpen] = useState(false);
@@ -12,11 +15,14 @@ export default function CategoriesPanel({ categories = [], maxVisible = 20 }) {
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const { showResults } = useSearchResults();
+  const { lastDestination } = usePath();
+   const { showShopDetails } = useShopDetails();
   const handleMouseDown = (e) => {
     setIsDragging(true);
     setStartX(e.pageX - containerRef.current.offsetLeft);
     setScrollLeft(containerRef.current.scrollLeft);
   };
+
 
   const handleMouseLeave = () => setIsDragging(false);
   const handleMouseUp = () => setIsDragging(false);
@@ -60,6 +66,9 @@ export default function CategoriesPanel({ categories = [], maxVisible = 20 }) {
 
   return (
     <div>
+      <div className='flex justify-between items-center'>
+
+
       <div
         ref={containerRef}
         className="flex gap-2 overflow-x-auto scrollbar-hidden transition-all duration-300 cursor-grab active:cursor-grabbing px-4"
@@ -95,7 +104,15 @@ export default function CategoriesPanel({ categories = [], maxVisible = 20 }) {
           </button>
         )}
       </div>
-
+  <div className=' px-2 border-r-2 border-neutral-400'>
+    <button onClick={()=>{lastDestination&&showShopDetails(lastDestination)}} className={`flex rounded-xl p-2 border ${lastDestination?'bg-[#00FFAB] text-black border-black':'bg-[#10172A]  border-[#828284] text-white'}`}>
+      <p className='px-1 hidden sm:block'>
+        مشاهده جزئیات فروشکاه
+      </p>
+        <BsShop className='text-xl'/>
+    </button>
+  </div>
+      </div>
       <DestinationListModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
