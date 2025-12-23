@@ -26,7 +26,7 @@ export function PathProvider({ children }) {
 
 
     const fetchPathV2 = async ({start, end}) => {
-      console.log("🚀 fetchPathV2 called with:", { start, end });
+      // console.log("🚀 fetchPathV2 called with:", { start, end });
       setLastDestination(end)
       
     setLoading(true);
@@ -50,7 +50,7 @@ export function PathProvider({ children }) {
       throw new Error("مسیر یافت نشد");
     }
 
-console.log('normalized: ',normalized);
+// console.log('normalized: ',normalized);
 
     // اگر چند طبقه‌ای می‌خواهی نگه داری:
     setPath(normalized);

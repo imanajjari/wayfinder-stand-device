@@ -93,7 +93,7 @@ export default function FloorSelectorColumn({ floors = [], onSelect, activeFloor
 
       {/* دکمه موبایل با چرخش آیکن */}
       <button
-        className="sm:hidden py-2 transition-transform duration-300 active:scale-95"
+        className="sm:hidden py-1 transition-transform duration-300 active:scale-95"
         onClick={() => setShowFloors((v) => !v)}
         aria-label={showFloors ? "بستن لیست طبقات" : "باز کردن لیست طبقات"}
         title={showFloors ? "بستن" : "باز کردن"}

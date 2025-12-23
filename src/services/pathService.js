@@ -36,7 +36,7 @@ export const findOnePath = async ({ start, end, skip = 0, floorId }) => {
 
 // get path between one start point and one end point for multi-floor maps (version 2)
 export const findOnePathMulityfloorV2 = async ({ start, end, userId, skip = 100 }) => {
-  console.log('در سرویس مسیر چند طبقه با پارامترها:', { start, end, userId, skip });
+  // console.log('در سرویس مسیر چند طبقه با پارامترها:', { start, end, userId, skip });
   
   try {
     const response = await api.post('path/v2', {

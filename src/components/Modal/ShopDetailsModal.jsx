@@ -88,17 +88,21 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
     }
   };
 
-  useEffect(() => {
-    const fetchShopData = async () => {
-      try {
-        const data = await getDestinationById(shop.id);
-        setShopData(data.data); // داده‌ها را در state ذخیره می‌کنیم
-      } catch (error) {
-        console.error("Failed to fetch shop data:", error);
-      }
-    };
-    fetchShopData();
-  }, [isOpen])
+useEffect(() => {
+  if (!isOpen || !shop?.id) return;
+
+  const fetchShopData = async () => {
+    try {
+      const data = await getDestinationById(shop.id);
+      setShopData(data.data);
+    } catch (error) {
+      console.error("Failed to fetch shop data:", error);
+    }
+  };
+
+  fetchShopData();
+}, [isOpen, shop?.id]);
+
 
   useEffect(() => {
 

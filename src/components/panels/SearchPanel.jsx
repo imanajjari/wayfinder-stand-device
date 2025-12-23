@@ -56,7 +56,7 @@ export default function SearchPanel() {
         <button
           onClick={handleSearch}
           className=" bg-[#00FFAB] 
-                  shadow-[0_0_30px_#00FFAA8D] text-xl sm:text-2xl md:text-3xl text-black p-2 rounded-xl hover:bg-blue-500 active:scale-95 hover:scale-110 transition-transform duration-200"
+                  shadow-[0_0_30px_#00FFAA8D] border border-black text-xl sm:text-2xl md:text-3xl text-black p-2 rounded-xl hover:bg-blue-500 active:scale-95 hover:scale-110 transition-transform duration-200"
         >
           {loading ? <ImSpinner8 className="animate-spin" /> : <MdSearch />}
         </button>

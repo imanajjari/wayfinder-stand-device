@@ -105,7 +105,7 @@ export default function CategoriesPanel({ categories = [], maxVisible = 20 }) {
         )}
       </div>
   <div className=' px-2 border-r-2 border-neutral-400'>
-    <button onClick={()=>{lastDestination&&showShopDetails(lastDestination)}} className={`flex rounded-xl p-2 border ${lastDestination?'bg-[#00FFAB] text-black border-black':'bg-[#10172A]  border-[#828284] text-white'}`}>
+    <button onClick={()=>{lastDestination&&showShopDetails(lastDestination)}} className={`flex rounded-xl p-2 border ${lastDestination?'bg-[#00FFAB] shadow-[0_0_30px_#00FFAA8D] text-black border-black':'bg-[#10172A]  border-[#828284] text-white'}`}>
       <p className='px-1 hidden sm:block'>
         مشاهده جزئیات فروشکاه
       </p>
