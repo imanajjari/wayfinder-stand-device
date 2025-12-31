@@ -10,13 +10,12 @@ import LabelsLayer from "../../components/scene/LabelsLayer";
 import PanLimiter from "../../components/controls/PanLimiter";
 import FitCameraToObject from "../../components/scene/FitCameraToObject";
 import { useScreenshot } from "../../utils/useScreenshot";
-import { QRCodeCanvas } from "qrcode.react";
 import { useQrCodeUpload } from "../../hooks/QrCode/useQrCodeUpload";
 
 
-import { MdOutlineScreenshot } from "react-icons/md";
-import { ImSpinner8 } from "react-icons/im";
+import { useHoldMapCoords } from "../../hooks/navigator/useHoldMapCoords";
 import ScreenshotQrOverlay from "../../components/scene/ScreenshotQrOverlay";
+import HoldCoordsOverlay from "../../components/scene/HoldCoordsOverlay";
 
 function SceneCore({
   colors,
@@ -26,6 +25,7 @@ function SceneCore({
   activeFloor,
   isPortrait,
   onCapture,
+  onHoldInfo, // هنوز می‌خوای بیرون setState کنی
 }) {
   const { gl, scene, size } = useThree();
   const modelRoot = useRef();
@@ -44,23 +44,33 @@ function SceneCore({
     [currentModelFile, verticalOffset, loadedTick]
   );
 
-  // Use the screenshot hook
+  useScreenshot({
+    gl,
+    scene,
+    size,
+    onCapture,
+    options: { maxLongSide: 2160, padding: 1.15, zoomFactor: 1.0 },
+  });
 
-useScreenshot({
-  gl, scene, size, onCapture,
-  options: {
-    maxLongSide: 2160,   // خروجی شارپ ولی سنگین؛ می‌تونی 1600/1920 بذاری
-    padding: 1.15,       // 15% فاصله از لبه‌ها
-    zoomFactor: 1.0,     // اگر مدل خیلی به قاب نزدیکه، 1.1 یا 1.2 کن
-    // fixedAspect: 16/9, // اگر همیشه 16:9 می‌خوای، اینو باز کن
-  },
-});
+  // ✅ hook فقط bind می‌ده
+  const { bind, holdInfo } = useHoldMapCoords({
+    modelRootRef: modelRoot,
+    holdDelay: 250,
+    cancelMovePx: 6,
+  });
 
+  // اگر می‌خوای state بیرون هم sync بشه:
+  // ساده‌ترین راه: هر بار holdInfo عوض شد بفرست بیرون
+  // (ولی اگر بیرون فقط برای overlayه، می‌تونی overlay رو همینجا هم رندر کنی و کلاً onHoldInfo رو حذف کنی)
+  useMemo(() => {
+    onHoldInfo?.(holdInfo);
+  }, [holdInfo, onHoldInfo]);
 
   return (
     <>
       <LightsRig />
-      <group ref={modelRoot} position={[0, verticalOffset, 0]}>
+
+      <group ref={modelRoot} position={[0, verticalOffset, 0]} {...bind}>
         <Suspense fallback={null}>
           <GLBModel
             url={currentModelFile}
@@ -69,74 +79,80 @@ useScreenshot({
             onLoaded={handleModelLoaded}
           />
         </Suspense>
+
         <LabelsLayer
           floorDestinations={floorDestinations}
           verticalOffset={verticalOffset}
           maxVisibleDistance={maxZoom}
           fadeStartDistance={maxZoom - 15}
         />
-        <PathOverlay
-          colors={colors}
-          activeFloor={activeFloor}
-          maxZoomDistance={maxZoom}
-        />
+
+        <PathOverlay colors={colors} activeFloor={activeFloor} maxZoomDistance={maxZoom} />
       </group>
-      <FitCameraToObject
-        objectRef={modelRoot}
-        controlsRef={controlsRef}
-        padding={1.2}
-        deps={fitDeps}
-      />
+
+      <FitCameraToObject objectRef={modelRoot} controlsRef={controlsRef} padding={1.2} deps={fitDeps} />
       <ControlsRig controlsRef={controlsRef} min={minZoom} max={maxZoom} />
       <PanLimiter controls={controlsRef} isPortrait={isPortrait} />
     </>
   );
 }
 
+
+
 export default function Navigator3DScene(props) {
-  // const { colors } = props;
   const [qrUrl, setQrUrl] = useState(null);
   const [loading, setLoading] = useState(false);
+  // بخش انتخاب نقطه دلخوا
+  const [holdInfo, setHoldInfo] = useState(null);
+
   const { handleUploadQr } = useQrCodeUpload();
 
-  const handlerefreshQRUrl =() =>{
-setQrUrl(null)
-  }
-  const handleCapture = useCallback(
-    async (screenshot) => {
-      setLoading(true)
-      // 1️⃣ تبدیل Base64 به فایل برای آپلود
-      const res = await fetch(screenshot);
-      const blob = await res.blob();
-      const file = new File([blob], "aojbsvasdv.png", { type: "image/png" });
+  const handlerefreshQRUrl = () => setQrUrl(null);
 
-      try {
-        const uploaded = await handleUploadQr(file);
-        console.log('uploaded:',uploaded);
-        
-        // 2️⃣ ساخت URL نهایی فایل برای QR
-        console.log(`http://45.159.150.16:4000/SnapShare/${uploaded.name}`);
-        
-        setQrUrl(`http://45.159.150.16:4000/SnapShare/${uploaded.name}`); // assuming backend returns { url: '...' }
-      } catch (err) {
-        console.error("خطا در آپلود عکس:", err);
-      }
-      setLoading(false)
-    },
-    [handleUploadQr]
-  );
+  const handleCapture = useCallback(async (screenshot) => {
+    setLoading(true);
+    const res = await fetch(screenshot);
+    const blob = await res.blob();
+    const file = new File([blob], "aojbsvasdv.png", { type: "image/png" });
+
+    try {
+      const uploaded = await handleUploadQr(file);
+      setQrUrl(`http://45.159.150.16:4000/SnapShare/${uploaded.name}`);
+    } catch (err) {
+      console.error("خطا در آپلود عکس:", err);
+    }
+    setLoading(false);
+  }, [handleUploadQr]);
 
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <Canvas
-        style={{ background: "#000",backgroundImage: "url('/images/bg-scene.png')",backgroundRepeat: "repeat",backgroundSize: "100px", transition: "0.5s" }}
-        camera={{ position: [0, 60, 60],fov: 50 }}
+        style={{
+          background: "#000",
+          backgroundImage: "url('/images/bg-scene.png')",
+          backgroundRepeat: "repeat",
+          backgroundSize: "100px",
+          transition: "0.5s",
+        }}
+        camera={{ position: [0, 60, 60], fov: 50 }}
         gl={{ antialias: true, preserveDrawingBuffer: true }}
       >
-         {/* <Perf position="top-left" /> */}
-        <SceneCore {...props} onCapture={handleCapture} />
+        <SceneCore
+          {...props}
+          onCapture={handleCapture}
+          // انتخاب ازاد مقصد
+          onHoldInfo={setHoldInfo}
+        />
       </Canvas>
-<ScreenshotQrOverlay qrUrl={qrUrl} handlerefreshQRUrl={handlerefreshQRUrl}  loading={loading}/>
+
+      {/* ✅ نمایش مختصات هنگام نگه داشتن */}
+      <HoldCoordsOverlay info={holdInfo} />
+
+      <ScreenshotQrOverlay
+        qrUrl={qrUrl}
+        handlerefreshQRUrl={handlerefreshQRUrl}
+        loading={loading}
+      />
     </div>
   );
 }

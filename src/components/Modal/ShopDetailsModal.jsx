@@ -2,10 +2,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import {
   IoClose,
-  IoLocation,
-  IoCall,
-  IoTime,
-  IoInformation,
   IoNavigate,
 } from "react-icons/io5";
 import { getFileUrl } from "../../services/fileService";
@@ -20,6 +16,10 @@ import { useModalManager } from "../../contexts/ModalManagerContext";
 import { useShopDetails } from "../../contexts/ShopDetailsContext";
 import WebViewModal from './../Modal/WebViewModal';
 import { FaEye } from "react-icons/fa";
+import FileViewerModal from "./FileViewerModal";
+import RatingDisplay from "../common/RatingDisplay";
+import CommentShopModal from "../common/CommentShopModal";
+
 
 function hexToRgba(hex, alpha = 1) {
   if (!hex) return `rgba(0,0,0,${alpha})`;
@@ -49,6 +49,14 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
     showModal(<WebViewModal url={shopData.url} />);   // سایت نمایش داده می‌شود
 
   };
+  const openFile = (fileName) => {
+    console.log('fileName :',fileName);
+    
+    hideShopDetails();     // مودال اصلی بسته می‌شود
+    showModal(<FileViewerModal fileName={fileName} shop={shop} />);   // سایت نمایش داده می‌شود
+
+  };
+
 
   const headerGradient = useMemo(
     () =>
@@ -88,6 +96,8 @@ export default function ShopDetailsModal({ isOpen, onClose, shop }) {
     }
   };
 
+  
+
 useEffect(() => {
   if (!isOpen || !shop?.id) return;
 
@@ -123,9 +133,6 @@ useEffect(() => {
 
   if (!shouldRender || !shop) return null;
 
-  console.log("shopData :", shopData);
-  console.log("shopData.fullName :", shopData.fullName);
-
 
 
   return (
@@ -155,13 +162,13 @@ useEffect(() => {
           className="relative h-64 overflow-hidden "
           style={{ background: headerGradient }}
         >
-          {shop.icon && (
+          
             <img
               src={'./images/settings/bg-settings.jpg'}
               alt={shop.name}
               className="absolute inset-0 w-full h-full object-cover"
             />
-          )}
+          
           <div
             className="absolute inset-0"
 
@@ -207,7 +214,7 @@ useEffect(() => {
           
         >
           {/* Identity */}
-          <div className="absolute top-[-35px] right-6 flex items-end gap-4">
+          <div className="absolute top-[-35px] flex items-end gap-4">
             {shop.icon ? (
               <img
                 src={getFileUrl(shop.icon)}
@@ -232,6 +239,16 @@ useEffect(() => {
             )}
 
 
+          </div>
+          <div className="absolute top-[-20px] left-3">
+                        <div className="bg-[#324154] rounded-xl p-2">
+              <p className="text-white">امتیازدهی به فروشگاه</p>
+              <div className="flex justify-center">
+      <RatingDisplay rating={4.3} size="text-md" />
+      {/* یا مثلاً: <RatingDisplay rating={storeRating} /> */}
+    </div>
+
+            </div>
           </div>
           {/* name profile */}
           <div className="pb-2 pr-28">
@@ -314,7 +331,7 @@ useEffect(() => {
 <CartInfoProfileModal content={'files'}>
        <ul className=" flex gap-2 ">
           {shopData.files.map((file, index) => (
-            <li key={index}>
+            <li key={index} onClick={()=>openFile(file)}>
               فایل{index}
             </li>
           ))}
@@ -364,6 +381,9 @@ useEffect(() => {
             <span className="text-lg font-semibold">{t('ShopDetailsModal.start_navigation')}</span>
           </button>
         </div>
+<div className="col-span-1 md:col-span-2">
+ <CommentShopModal shopId={1} />
+</div>
         </div>
 
       </div>

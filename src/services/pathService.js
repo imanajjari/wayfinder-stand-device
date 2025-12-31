@@ -41,7 +41,7 @@ export const findOnePathMulityfloorV2 = async ({ start, end, userId, skip = 100 
   try {
     const response = await api.post('path/v2', {
       start,
-      end,
+      ...end,
       userId,
       skip
     });

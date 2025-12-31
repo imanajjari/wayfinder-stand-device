@@ -1,6 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { findOnePath, findOnePathMulityfloorV2 } from "../services/pathService";
-import { getStandData } from "../storage/floorStorage";
+import { getFloors, getStandData } from "../storage/floorStorage";
 import { findFloorOfDestination } from "../lib/floorUtils";
 import { getMyStand } from "../storage/floorStorage";
 import { getCompanyData } from '../storage/companyStorage';
@@ -11,22 +11,32 @@ export function PathProvider({ children }) {
   const [path, setPath] = useState(null);
   const [loading, setLoading] = useState(false);
   const [currentFloorNumber, setCurrentFloorNumber] = useState(null);
+  const [currentFloor, setCurrentFloor] = useState(null);
   const [currentStand, setCurrentStand] = useState(null);
   const [lastDestination, setLastDestination] = useState(null);
 
   const updateCurrentFloorNumber = (floorNumber) => {
     setCurrentFloorNumber(floorNumber);
 
+    const floors = getFloors();
+    const floorId = floors?.find(
+      (s) => s.number === floorNumber
+    );
+
     const standData = getStandData();
     const standOnFloor = standData?.stands.find(
       (s) => s.floorNum === floorNumber
     );
+
     setCurrentStand(standOnFloor);
+    setCurrentFloor(floorId);
+
+    
   };
 
 
     const fetchPathV2 = async ({start, end}) => {
-      // console.log("🚀 fetchPathV2 called with:", { start, end });
+      console.log("🚀 fetchPathV2 called with:", { start, end });
       setLastDestination(end)
       
     setLoading(true);
@@ -37,9 +47,13 @@ export function PathProvider({ children }) {
         start = myStand.id;
       }
 
+      // نرمالایز کردن end
+    const normalizedEnd = getNormalizedEndForPath(end);
+console.log('ali :',normalizedEnd);
+
       const res = await findOnePathMulityfloorV2({
       start,
-      end:end.id,
+      end:normalizedEnd,
       userId: companyData?.id,
       skip: 100,
       });
@@ -61,6 +75,24 @@ export function PathProvider({ children }) {
       setLoading(false);
     }
   };
+
+//  این تابع مسئول کنترل محتوای مقصد ارسالی قبل از در خواست مسیر از سروره . که شناسه بفرسته یا مختصات
+const getNormalizedEndForPath = (end) => {
+  // اگر ششناسه داشت شناسه رو بفرست
+if(end.id){
+  return {end:end.id}
+} else {
+  // در غیر این صورت مختصات و شناسه طبقه رو به عنوان اطلاعات مقصد ارسال  کن 
+      return {
+        end:{
+          x: parseInt(end.entrance.x),
+          y: parseInt(end.entrance.y),
+        },
+      floorId: currentFloor.id,
+    };
+}
+};
+
 
   // p می‌تونه [x,y] یا {x,y} باشه
 const toMeters = (p) => {
