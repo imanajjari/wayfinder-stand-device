@@ -242,7 +242,7 @@ useEffect(() => {
           </div>
           <div className="absolute top-[-20px] left-3">
                         <div className="bg-[#324154] rounded-xl p-2">
-              <p className="text-white">امتیازدهی به فروشگاه</p>
+              {/* <p className="text-white">امتیازدهی به فروشگاه</p> */}
               <div className="flex justify-center">
       <RatingDisplay rating={4.3} size="text-md" />
       {/* یا مثلاً: <RatingDisplay rating={storeRating} /> */}

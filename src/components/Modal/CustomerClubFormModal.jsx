@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { addCustomer } from "../../services/customerService";
+import { useModalManager } from "../../contexts/ModalManagerContext";
 
 
 
@@ -15,8 +16,9 @@ const CustomerClubFormModal = () => {
 
   const [loading, setLoading] = useState(false);
 
+  const { hideModal } = useModalManager();
   const validate = () => {
-    if (form.name.trim().length < 5) {
+    if (form.name.trim().length < 3) {
       toast.error("نام باید حداقل ۵ کاراکتر باشد");
       return false;
     }
@@ -27,10 +29,10 @@ const CustomerClubFormModal = () => {
       return false;
     }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      toast.error("ایمیل معتبر نیست");
-      return false;
-    }
+    // if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    //   toast.error("ایمیل معتبر نیست");
+    //   return false;
+    // }
 
     return true;
   };
@@ -49,7 +51,7 @@ const CustomerClubFormModal = () => {
 
       toast.success("عضویت با موفقیت انجام شد 🎉");
       // اگر خواستی بعدش مودال رو ببندی، اینجا صداش بزن
-      // closeModal();
+      hideModal();
     } catch (err) {
       toast.error("خطا در ثبت اطلاعات، دوباره تلاش کنید");
       console.error(err);
