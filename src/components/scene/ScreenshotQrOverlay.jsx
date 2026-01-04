@@ -5,12 +5,14 @@ import { ImSpinner8 } from "react-icons/im";
 import { MdOutlineScreenshot } from "react-icons/md";
 import { useQrCodeUpload } from "../../hooks/QrCode/useQrCodeUpload";
 import { IoClose } from "react-icons/io5";
+import CustomerClubButton from "../buttons/CustomerClubButton";
 
 
 export default function ScreenshotQrOverlay({qrUrl,handlerefreshQRUrl, loading}) {
 
   return (
-<div className="absolute top-1/2 xl:top-1/3 sm:top-1/2 left-2 flex flex-col gap-4" dir="ltr">
+<>
+
   {qrUrl && (
     <div className="backdrop-blur-md border border-gray-300 rounded-4xl shadow-md p-4 text-xl bg-white">
       <QRCodeCanvas value={qrUrl} size={128} />
@@ -26,7 +28,7 @@ export default function ScreenshotQrOverlay({qrUrl,handlerefreshQRUrl, loading})
 
   <button
     // className="bg-black/40 backdrop-blur-md border border-gray-300 rounded-4xl shadow-md p-4 text-xl text-white self-start"
-    className="hidden sm:block bg-[#008AFF] shadow-[0_0_20px_#008AFF] backdrop-blur-md border border-gray-300 rounded-4xl p-4 text-xl text-white self-start"
+    className="hidden sm:block bg-[#008AFF] shadow-[0_0_20px_#008AFF] backdrop-blur-md border-r border-gray-300 rounded-r-4xl p-4 text-xl text-white self-start"
     onClick={() => {
       if (window.captureScreenshot) {
         window.captureScreenshot();
@@ -35,6 +37,7 @@ export default function ScreenshotQrOverlay({qrUrl,handlerefreshQRUrl, loading})
   >
     {loading ? <ImSpinner8 className="animate-spin" /> : <MdOutlineScreenshot />}
   </button>
-</div>
+
+</>
   );
 }

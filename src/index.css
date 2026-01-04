@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+
+
+
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -186,4 +189,17 @@ body {
 .no-scrollbar {
   -ms-overflow-style: none; /* IE و Edge */
   scrollbar-width: none; /* Firefox */
+}
+
+
+
+
+
+.cc-phone .selected-flag {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 42px !important;
+  padding: 0 12px !important; /* این خط، پرچم رو از "دیوار" می‌کَنه */
+  box-sizing: border-box !important;
 }

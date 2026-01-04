@@ -16,6 +16,7 @@ import { useQrCodeUpload } from "../../hooks/QrCode/useQrCodeUpload";
 import { useHoldMapCoords } from "../../hooks/navigator/useHoldMapCoords";
 import ScreenshotQrOverlay from "../../components/scene/ScreenshotQrOverlay";
 import HoldCoordsOverlay from "../../components/scene/HoldCoordsOverlay";
+import CustomerClubButton from "../../components/buttons/CustomerClubButton";
 
 function SceneCore({
   colors,
@@ -147,12 +148,14 @@ export default function Navigator3DScene(props) {
 
       {/* ✅ نمایش مختصات هنگام نگه داشتن */}
       <HoldCoordsOverlay info={holdInfo} />
-
+<div className="absolute top-2/3 xl:top-1/3 sm:top-1/2 left-0 flex flex-col gap-4" dir="ltr">
       <ScreenshotQrOverlay
         qrUrl={qrUrl}
         handlerefreshQRUrl={handlerefreshQRUrl}
         loading={loading}
       />
+      <CustomerClubButton />
+      </div>
     </div>
   );
 }
