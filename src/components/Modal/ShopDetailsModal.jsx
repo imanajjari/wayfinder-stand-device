@@ -19,6 +19,7 @@ import { FaEye } from "react-icons/fa";
 import FileViewerModal from "./FileViewerModal";
 import RatingDisplay from "../common/RatingDisplay";
 import CommentShopModal from "../common/CommentShopModal";
+import DestinationCompareSelectModal from "./DestinationCompareSelectModal";
 
 
 function hexToRgba(hex, alpha = 1) {
@@ -381,6 +382,27 @@ useEffect(() => {
             <span className="text-lg font-semibold">{t('ShopDetailsModal.start_navigation')}</span>
           </button>
         </div>
+        <button
+  onClick={() => {
+    hideShopDetails();
+    showModal(
+      <DestinationCompareSelectModal
+        baseDestinationId={shop.id}
+      />
+    );
+  }}
+  className="
+    absolute top-4 left-4
+    px-4 py-2
+    rounded-full
+    bg-[#334155]
+    text-white
+    hover:bg-[#475569]
+    transition
+  "
+>
+  مقایسه مقصد
+</button>
 <div className="col-span-1 md:col-span-2">
  <CommentShopModal shopId={1} />
 </div>

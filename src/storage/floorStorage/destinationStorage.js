@@ -1,5 +1,5 @@
 
-
+// src\storage\floorStorage\destinationStorage.js
 /**
  * ذخیره مقاصد در localStorage
  * @param {Array} destinations - آرایه مقاصد
