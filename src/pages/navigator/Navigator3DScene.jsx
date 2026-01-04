@@ -148,7 +148,7 @@ export default function Navigator3DScene(props) {
 
       {/* ✅ نمایش مختصات هنگام نگه داشتن */}
       <HoldCoordsOverlay info={holdInfo} />
-<div className="absolute top-2/3 xl:top-1/3 sm:top-1/2 left-0 flex flex-col gap-4" dir="ltr">
+<div className="absolute top-2/3  sm:top-5/8  xl:top-1/3  left-0 flex flex-col gap-4" dir="ltr">
       <ScreenshotQrOverlay
         qrUrl={qrUrl}
         handlerefreshQRUrl={handlerefreshQRUrl}
