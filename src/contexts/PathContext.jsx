@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { findOnePath, findOnePathMulityfloorV2 } from "../services/pathService";
+import { findManyPathsV2, findOnePath, findOnePathMulityfloorV2 } from "../services/pathService";
 import { getFloors, getStandData } from "../storage/floorStorage";
 import { findFloorOfDestination } from "../lib/floorUtils";
 import { getMyStand } from "../storage/floorStorage";
@@ -36,7 +36,6 @@ export function PathProvider({ children }) {
 
 
     const fetchPathV2 = async ({start, end}) => {
-      console.log("🚀 fetchPathV2 called with:", { start, end });
       setLastDestination(end)
       
     setLoading(true);
@@ -47,9 +46,7 @@ export function PathProvider({ children }) {
         start = myStand.id;
       }
 
-      // نرمالایز کردن end
     const normalizedEnd = getNormalizedEndForPath(end);
-console.log('ali :',normalizedEnd);
 
       const res = await findOnePathMulityfloorV2({
       start,
@@ -64,10 +61,12 @@ console.log('ali :',normalizedEnd);
       throw new Error("مسیر یافت نشد");
     }
 
-// console.log('normalized: ',normalized);
+
 
     // اگر چند طبقه‌ای می‌خواهی نگه داری:
     setPath(normalized);
+    console.log('setPath :',normalized);
+    
     } catch (err) {
       console.error("خطا در دریافت مسیر:", err);
       setPath(null);
@@ -75,6 +74,38 @@ console.log('ali :',normalizedEnd);
       setLoading(false);
     }
   };
+
+
+  const fetchManyPathsV2 = async ({ start, ends }) => {
+  setLastDestination(ends);
+  setLoading(true);
+  const myStand = getMyStand();
+  const companyData = getCompanyData();
+
+  try {
+    if (!start) {
+      start = myStand.id;
+    }
+
+    const res = await findManyPathsV2({
+      start,
+      ends,
+      userId: companyData?.id,
+      skip: 100,
+    });
+
+  
+
+    setPath(res);
+    console.log("multi-path result:", res);
+  } catch (err) {
+    console.error("خطا در گرفتن مسیرهای چندگانه:", err);
+    setPath(null);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
 //  این تابع مسئول کنترل محتوای مقصد ارسالی قبل از در خواست مسیر از سروره . که شناسه بفرسته یا مختصات
 const getNormalizedEndForPath = (end) => {
@@ -91,6 +122,27 @@ if(end.id){
       floorId: currentFloor.id,
     };
 }
+};
+
+
+const normalizeManyPathsResponse = (res) => {
+  const data = res?.data ?? res;
+  if (!Array.isArray(data?.pathsList ?? data)) return [];
+
+  // فرض می‌کنیم هر آیتم معادل مسیر بین start و هر end است
+  const result = (data.pathsList ?? data).map((pathBlock) => {
+    const floors = pathBlock?.paths ?? [];
+    return {
+      floorDiff: pathBlock?.floorDiff ?? 0,
+      paths: floors.map((f) => ({
+        floorId: f.floorId,
+        path: (f.path ?? []).map(toMeters),
+        floorNum: f.floorNum,
+      })),
+    };
+  });
+
+  return result;
 };
 
 
@@ -132,7 +184,8 @@ const normalizePathResponse = (res) => {
         currentFloorNumber,
         currentStand,
         lastDestination,
-        fetchPathV2
+        fetchPathV2,
+        fetchManyPathsV2
       }}
     >
       {children}

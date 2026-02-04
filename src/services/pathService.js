@@ -1,4 +1,5 @@
 // src/services/pathService.js
+import multiPaths from '../../multiPaths';
 import api from '../api/api';
 
 // get paths between one start point and many end points
@@ -49,6 +50,23 @@ export const findOnePathMulityfloorV2 = async ({ start, end, userId, skip = 100 
     return response.data;
   } catch (error) {
     console.error('Error fetching single path:', error);
+    throw error;
+  }
+};
+
+/** get multiple multi-floor paths (v2 endpoint) */
+export const findManyPathsV2 = async ({ start, ends, userId, skip = 100 }) => {
+  try {
+    // const response = await api.post('paths/v2', {
+    //   start,
+    //   end: ends,    // طبق نمونه API تو
+    //   userId,
+    //   skip
+    // });
+    // console.log('response multi-v2:', response);
+    return multiPaths.data;
+  } catch (error) {
+    console.error('Error fetching multiple paths (V2):', error);
     throw error;
   }
 };

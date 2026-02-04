@@ -49,7 +49,7 @@ export default function DottedStraightPath({ points, spacing = 0.05, size = 0.01
     if (maxInfluence > 0) {
       const color = new Color().lerpColors(
         new Color('#ffffff'),
-        new Color('#ff0000'),
+        new Color('#00FFAB'),
         maxInfluence
       );
       const scale = size + (size * 0.5 * maxInfluence);

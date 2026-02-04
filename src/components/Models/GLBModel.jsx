@@ -12,11 +12,10 @@ const GLBModel = forwardRef(function GLBModel(
 
   useEffect(() => {
     if (!modelRef.current) return;
-    // اگر هم‌راستاسازی با STL لازم داری، بهتره از prop rotation استفاده کنی
-    // و این بخش رو حذف کنی تا روی Bounds/Box3 اثر نذاره.
+
     modelRef.current.rotation.x = Math.PI / 2;
 
-    onLoaded?.(gltf.scene);  // ← سیگنال لود
+    onLoaded?.(gltf.scene); 
   }, [gltf, onLoaded]);
 
   return (

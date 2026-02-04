@@ -1,81 +1,264 @@
-// src/pages/navigator/components/PathOverlay.jsx
 import DottedStraightPath from "../paths/DottedStraightPath";
 import LabeledPoint from "../Models/LabeledPoint";
 import ArrowStraightPath from "../paths/ArrowStraightPath";
 import { usePath } from "../../contexts/PathContext";
 import { useMemo } from "react";
 import { t } from "i18next";
+import multiPaths from "../../../multiPaths";
 
+function isPlainObject(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+const SCALE_FACTOR = 100;
+const DEFAULT_Z = 0.8;
+
+// -----------------------------------------
+// حالت جدید: استخراج سگمنت‌های هر مسیر
+// -----------------------------------------
+function getMultiFloorSegments(multiPaths, activeFloorNumber) {
+  if (!Array.isArray(multiPaths)) return [];
+
+  return multiPaths
+    .map(route => {
+      const index = route.segments.findIndex(
+        s => s.floorNum === activeFloorNumber
+      );
+
+      if (index === -1) return null;
+
+      const seg = route.segments[index];
+
+      return {
+        destId: route.destId,
+        isNearest: route.isNearest,
+        currentFloor: seg.floorNum,
+        nextFloor: route.segments[index + 1]?.floorNum ?? null,
+        points: seg.path.map(([x, y]) => ({
+          x: x / SCALE_FACTOR,
+          y: y / SCALE_FACTOR,
+          z: DEFAULT_Z
+        }))
+      };
+    })
+    .filter(Boolean);
+}
+
+// -----------------------------------------
+// کامپوننت اصلی
+// -----------------------------------------
 export default function PathOverlay({ colors, activeFloor, maxZoomDistance }) {
   const { path } = usePath();
-  const points = path?.paths?.find(p => p.floorNum === activeFloor.number)?.path || [];
-  if (!points?.length) return null;
-  
-  const { startLabel, endLabel } = useMemo(() => {    
-    if (!path?.paths || !activeFloor) return { startLabel: "", endLabel: "" };
-    const floors = path.paths;
-    const currentIndex = floors.findIndex(p => p.floorNum === activeFloor.number);
-    if (currentIndex === -1) return { startLabel: "", endLabel: "" };
-    const nextPath = floors[currentIndex + 1];
-    const nextFloorNum = nextPath?.floorNum;
-    const currentFloorNum = activeFloor.number;
-      
 
-    let endLabel = t('Navigator3DPage.arrived_at_destination');
-    if (nextFloorNum) {
-      if (nextFloorNum > currentFloorNum) endLabel = t('Navigator3DPage.navigate_to_upstairs');
-      else if (nextFloorNum < currentFloorNum) endLabel = t('Navigator3DPage.navigate_to_downstairs');
-      else endLabel = t('Navigator3DPage.continue_route');
+  let segments = [];
+  let singlePoints = [];
+
+  // -----------------------------
+  // حالت قدیمی
+  // -----------------------------
+  if (isPlainObject(path)) {
+    singlePoints =
+      path?.paths?.find(p => p.floorNum === activeFloor.number)?.path || [];
+  }
+
+  // -----------------------------
+  // حالت جدید
+  // -----------------------------
+  if (Array.isArray(path)) {
+    segments = getMultiFloorSegments(path, activeFloor.number);
+  }
+
+  // اگر نه single و نه multi چیزی برای نمایش نداریم
+  const hasMulti = segments.length > 0;
+  const hasSingle = singlePoints.length > 0;
+
+  if (!hasMulti && !hasSingle) return null;
+
+
+const transitionPoints = useMemo(() => {
+  if (!hasMulti) return [];
+
+  const points = [];
+
+  segments.forEach(seg => {
+    if (seg.nextFloor !== null && seg.nextFloor !== seg.currentFloor) {
+      const point = seg.points[seg.points.length - 1];
+      points.push({
+        position: point,
+        direction: seg.nextFloor > seg.currentFloor ? "up" : "down",
+        destId: seg.destId,
+        // می‌توانیم مکان رو از سگمنت یا مسیر استخراج کنیم
+      });
+    }
+  });
+
+  return points;
+}, [segments, hasMulti]);
+
+
+const groupedTransitions = useMemo(() => {
+  if (!transitionPoints.length) return [];
+
+  const groups = {};
+
+  transitionPoints.forEach(tp => {
+    const key = `${Math.round(tp.position.x * 100)}_${Math.round(tp.position.y * 100)}`;
+    if (!groups[key]) groups[key] = { points: [], directions: [] };
+    groups[key].points.push(tp);
+    groups[key].directions.push(tp.direction);
+  });
+
+  return Object.values(groups);
+}, [transitionPoints]);
+
+
+const finalLabels = useMemo(() => {
+  if (!groupedTransitions.length) return [];
+
+  return groupedTransitions.map(group => {
+    const directions = group.directions;
+    const isUp = directions.includes("up");
+    const isDown = directions.includes("down");
+
+    let label = "";
+    let position = group.points[0].position;
+
+    if (isUp && isDown) {
+      label = "رفتم به طبقه بعد 🔼🔽";
+    } else if (isUp) {
+      label = "رفتم به طبقه بالا 🔼";
+    } else if (isDown) {
+      label = "رفتم به طبقه پایین 🔽";
     }
 
-    const startLabel = currentIndex === 0 ? t('Navigator3DPage.current_location') : t('Navigator3DPage.continue_route');
-    return { startLabel, endLabel };
-  }, [path, activeFloor?.id]);
+    return {
+      position,
+      label
+    };
+  });
+}, [groupedTransitions]);
 
-  const start = points[0];
-  const end = points[points.length - 1];
+
+
+
+
+  // ----------------------------------------------------
+  // لیبل‌ها (بر اساس multi یا single)
+  // ----------------------------------------------------
+  const { startLabel, endLabel, startPos, endPos } = useMemo(() => {
+    // --------------------------------
+    // حالت قدیمی (single path)
+    // --------------------------------
+    if (hasSingle) {
+      const pts = singlePoints;
+      const start = pts[0];
+      const end = pts[pts.length - 1];
+
+      return {
+        startLabel: t("Navigator3DPage.current_location"),
+        endLabel: t("Navigator3DPage.arrived_at_destination"),
+        startPos: start,
+        endPos: end
+      };
+    }
+
+    // --------------------------------
+    // حالت جدید (multi-path)
+    // --------------------------------
+    if (hasMulti) {
+      const arrived = segments.some(s => s.nextFloor === null);
+      const hasUp = segments.some(s => s.nextFloor > activeFloor.number);
+      const hasDown = segments.some(s => s.nextFloor < activeFloor.number);
+      const hasContinue = segments.some(
+        s => s.nextFloor === activeFloor.number
+      );
+
+      let endLabel = t("Navigator3DPage.continue_route");
+
+      if (arrived) endLabel = t("Navigator3DPage.arrived_at_destination");
+      else if (hasUp) endLabel = t("Navigator3DPage.navigate_to_upstairs");
+      else if (hasDown) endLabel = t("Navigator3DPage.navigate_to_downstairs");
+
+      // نقطه شروع → اول مسیر nearest
+      const nearest = segments.find(s => s.isNearest) || segments[0];
+      const start = nearest.points[0];
+      const end = nearest.points[nearest.points.length - 1];
+
+      return {
+        startLabel: t("Navigator3DPage.current_location"),
+        endLabel,
+        startPos: start,
+        endPos: end
+      };
+    }
+
+    return {};
+  }, [segments, singlePoints, activeFloor.number, t]);
 
   return (
     <>
-      {points.length > 1 ? (
-        <>
-          {/* <DottedStraightPath points={points} spacing={1} size={0.1} animate /> */}
+      {/* ---------------- Multi-path Rendering ---------------- */}
+      {hasMulti &&
+        segments.map(seg => (
           <ArrowStraightPath
-            points={points}
+            key={seg.destId}
+            points={seg.points}
+            color={seg.isNearest ? colors.active : colors.inactive}
             spacing={0.7}
             size={0.12}
             animate
             yawOffset={0}
           />
+        ))}
 
-          <LabeledPoint
-            position={{ x: start.x, y: start.y, z: start.z }}
-            label={startLabel}
-            pointColor={colors.pointStart}
-            textColor={colors.pointStart}
-            textHeightOffset={1}
-            fadeStartDistance={maxZoomDistance - 10}
-            maxVisibleDistance={maxZoomDistance}
-          />
+{/* -------- Floor Transition Labels -------- */}
+{finalLabels.map((label, i) => (
+  <LabeledPoint
+    key={`transition-${i}`}
+    position={label.position}
+    label={label.label}
+    pointColor={colors.pointEnd}
+    textColor={colors.pointEnd}
+    textHeightOffset={1}
+    fadeStartDistance={maxZoomDistance - 10}
+    maxVisibleDistance={maxZoomDistance}
+  />
+))}
 
-          <LabeledPoint
-            position={{ x: end.x, y: end.y, z: end.z }}
-            label={endLabel}
-            pointColor={colors.pointEnd}
-            textColor={colors.pointEnd}
-            textHeightOffset={1}
-            fadeStartDistance={maxZoomDistance - 10}
-            maxVisibleDistance={maxZoomDistance}
-          />
-        </>
-      ) : (
+
+      {/* ---------------- Old Single Path Rendering ---------------- */}
+      {hasSingle && (
+        <ArrowStraightPath 
+        points={singlePoints} 
+        color={colors.active}
+        spacing={0.7}
+        size={0.12}
+        animate
+        yawOffset={0}
+        />
+      )}
+
+      {/* ---------------- Labels ---------------- */}
+      {startPos && (
         <LabeledPoint
-          position={{ x: end.x, y: end.y, z: end.z }}
-          label={ endLabel }
+          position={startPos}
+          label={startLabel}
+          pointColor={colors.pointStart}
+          textColor={colors.pointStart}
+          textHeightOffset={1}
+          fadeStartDistance={maxZoomDistance - 10}
+          maxVisibleDistance={maxZoomDistance}
+        />
+      )}
+
+      {endPos && (
+        <LabeledPoint
+          position={endPos}
+          label={endLabel}
           pointColor={colors.pointEnd}
-          textColor="red"
-          textHeightOffset={0}
-          fadeStartDistance={maxZoomDistance}
+          textColor={colors.pointEnd}
+          textHeightOffset={1}
+          fadeStartDistance={maxZoomDistance - 10}
           maxVisibleDistance={maxZoomDistance}
         />
       )}

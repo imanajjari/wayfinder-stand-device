@@ -7,7 +7,7 @@ if (!BASE) {
   throw new Error("VITE_API_BASE is missing (check your .env)");
 }
 
-// singleton pattern (جلوگیری از اینترسپتورهای تکراری تو HMR)
+// singleton pattern 
 let _apiPublic, _apiPrivate;
 
 _apiPublic = axios.create({
@@ -23,7 +23,7 @@ _apiPrivate = axios.create({
 });
 
 const attachMainApiKey = (config) => {
-  // برای endpoint لاگین/ستاپ هدر نزن
+
   const url = (config.url || "").toLowerCase();
   if (url.startsWith("/setting")) return config;
 
@@ -40,7 +40,7 @@ const onRespError = (error) => {
   const status = error?.response?.status;
   if (status === 401) {
     tokenStorage.clear();
-    // مثال: ریدایرکت
+    // ex : redirect to 
     // if (window.location.pathname !== "/login") window.location.assign("/login");
   }
   return Promise.reject(error);
@@ -52,6 +52,6 @@ _apiPrivate.interceptors.response.use((r) => r, onRespError);
 export const apiPublic = _apiPublic;
 export const apiPrivate = _apiPrivate;
 
-// سازگاری با import قدیمی
+
 const api = apiPrivate;
 export default api;

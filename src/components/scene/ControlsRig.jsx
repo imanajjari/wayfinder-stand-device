@@ -1,4 +1,4 @@
-// src/pages/navigator/components/ControlsRig.jsx
+
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 

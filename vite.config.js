@@ -4,13 +4,13 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
-  base: '/', // اگر دامنه ساب‌پث نیست همین بماند
+  base: '/', 
     build: {
     sourcemap: false,
     minify: "esbuild",
     terserOptions: {
       format: {
-        comments: false, // 🚫 حذف همه کامنت‌ها
+        comments: false,
       },
     },
   },
@@ -19,7 +19,6 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      // هر چیزی که می‌خواهی بدون اشاره در مانیفست کش شود:
       includeAssets: [
         'favicon.svg',
         'images/blackLogo.webp',
@@ -37,14 +36,13 @@ export default defineConfig({
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
         ],
-        // (اختیاری) شورتکات‌ها برای لانچر
+
         shortcuts: [
           // { name: 'Products', short_name: 'Products', url: '/products' },
           // { name: 'About', short_name: 'About', url: '/about' },
         ],
       },
       workbox: {
-        // قوانین کش متعارف
         runtimeCaching: [
           {
             urlPattern: ({ request }) => request.destination === 'image',
