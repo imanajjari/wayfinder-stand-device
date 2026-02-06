@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Point({ position, color = "blue", size = 0.3 }) {
+export default function Point({ position, color = "blue", size = 0.1 }) {
   return (
     <mesh position={[position.x, position.y, position.z]}>
       <sphereGeometry args={[size, 32, 32]} />

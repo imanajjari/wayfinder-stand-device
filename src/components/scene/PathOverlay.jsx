@@ -204,8 +204,8 @@ const finalLabels = useMemo(() => {
             key={seg.destId}
             points={seg.points}
             color={seg.isNearest ? colors.active : colors.inactive}
-            spacing={0.7}
-            size={0.12}
+            spacing={0.2}
+            size={0.3}
             animate
             yawOffset={0}
           />
@@ -219,7 +219,7 @@ const finalLabels = useMemo(() => {
     label={label.label}
     pointColor={colors.pointEnd}
     textColor={colors.pointEnd}
-    textHeightOffset={1}
+    textHeightOffset={0}
     fadeStartDistance={maxZoomDistance - 10}
     maxVisibleDistance={maxZoomDistance}
   />
@@ -231,8 +231,8 @@ const finalLabels = useMemo(() => {
         <ArrowStraightPath 
         points={singlePoints} 
         color={colors.active}
-        spacing={0.7}
-        size={0.12}
+        spacing={0.2}
+        size={.3}
         animate
         yawOffset={0}
         />
@@ -245,7 +245,7 @@ const finalLabels = useMemo(() => {
           label={startLabel}
           pointColor={colors.pointStart}
           textColor={colors.pointStart}
-          textHeightOffset={1}
+          textHeightOffset={0}
           fadeStartDistance={maxZoomDistance - 10}
           maxVisibleDistance={maxZoomDistance}
         />
@@ -257,7 +257,7 @@ const finalLabels = useMemo(() => {
           label={endLabel}
           pointColor={colors.pointEnd}
           textColor={colors.pointEnd}
-          textHeightOffset={1}
+          textHeightOffset={0}
           fadeStartDistance={maxZoomDistance - 10}
           maxVisibleDistance={maxZoomDistance}
         />

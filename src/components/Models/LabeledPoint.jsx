@@ -9,7 +9,7 @@ export default function LabeledPoint({
   pointColor = "red",
   textColor = "white",
   background = "rgba(0,0,0,0.5)",
-  textHeightOffset = 1,
+  textHeightOffset = 0,
   maxVisibleDistance = 40,
   fadeStartDistance = 40, // فاصله‌ای که محو شدن شروع می‌شود
 }) {

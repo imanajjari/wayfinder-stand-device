@@ -153,7 +153,7 @@ const toMeters = (p) => {
   if (typeof x !== "number" || typeof y !== "number") {
     throw new Error("مختصات نامعتبر است");
   }
-  return { x: x / 100, y: y / 100, z: 0.8 };
+  return { x: x / 100, y: y / 100, z: 0.2 };
 };
 
 // خروجی API را به ساختار یکسان و قابل‌استفاده تبدیل می‌کند

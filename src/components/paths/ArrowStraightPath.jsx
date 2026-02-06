@@ -13,7 +13,7 @@ export default function ArrowStraightPath({
   headIntervalMs = 50,  // سرعت حرکت
   maxD = 20,            // طول دُم موج
 }) {
-  const { scene } = useGLTF("/models/arrow.glb");
+  const { scene } = useGLTF("/models/arrow2.glb");
 
   // ----------------- نمونه‌برداری مسیر -----------------
   const dots = useMemo(() => {
@@ -177,4 +177,4 @@ export default function ArrowStraightPath({
   );
 }
 
-useGLTF.preload?.("/models/arrow.glb");
+useGLTF.preload?.("/models/arrow2.glb");
