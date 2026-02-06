@@ -12,7 +12,7 @@ export default function LabelsLayer({ floorDestinations, verticalOffset, maxVisi
   return (
     <DestinationsLabels
       destinations={visibleDestinations}
-      z={2}
+      z={0}
       verticalOffset={verticalOffset}
       hiddenPositions={lastDestination ? [lastDestination] : []}
       fadeStartDistance={maxVisibleDistance - 15}
