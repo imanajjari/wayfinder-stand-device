@@ -1,6 +1,5 @@
 // src/components/Models/GLBModel.jsx
 import { useRef, useEffect, forwardRef, useState } from "react";
-import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { loadGLBWithCache } from "../../utils/decompressor";
 
@@ -9,7 +8,7 @@ const GLBModel = forwardRef(function GLBModel(
   ref
 ) {
   const modelRef = ref || useRef();
-  const [processedUrl, setProcessedUrl] = useState(null);
+  const [gltf, setGltf] = useState(null);
   const [loadInfo, setLoadInfo] = useState(null);
   const hasCalledOnLoaded = useRef(false);
 
@@ -21,14 +20,13 @@ const GLBModel = forwardRef(function GLBModel(
       try {
         const startTime = performance.now();
 
-        // 🚀 بارگذاری با Cache
+        // بارگذاری با Cache
         const result = await loadGLBWithCache(url);
         blobUrl = result.blobUrl;
 
         const loadTime = performance.now() - startTime;
 
         if (mounted) {
-          setProcessedUrl(blobUrl);
           setLoadInfo({
             fromCache: result.fromCache,
             size: result.size,
@@ -36,24 +34,68 @@ const GLBModel = forwardRef(function GLBModel(
             loadTime: loadTime.toFixed(2),
           });
 
-          // لاگ اطلاعات بارگذاری
-          if (result.fromCache) {
-            console.log(`⚡ مدل از Cache بارگذاری شد در ${loadTime.toFixed(2)}ms`);
-          } else {
-            console.log(`🌐 مدل از شبکه دانلود شد در ${loadTime.toFixed(2)}ms`);
-            console.log(`📦 حجم: ${(result.size / 1024 / 1024).toFixed(2)} MB`);
-            if (result.compressed) {
-              console.log('🗜️ فایل فشرده بود و باز شد');
-            }
-          }
+          console.log(
+            result.fromCache
+              ? `⚡ مدل از Cache بارگذاری شد در ${loadTime.toFixed(2)}ms`
+              : `🌐 مدل از شبکه دانلود شد در ${loadTime.toFixed(2)}ms - حجم: ${(result.size / 1024 / 1024).toFixed(2)} MB`
+          );
+          if (result.compressed) console.log('🗜️ فایل فشرده بود و باز شد');
         }
+
+        // fetch blob و parse دستی
+        const response = await fetch(blobUrl);
+        if (!response.ok) throw new Error(`Blob fetch failed: ${response.status}`);
+        
+        const arrayBuffer = await response.arrayBuffer();
+
+        const loader = new GLTFLoader();
+        // اگر draco یا ktx2 یا meshopt استفاده می‌کنی، اینجا ست کن:
+        // loader.setDRACOLoader(dracoLoader);
+        // loader.setKTX2Loader(ktx2Loader);
+        // loader.setMeshoptDecoder(meshoptDecoder);
+
+        loader.parse(
+          arrayBuffer,
+          '', // path خالی چون blob محلی است
+          (parsedGltf) => {
+            if (mounted) {
+              setGltf(parsedGltf);
+
+              if (onLoaded && !hasCalledOnLoaded.current) {
+                hasCalledOnLoaded.current = true;
+                const loadData = {
+                  scene: parsedGltf.scene,
+                  ...loadInfo, // loadInfo الان ست شده
+                };
+                onLoaded(loadData);
+              }
+            }
+          },
+          (error) => {
+            console.error("❌ خطا در parse GLTF:", error);
+          }
+        );
       } catch (error) {
         console.error('❌ خطا در بارگذاری مدل:', error);
-        
-        // در صورت خطا، سعی کن مستقیم بارگذاری کنی (fallback)
+
         if (mounted) {
-          console.log('🔄 تلاش برای بارگذاری مستقیم...');
-          setProcessedUrl(url);
+          console.log('🔄 fallback: استفاده مستقیم از url اصلی');
+          // fallback ساده (اگر خواستی می‌تونی حذف کنی)
+          const loader = new GLTFLoader();
+          loader.load(
+            url,
+            (parsedGltf) => {
+              if (mounted) {
+                setGltf(parsedGltf);
+                if (onLoaded && !hasCalledOnLoaded.current) {
+                  hasCalledOnLoaded.current = true;
+                  onLoaded({ scene: parsedGltf.scene, ...loadInfo });
+                }
+              }
+            },
+            undefined,
+            (err) => console.error("Fallback هم شکست خورد:", err)
+          );
         }
       }
     };
@@ -66,35 +108,14 @@ const GLBModel = forwardRef(function GLBModel(
         URL.revokeObjectURL(blobUrl);
       }
     };
-  }, [url]);
-
-  const gltf = processedUrl ? useLoader(GLTFLoader, processedUrl) : null;
+  }, [url, onLoaded]); // loadInfo رو از deps برداشتم چون داخل callback استفاده می‌شه
 
   useEffect(() => {
-    if (!gltf || !modelRef.current || hasCalledOnLoaded.current) return;
+    if (!gltf || !modelRef.current) return;
 
+    // اعمال rotation روی گروه اصلی مدل
     modelRef.current.rotation.x = Math.PI / 2;
-
-    if (onLoaded) {
-      hasCalledOnLoaded.current = true;
-      
-      // ارسال اطلاعات بارگذاری به callback
-      const loadData = {
-        scene: gltf.scene,
-        ...loadInfo,
-      };
-      
-      onLoaded(loadData);
-    }
-  }, [gltf, onLoaded, loadInfo]);
-  
-    useEffect(() => {
-    if (!modelRef.current) return;
-
-    modelRef.current.rotation.x = Math.PI / 2;
-
-    onLoaded?.(gltf.scene); 
-  }, [gltf, onLoaded]);
+  }, [gltf]);
 
   if (!gltf) {
     return (
@@ -111,7 +132,7 @@ const GLBModel = forwardRef(function GLBModel(
       object={gltf.scene}
       scale={Array.isArray(scale) ? scale : [scale, scale, scale]}
       position={position}
-      rotation={rotation}
+      rotation={rotation} // اگر rotation از بیرون می‌خوای، این رو نگه دار
     />
   );
 });
