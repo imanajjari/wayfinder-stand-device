@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef, useCallback } from "react";
 import * as THREE from "three";
 import { Vector3, Color } from "three";
 import { useGLTF } from "@react-three/drei";
@@ -9,13 +9,15 @@ export default function ArrowStraightPath({
   size = 0.3,
   animate = true,
   yawOffset = 0,
-  headCount = 3,        // تعداد هدها
-  headIntervalMs = 50,  // سرعت حرکت
-  maxD = 20,            // طول دُم موج
+  headCount = 3,
+  headIntervalMs = 50,
+  maxD = 20,
 }) {
-  const { scene } = useGLTF("/models/arrow2.glb");
-
-  // ----------------- نمونه‌برداری مسیر -----------------
+  const { scene: originalScene } = useGLTF("/models/arrow2.glb");
+  const sceneRef = useRef(null);
+  const meshesRef = useRef([]);
+  
+  // ----------------- نمونه‌برداری مسیر (تغییر نمیشه) -----------------
   const dots = useMemo(() => {
     if (!points || points.length < 2) return [];
     const res = [];
@@ -31,7 +33,7 @@ export default function ArrowStraightPath({
         const pos = a.clone().add(dir.clone().multiplyScalar(j * spacing));
         res.push({ pos });
       }
-      if (i === points.length - 2) res.push({ pos: b.clone() }); // انتهای مسیر
+      if (i === points.length - 2) res.push({ pos: b.clone() });
     }
     return res;
   }, [points, spacing]);
@@ -39,17 +41,38 @@ export default function ArrowStraightPath({
   const N = dots.length;
   if (N === 0) return null;
 
-  // ----------------- هدها با فاصله‌ی مساوی -----------------
-  const gap = useMemo(() => {
-    if (!N || headCount <= 0) return 1;
-    return Math.floor(N / headCount) || 1;
-  }, [N, headCount]);
+  // ----------------- محاسبه gap و direction ها (یکبار) -----------------
+  const gap = useMemo(() => Math.floor(N / headCount) || 1, [N, headCount]);
+  const directions = useMemo(() => {
+    const dirs = [];
+    for (let i = 0; i < N; i++) {
+      if (N <= 1) {
+        dirs[i] = new Vector3(1, 0, 0);
+      } else {
+        const cur = dots[i].pos;
+        const nxt = i < N - 1 ? dots[i + 1].pos : dots[i - 1].pos;
+        const v = new Vector3().subVectors(nxt, cur);
+        dirs[i] = v.lengthSq() === 0 ? new Vector3(1, 0, 0) : v.normalize();
+      }
+    }
+    return dirs;
+  }, [dots]);
 
+  // ----------------- Animation State -----------------
   const [base, setBase] = useState(0);
+  const [allEntered, setAllEntered] = useState(false);
+  const [intro, setIntro] = useState(true);
+  const [activated, setActivated] = useState([]);
+
+  // Reset on path change
   useEffect(() => {
-    setBase(0); // با تغییر مسیر از 0 شروع
+    setBase(0);
+    setAllEntered(false);
+    setIntro(true);
+    setActivated(new Array(N).fill(false));
   }, [N]);
 
+  // Main animation loop
   useEffect(() => {
     if (!animate || N === 0) return;
     const id = setInterval(() => {
@@ -58,18 +81,12 @@ export default function ArrowStraightPath({
     return () => clearInterval(id);
   }, [animate, N, headIntervalMs]);
 
-  // پس از اینکه همه هدها وارد شدند، دیگر ریست نشوند
-  const [allEntered, setAllEntered] = useState(false);
+  // Check if all heads entered
   useEffect(() => {
-    setAllEntered(false);
-  }, [N]);
-
-  useEffect(() => {
-    if (!N || headCount <= 0 || gap === 0) return;
     if (!allEntered && base >= (headCount - 1) * gap) {
       setAllEntered(true);
     }
-  }, [base, gap, headCount, N, allEntered]);
+  }, [base, gap, headCount, allEntered]);
 
   const activeCount = useMemo(() => {
     if (!N || headCount <= 0 || gap === 0) return 1;
@@ -86,15 +103,7 @@ export default function ArrowStraightPath({
     return arr;
   }, [base, gap, activeCount, N]);
 
-  // ----------------- Intro فقط بار اول -----------------
-  const [intro, setIntro] = useState(true);
-  const [activated, setActivated] = useState([]);
-
-  useEffect(() => {
-    setIntro(true);
-    setActivated(new Array(N).fill(false));
-  }, [N]);
-
+  // Intro animation
   useEffect(() => {
     if (!intro || N === 0) return;
     setActivated((prev) => {
@@ -110,71 +119,92 @@ export default function ArrowStraightPath({
   }, [heads, intro, N, maxD]);
 
   useEffect(() => {
-    if (!intro) return;
-    if (activated.length === N && activated.every(Boolean)) {
+    if (!intro || activated.length !== N) return;
+    if (activated.every(Boolean)) {
       setIntro(false);
     }
   }, [activated, intro, N]);
 
-  // ----------------- ظاهر بصری هر فلش -----------------
-  const getVisualProps = (idx) => {
-    let w = 0;
-    for (const h of heads) {
-      const d = h - idx;
-      if (d >= 0 && d <= maxD) w = Math.max(w, 1 - d / maxD);
-      // اگر wrap هم بخوای: فاصله‌ی مدولویی را هم حساب کن
-      // const wrapD = (idx - h + N) % N;
-      // if (wrapD <= maxD) w = Math.max(w, 1 - wrapD / maxD);
-    }
+  // ----------------- بهینه‌سازی: Update فقط مش‌ها -----------------
+  const updateVisuals = useCallback(() => {
+    if (!meshesRef.current.length || meshesRef.current.length !== N) return;
 
-    if (intro && !activated[idx]) {
-      return { scale: 0, color: new Color("#000000") };
-    }
+    for (let idx = 0; idx < N; idx++) {
+      const meshGroup = meshesRef.current[idx];
+      if (!meshGroup) continue;
 
-    const s = size + size * 0.5 * w;
-    const c = new Color("#ffffff").lerp(new Color("#00FFAB"), w);
-    return { scale: s, color: c };
-  };
-
-  // ----------------- utilities -----------------
-  const cloneWithColor = (root, color) => {
-    const c = root.clone(true);
-    c.traverse((o) => {
-      if (o.isMesh) {
-        o.material = o.material.clone();
-        if (o.material.color) o.material.color = new THREE.Color(color);
+      // محاسبه weight
+      let w = 0;
+      for (const h of heads) {
+        const d = h - idx;
+        if (d >= 0 && d <= maxD) {
+          w = Math.max(w, 1 - d / maxD);
+        }
       }
-    });
-    return c;
-  };
 
-  const dirToNext = (i) => {
-    if (N <= 1) return new Vector3(1, 0, 0);
-    const cur = dots[i].pos;
-    const nxt = i < N - 1 ? dots[i + 1].pos : dots[i - 1].pos;
-    const v = new Vector3().subVectors(nxt, cur);
-    if (v.lengthSq() === 0) return new Vector3(1, 0, 0);
-    return v.normalize();
-  };
+      // Intro check
+      if (intro && !activated[idx]) {
+        meshGroup.scale.setScalar(0);
+        meshGroup.visible = false;
+        continue;
+      }
 
-  return (
-    <>
-      {dots.map((d, idx) => {
-        const { scale, color } = getVisualProps(idx);
-        const dir = dirToNext(idx);
-        const yaw = -Math.atan2(dir.x, dir.y) + yawOffset; // مسیر روی صفحه XY
-        return (
-          <primitive
-            key={idx}
-            object={cloneWithColor(scene, color)}
-            position={d.pos.toArray()}
-            rotation={[1.5, yaw, 0]}
-            scale={[scale, scale, scale]}
-          />
-        );
-      })}
-    </>
-  );
+      meshGroup.visible = true;
+      const s = size + size * 0.5 * w;
+      const c = new Color("#ffffff").lerp(new Color("#00FFAB"), w);
+      
+      meshGroup.scale.setScalar(s);
+      
+      // Update color
+      meshGroup.traverse((child) => {
+        if (child.isMesh && child.material) {
+          child.material.color.copy(c);
+        }
+      });
+    }
+  }, [heads, intro, activated, N, size, maxD]);
+
+  // Update visuals on state change
+  useEffect(() => {
+    updateVisuals();
+  }, [updateVisuals]);
+
+  // ----------------- یکبار Scene آماده‌سازی -----------------
+  useEffect(() => {
+    if (!originalScene || N === 0) return;
+
+    const clonedScene = originalScene.clone();
+    meshesRef.current = [];
+
+    // Clone برای هر dot
+    for (let i = 0; i < N; i++) {
+      const meshClone = clonedScene.clone(true);
+      meshClone.position.copy(dots[i].pos);
+      
+      const dir = directions[i];
+      const yaw = -Math.atan2(dir.x, dir.y) + yawOffset;
+      meshClone.rotation.set(1.5, yaw, 0);
+      meshClone.scale.setScalar(0); // شروع مخفی
+      meshClone.visible = false;
+      
+      meshesRef.current[i] = meshClone;
+    }
+
+    if (sceneRef.current) {
+      // Clear previous
+      sceneRef.current.clear();
+      // Add new meshes
+      meshesRef.current.forEach(mesh => {
+        sceneRef.current.add(mesh);
+      });
+    }
+
+    return () => {
+      meshesRef.current = [];
+    };
+  }, [dots, directions, N, yawOffset, originalScene]);
+
+  return <group ref={sceneRef} />;
 }
 
 useGLTF.preload?.("/models/arrow2.glb");

@@ -34,20 +34,20 @@ function SceneCore({
   const controlsRef = useRef();
   const [loadedTick, setLoadedTick] = useState(0);
 
-  const minZoom = isPortrait ? 2 : 2;
-  const maxZoom = isPortrait ? 20 : 20;
+  // const minZoom = isPortrait ? 2 : 2;
+  // const maxZoom = isPortrait ? 20 : 20;
   
-// const dims = useGLBSize(currentModelFile);
-// console.log('dims :',dims);
-// const minZoom = useMemo(() => {
-//   if (!dims) return 20;
-//   return dims.width;
-// }, [dims]);
+const dims = useGLBSize(currentModelFile);
+console.log('dims :',dims);
+const minZoom = useMemo(() => {
+  if (!dims) return 20;
+  return dims.width;
+}, [dims]);
 
-// const maxZoom = useMemo(() => {
-//   if (!dims) return 80;
-//   return dims.width*3;
-// }, [dims]);
+const maxZoom = useMemo(() => {
+  if (!dims) return 80;
+  return dims.width*3;
+}, [dims]);
 
   const handleModelLoaded = useCallback(() => {
     setLoadedTick((t) => t + 1);
@@ -101,7 +101,7 @@ function SceneCore({
           fadeStartDistance={maxZoom - 15}
         />
 
-        <PathOverlay colors={colors} activeFloor={activeFloor} maxZoomDistance={maxZoom} />
+        <PathOverlay colors={colors} activeFloor={activeFloor} maxZoomDistance={maxZoom} scale={dims}/>
       </group>
 
       <FitCameraToObject objectRef={modelRoot} controlsRef={controlsRef} padding={1.2} deps={fitDeps} />

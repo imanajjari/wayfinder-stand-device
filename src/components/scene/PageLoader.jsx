@@ -1,4 +1,3 @@
-// src/pages/navigator/components/PageLoader.jsx
 import { useEffect, useState } from "react";
 import { useProgress } from "@react-three/drei";
 
@@ -6,17 +5,18 @@ export default function PageLoader() {
   const { progress, active, item } = useProgress();
   const [visible, setVisible] = useState(true);
 
-  // وقتی لود تموم شد، با یه تاخیر کوتاه فید-اوت شه تا پرش نداشته باشیم
+  // ✅ HOOK اول - بدون شرط!
   useEffect(() => {
     let t;
     if (!active && progress === 100) {
-      t = setTimeout(() => setVisible(false), 200); // 200ms برای فید
+      t = setTimeout(() => setVisible(false), 200);
     } else {
       setVisible(true);
     }
     return () => clearTimeout(t);
   }, [active, progress]);
 
+  // ✅ فقط render conditional - بعد hooks!
   if (!visible) return null;
 
   return (
@@ -30,7 +30,7 @@ export default function PageLoader() {
         background: "rgba(0,0,0,0.6)",
         backdropFilter: "blur(6px)",
         transition: "opacity 200ms ease",
-        pointerEvents: "none", // تا کلیک‌ها گیر نکنن (اگه می‌خوای بلاک کنه، بردار)
+        pointerEvents: "none",
       }}
     >
       <div
@@ -42,7 +42,7 @@ export default function PageLoader() {
           color: "#fff",
           textAlign: "center",
           boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
-          pointerEvents: "auto", // روی خود پنل کلیک‌پذیر باشه اگه لازم شد
+          pointerEvents: "auto",
         }}
       >
         <div style={{ fontWeight: 700, marginBottom: 8 }}>در حال بارگذاری نقشه…</div>

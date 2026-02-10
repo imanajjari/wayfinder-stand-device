@@ -47,12 +47,15 @@ function getMultiFloorSegments(multiPaths, activeFloorNumber) {
 // -----------------------------------------
 // کامپوننت اصلی
 // -----------------------------------------
-export default function PathOverlay({ colors, activeFloor, maxZoomDistance }) {
+export default function PathOverlay({ colors, activeFloor, maxZoomDistance, scale }) {
   const { path } = usePath();
 
   let segments = [];
   let singlePoints = [];
 
+  let ArrowSize = scale?.width/23 ?? 0.2;
+  let ArrowSpacing = scale?.width/50 ?? 0.2;
+  
   // -----------------------------
   // حالت قدیمی
   // -----------------------------
@@ -68,92 +71,66 @@ export default function PathOverlay({ colors, activeFloor, maxZoomDistance }) {
     segments = getMultiFloorSegments(path, activeFloor.number);
   }
 
-  // اگر نه single و نه multi چیزی برای نمایش نداریم
+  // ✅ همه hooks اول - بدون شرط!
   const hasMulti = segments.length > 0;
   const hasSingle = singlePoints.length > 0;
 
-  if (!hasMulti && !hasSingle) return null;
+  // ✅ HOOKS همیشه صدا میشن
+  const transitionPoints = useMemo(() => {
+    if (!hasMulti) return [];
+    const points = [];
+    segments.forEach(seg => {
+      if (seg.nextFloor !== null && seg.nextFloor !== seg.currentFloor) {
+        const point = seg.points[seg.points.length - 1];
+        points.push({
+          position: point,
+          direction: seg.nextFloor > seg.currentFloor ? "up" : "down",
+          destId: seg.destId,
+        });
+      }
+    });
+    return points;
+  }, [segments, hasMulti]);
 
+  const groupedTransitions = useMemo(() => {
+    if (!transitionPoints.length) return [];
+    const groups = {};
+    transitionPoints.forEach(tp => {
+      const key = `${Math.round(tp.position.x * 100)}_${Math.round(tp.position.y * 100)}`;
+      if (!groups[key]) groups[key] = { points: [], directions: [] };
+      groups[key].points.push(tp);
+      groups[key].directions.push(tp.direction);
+    });
+    return Object.values(groups);
+  }, [transitionPoints]);
 
-const transitionPoints = useMemo(() => {
-  if (!hasMulti) return [];
+  const finalLabels = useMemo(() => {
+    if (!groupedTransitions.length) return [];
+    return groupedTransitions.map(group => {
+      const directions = group.directions;
+      const isUp = directions.includes("up");
+      const isDown = directions.includes("down");
 
-  const points = [];
+      let label = "";
+      let position = group.points[0].position;
 
-  segments.forEach(seg => {
-    if (seg.nextFloor !== null && seg.nextFloor !== seg.currentFloor) {
-      const point = seg.points[seg.points.length - 1];
-      points.push({
-        position: point,
-        direction: seg.nextFloor > seg.currentFloor ? "up" : "down",
-        destId: seg.destId,
-        // می‌توانیم مکان رو از سگمنت یا مسیر استخراج کنیم
-      });
-    }
-  });
+      if (isUp && isDown) {
+        label = "رفتم به طبقه بعد 🔼🔽";
+      } else if (isUp) {
+        label = "رفتم به طبقه بالا 🔼";
+      } else if (isDown) {
+        label = "رفتم به طبقه پایین 🔽";
+      }
 
-  return points;
-}, [segments, hasMulti]);
+      return { position, label };
+    });
+  }, [groupedTransitions]);
 
-
-const groupedTransitions = useMemo(() => {
-  if (!transitionPoints.length) return [];
-
-  const groups = {};
-
-  transitionPoints.forEach(tp => {
-    const key = `${Math.round(tp.position.x * 100)}_${Math.round(tp.position.y * 100)}`;
-    if (!groups[key]) groups[key] = { points: [], directions: [] };
-    groups[key].points.push(tp);
-    groups[key].directions.push(tp.direction);
-  });
-
-  return Object.values(groups);
-}, [transitionPoints]);
-
-
-const finalLabels = useMemo(() => {
-  if (!groupedTransitions.length) return [];
-
-  return groupedTransitions.map(group => {
-    const directions = group.directions;
-    const isUp = directions.includes("up");
-    const isDown = directions.includes("down");
-
-    let label = "";
-    let position = group.points[0].position;
-
-    if (isUp && isDown) {
-      label = "رفتم به طبقه بعد 🔼🔽";
-    } else if (isUp) {
-      label = "رفتم به طبقه بالا 🔼";
-    } else if (isDown) {
-      label = "رفتم به طبقه پایین 🔽";
-    }
-
-    return {
-      position,
-      label
-    };
-  });
-}, [groupedTransitions]);
-
-
-
-
-
-  // ----------------------------------------------------
-  // لیبل‌ها (بر اساس multi یا single)
-  // ----------------------------------------------------
   const { startLabel, endLabel, startPos, endPos } = useMemo(() => {
-    // --------------------------------
-    // حالت قدیمی (single path)
-    // --------------------------------
     if (hasSingle) {
       const pts = singlePoints;
       const start = pts[0];
       const end = pts[pts.length - 1];
-
       return {
         startLabel: t("Navigator3DPage.current_location"),
         endLabel: t("Navigator3DPage.arrived_at_destination"),
@@ -162,9 +139,6 @@ const finalLabels = useMemo(() => {
       };
     }
 
-    // --------------------------------
-    // حالت جدید (multi-path)
-    // --------------------------------
     if (hasMulti) {
       const arrived = segments.some(s => s.nextFloor === null);
       const hasUp = segments.some(s => s.nextFloor > activeFloor.number);
@@ -174,12 +148,10 @@ const finalLabels = useMemo(() => {
       );
 
       let endLabel = t("Navigator3DPage.continue_route");
-
       if (arrived) endLabel = t("Navigator3DPage.arrived_at_destination");
       else if (hasUp) endLabel = t("Navigator3DPage.navigate_to_upstairs");
       else if (hasDown) endLabel = t("Navigator3DPage.navigate_to_downstairs");
 
-      // نقطه شروع → اول مسیر nearest
       const nearest = segments.find(s => s.isNearest) || segments[0];
       const start = nearest.points[0];
       const end = nearest.points[nearest.points.length - 1];
@@ -195,9 +167,14 @@ const finalLabels = useMemo(() => {
     return {};
   }, [segments, singlePoints, activeFloor.number, t]);
 
+  // ✅ فقط render conditional
+  if (!hasMulti && !hasSingle) return null;
+
+  console.log('PathOverlay');
+
   return (
     <>
-      {/* ---------------- Multi-path Rendering ---------------- */}
+      {/* Multi-path */}
       {hasMulti &&
         segments.map(seg => (
           <ArrowStraightPath
@@ -211,36 +188,37 @@ const finalLabels = useMemo(() => {
           />
         ))}
 
-{/* -------- Floor Transition Labels -------- */}
-{finalLabels.map((label, i) => (
-  <LabeledPoint
-    key={`transition-${i}`}
-    position={label.position}
-    label={label.label}
-    pointColor={colors.pointEnd}
-    textColor={colors.pointEnd}
-    textHeightOffset={0}
-    fadeStartDistance={maxZoomDistance - 10}
-    maxVisibleDistance={maxZoomDistance}
-  />
-))}
+      {/* Transition Labels */}
+      {finalLabels.map((label, i) => (
+        <LabeledPoint
+          key={`transition-${i}`}
+          scale={scale}
+          position={label.position}
+          label={label.label}
+          pointColor={colors.pointEnd}
+          textColor={colors.pointEnd}
+          textHeightOffset={0}
+          fadeStartDistance={maxZoomDistance - 10}
+          maxVisibleDistance={maxZoomDistance}
+        />
+      ))}
 
-
-      {/* ---------------- Old Single Path Rendering ---------------- */}
+      {/* Single Path */}
       {hasSingle && (
         <ArrowStraightPath 
-        points={singlePoints} 
-        color={colors.active}
-        spacing={0.2}
-        size={.3}
-        animate
-        yawOffset={0}
+          points={singlePoints} 
+          color={colors.active}
+          spacing={ArrowSpacing}
+          size={ArrowSize}
+          animate
+          yawOffset={0}
         />
       )}
 
-      {/* ---------------- Labels ---------------- */}
+      {/* Start Label */}
       {startPos && (
         <LabeledPoint
+          scale={scale}
           position={startPos}
           label={startLabel}
           pointColor={colors.pointStart}
@@ -251,8 +229,10 @@ const finalLabels = useMemo(() => {
         />
       )}
 
+      {/* End Label */}
       {endPos && (
         <LabeledPoint
+          scale={scale}
           position={endPos}
           label={endLabel}
           pointColor={colors.pointEnd}
@@ -265,3 +245,4 @@ const finalLabels = useMemo(() => {
     </>
   );
 }
+
