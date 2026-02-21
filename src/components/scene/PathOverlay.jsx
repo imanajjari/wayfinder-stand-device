@@ -127,45 +127,59 @@ export default function PathOverlay({ colors, activeFloor, maxZoomDistance, scal
   }, [groupedTransitions]);
 
   const { startLabel, endLabel, startPos, endPos } = useMemo(() => {
-    if (hasSingle) {
-      const pts = singlePoints;
-      const start = pts[0];
-      const end = pts[pts.length - 1];
-      return {
-        startLabel: t("Navigator3DPage.current_location"),
-        endLabel: t("Navigator3DPage.arrived_at_destination"),
-        startPos: start,
-        endPos: end
-      };
+  if (hasSingle) {
+    const pts = singlePoints;
+    const end = pts[pts.length - 1];
+
+    const allFloors = path?.paths || [];
+    const currentIndex = allFloors.findIndex(p => p.floorNum === activeFloor.number);
+    const nextFloor = allFloors[currentIndex + 1] ?? null;
+
+    let endLabel;
+    if (!nextFloor) {
+      endLabel = t("Navigator3DPage.arrived_at_destination");
+    } else if (nextFloor.floorNum > activeFloor.number) {
+      endLabel = t("Navigator3DPage.navigate_to_upstairs");
+    } else {
+      endLabel = t("Navigator3DPage.navigate_to_downstairs");
     }
 
-    if (hasMulti) {
-      const arrived = segments.some(s => s.nextFloor === null);
-      const hasUp = segments.some(s => s.nextFloor > activeFloor.number);
-      const hasDown = segments.some(s => s.nextFloor < activeFloor.number);
-      const hasContinue = segments.some(
-        s => s.nextFloor === activeFloor.number
-      );
+    const startPos = pts.length > 1 ? pts[0] : undefined;
 
-      let endLabel = t("Navigator3DPage.continue_route");
-      if (arrived) endLabel = t("Navigator3DPage.arrived_at_destination");
-      else if (hasUp) endLabel = t("Navigator3DPage.navigate_to_upstairs");
-      else if (hasDown) endLabel = t("Navigator3DPage.navigate_to_downstairs");
+    // اگه طبقه اول مسیره → مکان فعلی، وگرنه → ادامه مسیر
+    const startLabel = startPos
+      ? (currentIndex === 0
+          ? t("Navigator3DPage.current_location")
+          : t("Navigator3DPage.continue_route"))
+      : undefined;
 
-      const nearest = segments.find(s => s.isNearest) || segments[0];
-      const start = nearest.points[0];
-      const end = nearest.points[nearest.points.length - 1];
+    return { startLabel, endLabel, startPos, endPos: end };
+  }
 
-      return {
-        startLabel: t("Navigator3DPage.current_location"),
-        endLabel,
-        startPos: start,
-        endPos: end
-      };
-    }
+  if (hasMulti) {
+    const arrived = segments.some(s => s.nextFloor === null);
+    const hasUp = segments.some(s => s.nextFloor > activeFloor.number);
+    const hasDown = segments.some(s => s.nextFloor < activeFloor.number);
 
-    return {};
-  }, [segments, singlePoints, activeFloor.number, t]);
+    let endLabel = t("Navigator3DPage.continue_route");
+    if (arrived) endLabel = t("Navigator3DPage.arrived_at_destination");
+    else if (hasUp) endLabel = t("Navigator3DPage.navigate_to_upstairs");
+    else if (hasDown) endLabel = t("Navigator3DPage.navigate_to_downstairs");
+
+    const nearest = segments.find(s => s.isNearest) || segments[0];
+    const start = nearest.points[0];
+    const end = nearest.points[nearest.points.length - 1];
+
+    return {
+      startLabel: t("Navigator3DPage.current_location"),
+      endLabel,
+      startPos: start,
+      endPos: end
+    };
+  }
+
+  return {};
+}, [segments, singlePoints, activeFloor.number, path, t]);
 
   // ✅ فقط render conditional
   if (!hasMulti && !hasSingle) return null;
@@ -204,7 +218,7 @@ export default function PathOverlay({ colors, activeFloor, maxZoomDistance, scal
       ))}
 
       {/* Single Path */}
-      {hasSingle && (
+      {hasSingle && singlePoints.length > 1 && (
         <ArrowStraightPath 
           points={singlePoints} 
           color={colors.active}

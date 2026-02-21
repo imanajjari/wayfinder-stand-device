@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react"; 
 import { useThree, useFrame } from "@react-three/fiber";
 import Point from "../paths/Point";
 import PositionedText from "./PositionedText";
@@ -19,17 +19,13 @@ export default function LabeledPoint({
   const textRef = useRef();
   const lastOpacity = useRef(1);
   const fadeRange = maxVisibleDistance - fadeStartDistance;
-  const textPosition = useRef([
-    position.x, 
-    position.y + textHeightOffset, 
-    position.z
-  ]);
 
-  // ----------------- بهینه‌سازی Distance + Opacity -----------------
+  // ⭐ برای fade تدریجی لیبل (اختیاری اما توصیه‌شده برای همخوانی با Point)
+  const [textOpacity, setTextOpacity] = useState(1);
+
   useFrame(() => {
     if (!pointRef.current) return;
 
-    // Vector3 distance خیلی سریع‌تر از object distance
     const distance = camera.position.distanceTo(pointRef.current.position);
     
     let opacity = 1;
@@ -37,31 +33,35 @@ export default function LabeledPoint({
       opacity = Math.max(0, 1 - (distance - fadeStartDistance) / fadeRange);
     }
 
-    // فقط اگر تغییر معنادار داشت آپدیت کن
     if (Math.abs(opacity - lastOpacity.current) > 0.01) {
       lastOpacity.current = opacity;
       
-      // Batch update هر دو ref
+      // برای Point
       if (pointRef.current) {
         pointRef.current.material.opacity = opacity;
         pointRef.current.material.transparent = true;
         pointRef.current.visible = opacity > 0;
       }
       
+      // برای Text: setState فقط وقتی تغییر کنه (برای عملکرد بهتر)
+      setTextOpacity(opacity);
       if (textRef.current) {
-        textRef.current.material.opacity = opacity;
-        textRef.current.material.transparent = true;
-        textRef.current.visible = opacity > 0;
+        textRef.current.visible = opacity > 0; // on/off سریع
       }
     }
   });
 
-  // Scale محاسبه‌شده
   const pointSize = scale ? scale.width / 70 : 1;
+
+  // ⭐ موقعیت متن مستقیم محاسبه‌شده (بدون ref و useEffect)
+  const textPos = [
+    position.x,
+    position.y + textHeightOffset,
+    position.z
+  ];
 
   return (
     <group>
-      {/* Point با ref و opacity native */}
       <Point 
         ref={pointRef}
         position={position} 
@@ -70,14 +70,13 @@ export default function LabeledPoint({
         transparent={true}
       />
 
-      {/* Text با ref و conditional render + opacity */}
       <PositionedText
         ref={textRef}
-        position={textPosition.current}
+        position={textPos} 
         text={label}
         color={textColor}
         background={background}
-        transparent={true}
+        opacity={textOpacity} 
       />
     </group>
   );

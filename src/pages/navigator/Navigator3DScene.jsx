@@ -53,13 +53,7 @@ function SceneCore({
     return modelDims[currentModelFile] || glbSize || null;
   }, [currentModelFile, glbSize]);
 
-  console.log('currentModelFile:', currentModelFile);
-  console.log('dims:', dims);
 
-
-  console.log('currentModelFile:',currentModelFile);
-  console.log('dims:',dims);
-console.log('dims :',dims);
 const minZoom = useMemo(() => {
   if (!dims) return 20;
   return dims.width;
