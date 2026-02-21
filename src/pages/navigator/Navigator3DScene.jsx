@@ -36,8 +36,29 @@ function SceneCore({
 
   // const minZoom = isPortrait ? 2 : 2;
   // const maxZoom = isPortrait ? 20 : 20;
+
   
-const dims = useGLBSize(currentModelFile);
+
+// ✅ 1. Object map برای مقادیر سفارشی (خارج از هر hook)
+  const modelDims = {
+    '/models/cemetery.glb.gz': { width: 7.6, height: 5.12, depth: 0.7 },
+    '/models/TRY4.glb': {width: 30.71, height: 35.74, depth: 9.42},
+  };
+
+  // ✅ 2. Hook در top-level (فقط یکبار)
+  const glbSize = useGLBSize(currentModelFile);
+
+  // ✅ 3. ترکیب در useMemo (بدون hook!)
+  const dims = useMemo(() => {
+    return modelDims[currentModelFile] || glbSize || null;
+  }, [currentModelFile, glbSize]);
+
+  console.log('currentModelFile:', currentModelFile);
+  console.log('dims:', dims);
+
+
+  console.log('currentModelFile:',currentModelFile);
+  console.log('dims:',dims);
 console.log('dims :',dims);
 const minZoom = useMemo(() => {
   if (!dims) return 20;
