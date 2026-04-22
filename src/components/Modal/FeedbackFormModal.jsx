@@ -3,17 +3,22 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { submitFeedback } from "../../services/feedbackService";
 import { useModalManager } from "../../contexts/ModalManagerContext";
+import { FaRegThumbsUp, FaRegThumbsDown } from "react-icons/fa";
 
 const FeedbackFormModal = () => {
   const [form, setForm] = useState({
     title: "",
     content: "",
-    kind: 1, // 1: پیشنهاد, 2: انتقاد
+    kind: null, // ابتدا هیچکدام انتخاب نشده
   });
   const [loading, setLoading] = useState(false);
   const { hideModal } = useModalManager();
 
   const validate = () => {
+    if (form.kind === null) {
+      toast.error("لطفاً نوع بازخورد را انتخاب کنید");
+      return false;
+    }
     if (form.title.trim().length < 3) {
       toast.error("عنوان باید حداقل ۳ کاراکتر باشد");
       return false;
@@ -49,13 +54,53 @@ const FeedbackFormModal = () => {
         px-6 py-8
         flex flex-col
         text-white
-        w-[351px]
+        w-[400px]
       "
       dir="rtl"
     >
       <h2 className="text-xl font-bold text-center mb-4">
         انتقادات و پیشنهادات
       </h2>
+
+      {/* نوع بازخورد - دکمه‌های رنگی */}
+      <div className="mb-4">
+        <label className="block text-[12px] font-bold mb-2 text-right">
+          نوع بازخورد
+        </label>
+        <div className="flex gap-3 justify-center">
+          {/* دکمه پیشنهاد */}
+          <button
+            type="button"
+            onClick={() => setForm((p) => ({ ...p, kind: 1 }))}
+            className={`
+              flex items-center gap-2 px-6 py-2 rounded-xl border-2 font-medium transition-all duration-200
+              ${form.kind === 1 
+                ? "bg-green-500 border-green-500 text-white shadow-[0_0_15px_rgba(34,197,94,0.5)]" 
+                : "bg-transparent border-green-500 text-green-500 hover:bg-green-500/10"
+              }
+            `}
+          >
+            <FaRegThumbsUp className="text-lg" />
+            <span>پیشنهاد</span>
+          </button>
+
+          {/* دکمه انتقاد */}
+          <button
+            type="button"
+            onClick={() => setForm((p) => ({ ...p, kind: 2 }))}
+            className={`
+              flex items-center gap-2 px-6 py-2 rounded-xl border-2 font-medium transition-all duration-200
+              ${form.kind === 2 
+                ? "bg-red-500 border-red-500 text-white shadow-[0_0_15px_rgba(200,20,10,0.5)]" 
+                : "bg-transparent border-red-500 text-red-500 hover:bg-red-500/10"
+              }
+            `}
+          >
+            <FaRegThumbsDown className="text-lg" />
+            <span>انتقاد</span>
+          </button>
+        </div>
+      </div>
 
       {/* عنوان */}
       <div className="mb-4">
@@ -75,37 +120,9 @@ const FeedbackFormModal = () => {
             text-right
             placeholder:text-[#FAF5F1]/50
             outline-none
+            focus:ring-2 focus:ring-white/20
           "
         />
-      </div>
-
-      {/* نوع بازخورد */}
-      <div className="mb-4">
-        <label className="block text-[12px] font-bold mb-2 text-right">
-          نوع
-        </label>
-        <div className="flex gap-4">
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="kind"
-              value={1}
-              checked={form.kind === 1}
-              onChange={() => setForm((p) => ({ ...p, kind: 1 }))}
-            />
-            <span>پیشنهاد</span>
-          </label>
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="kind"
-              value={2}
-              checked={form.kind === 2}
-              onChange={() => setForm((p) => ({ ...p, kind: 2 }))}
-            />
-            <span>انتقاد</span>
-          </label>
-        </div>
       </div>
 
       {/* متن اصلی */}
@@ -128,6 +145,7 @@ const FeedbackFormModal = () => {
             placeholder:text-[#FAF5F1]/50
             outline-none
             resize-none
+            focus:ring-2 focus:ring-white/20
           "
         />
       </div>
