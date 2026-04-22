@@ -18,6 +18,7 @@ import ScreenshotQrOverlay from "../../components/scene/ScreenshotQrOverlay";
 import HoldCoordsOverlay from "../../components/scene/HoldCoordsOverlay";
 import CustomerClubButton from "../../components/buttons/CustomerClubButton";
 import { useGLBSize } from "../../hooks/useGLBSize";
+import FeedbackButton from "../../components/Feedback/FeedbackButton";
 
 function SceneCore({
   colors,
@@ -183,6 +184,8 @@ export default function Navigator3DScene(props) {
         loading={loading}
       />
       <CustomerClubButton />
+      <FeedbackButton />
+
       </div>
     </div>
   );

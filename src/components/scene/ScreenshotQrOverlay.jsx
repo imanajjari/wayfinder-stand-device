@@ -21,6 +21,7 @@ export default function ScreenshotQrOverlay({qrUrl,handlerefreshQRUrl, loading})
             onClick={handlerefreshQRUrl}
             aria-label="Close QR Code"
           >
+            
             <IoClose />
           </button>
     </div>
@@ -35,7 +36,7 @@ export default function ScreenshotQrOverlay({qrUrl,handlerefreshQRUrl, loading})
       }
     }}
   >
-    {loading ? <ImSpinner8 className="animate-spin" /> : <MdOutlineScreenshot />}
+    {loading ? <ImSpinner8 className="animate-spin" /> : <div className="flex justify-between items-center"><p className="hidden sm:block">ثبت تصویر</p><MdOutlineScreenshot /></div> }
   </button>
 
 </>
