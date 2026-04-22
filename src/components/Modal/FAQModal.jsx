@@ -75,7 +75,7 @@ const FAQModal = () => {
 
   return (
     <div
-      className="bg-[#2E4256] rounded-2xl px-6 py-8 flex flex-col text-white w-[500px] max-w-[90vw] max-h-[80vh]"
+      className="bg-black/80 backdrop-blur-xl border border-white/20 rounded-2xl px-6 py-8 flex flex-col text-white w-[500px] max-w-[90vw] max-h-[80vh]"
       dir="rtl"
     >
       <h2 className="text-xl font-bold text-center mb-4">سوالات متداول</h2>

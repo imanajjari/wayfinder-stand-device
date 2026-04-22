@@ -44,7 +44,7 @@ const FeedbackFormModal = () => {
   return (
     <div
       className="
-        bg-[#2E4256]
+        bg-black/80 backdrop-blur-xl border border-white/20
         rounded-2xl
         px-6 py-8
         flex flex-col
@@ -68,7 +68,7 @@ const FeedbackFormModal = () => {
           placeholder="خلاصه موضوع"
           className="
             w-full
-            bg-[#0E172B]
+            bg-[#1d2330]
             rounded-xl
             px-5 py-2.5
             text-md
@@ -120,7 +120,7 @@ const FeedbackFormModal = () => {
           rows={4}
           className="
             w-full
-            bg-[#0E172B]
+            bg-[#1d2330]
             rounded-xl
             px-5 py-2.5
             text-md
