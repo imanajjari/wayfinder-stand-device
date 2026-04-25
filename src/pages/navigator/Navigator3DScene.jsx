@@ -183,9 +183,6 @@ export default function Navigator3DScene(props) {
         handlerefreshQRUrl={handlerefreshQRUrl}
         loading={loading}
       />
-      <CustomerClubButton />
-      <FeedbackButton />
-
       </div>
     </div>
   );

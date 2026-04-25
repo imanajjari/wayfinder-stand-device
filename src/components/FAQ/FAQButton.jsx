@@ -14,8 +14,11 @@ export default function FAQButton() {
   return (
     <button
       onClick={openModal}
-      className="text-xl sm:text-2xl p-2 md:px-4 md:py-2 rounded-xl border border-gray-500 transition bg-[#324154] text-white"
+      className="flex justify-between w-full items-center bg-[#008AFF] shadow-[0_0_20px_#008AFF] backdrop-blur-md border border-gray-300 rounded-xl p-4 text-xl text-white self-start"
     >
+        <p>
+            سوالات متداول
+        </p>
       <HiOutlineQuestionMarkCircle />
     </button>
   );

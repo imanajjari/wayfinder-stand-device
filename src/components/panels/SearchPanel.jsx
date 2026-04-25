@@ -7,7 +7,7 @@ import LanguageDropdown from '../buttons/LanguageDropdown';
 import { searchDestinationsByName } from '../../services/destinationService';
 import { useSearchResults } from '../../contexts/SearchResultsContext';
 import { t } from 'i18next';
-import FAQButton from '../FAQ/FAQButton';
+import MenuButton from '../Menu/MenuButton';
 
 export default function SearchPanel() {
   const { showResults, setLoading, loading } = useSearchResults();
@@ -67,7 +67,8 @@ export default function SearchPanel() {
       <div className="flex justify-center gap-2 items-center">
         <LanguageDropdown />
         <LocationButton />
-        <FAQButton />
+        
+        <MenuButton />
         {/* <ThemeToggle /> */}
       </div>
 
